@@ -5,7 +5,7 @@
         :key="index"
         :class="currentSelect === index ? 'active op-item' : 'op-item'"
         v-for="(item, index) in lists"
-        @click="select(item)"
+        @click="selectItem(item)"
       >
         <img v-if="item.icon" class="icon" :src="item.icon" />
         <div class="content">
@@ -17,9 +17,9 @@
   </div>
 </template>
 <script setup lang="ts">
-import { useRoute } from "vue-router";
-import { ref, onBeforeUnmount, watch } from "vue";
-const { ipcRenderer } = window.require("electron");
+import { useRoute } from 'vue-router';
+import { ref, onBeforeUnmount, watch } from 'vue';
+const { ipcRenderer } = window.require('electron');
 
 const route = useRoute();
 
@@ -29,17 +29,29 @@ const defaultHeight = 60;
 
 const { code, type, payload } = route.params;
 const current = window.exports[code];
+const { args } = current;
+const { enter, search, select } = args;
+
 window.rubick.setExpendHeight(defaultHeight);
 
 const lists = ref([]);
+const setList = (result) => {
+  lists.value = result;
+};
+
 watch([lists], () => {
-  const height = lists.value.length > itemMaxNum ? itemMaxNum * itemHeight : itemHeight * lists.value.length
+  const height =
+    lists.value.length > itemMaxNum
+      ? itemMaxNum * itemHeight
+      : itemHeight * lists.value.length;
   window.rubick.setExpendHeight(defaultHeight + height);
 });
-current.args.enter &&
-  current.args.enter({ code: code, type, payload }, (result) => {
+
+if (enter) {
+  enter({ code: code, type, payload }, (result) => {
     lists.value = result;
   });
+}
 
 const currentSelect = ref(0);
 ipcRenderer.on(`changeCurrent`, (e, result) => {
@@ -51,26 +63,27 @@ ipcRenderer.on(`changeCurrent`, (e, result) => {
   }
   currentSelect.value = currentSelect.value + result;
 });
-window.rubick.setSubInput(({ text }) => {
-  current.args.search &&
-    current.args.search({ code, type: "", payload: [] }, text, (result) => {
-      lists.value = result || [];
-    });
-}, "搜索");
 
-const select = (item) => {
-  current.args.select && current.args.select({code, type: '', payload: [] }, item);
+window.rubick.setSubInput(({ text }) => {
+  if (search) {
+    const action = { code, type: '', payload: [] };
+    search(action, text, setList);
+  }
+}, '搜索');
+
+const selectItem = (item) => {
+  select && select({ code, type: '', payload: [] }, item, setList);
 };
 
 const onKeydownAction = (e) => {
-  if (e.code === "Enter") {
-    return select(lists.value[currentSelect.value]);
+  if (e.code === 'Enter') {
+    return selectItem(lists.value[currentSelect.value]);
   }
   let index = 0;
-  if (e.code === "ArrowDown") {
+  if (e.code === 'ArrowDown') {
     index = 1;
   }
-  if (e.code === "ArrowUp") {
+  if (e.code === 'ArrowUp') {
     index = -1;
   }
   if (!lists.value.length) return;
@@ -82,12 +95,11 @@ const onKeydownAction = (e) => {
   currentSelect.value = currentSelect.value + index;
 };
 
-window.addEventListener("keydown", onKeydownAction);
+window.addEventListener('keydown', onKeydownAction);
 
 onBeforeUnmount(() => {
-  window.removeEventListener("keydown", onKeydownAction);
+  window.removeEventListener('keydown', onKeydownAction);
 });
-
 </script>
 <style>
 .options {
