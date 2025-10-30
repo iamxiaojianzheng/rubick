@@ -56,11 +56,20 @@ const onSubmit = () => {
 const loading = ref(false);
 const downloadPlugin = async (pluginName) => {
   loading.value = true;
-  await window.market.downloadPlugin({
-    name: pluginName,
-    isDev: true,
-  });
-  message.success(t('feature.dev.installSuccess', { pluginName: pluginName }));
+  try {
+    await window.market.downloadPlugin({
+      name: pluginName,
+      isDev: true,
+    });
+    message.success(t('feature.dev.installSuccess', { pluginName: pluginName }));
+  } catch (e) {
+    console.log(e)
+    if (e.message.startsWith('错误:')) {
+      message.error(e.message)
+    } else {
+      message.error(t('feature.dev.installFail', { pluginName: pluginName }));
+    }
+  }
   loading.value = false;
 };
 

@@ -1,7 +1,4 @@
-import {
-  AdapterHandlerOptions,
-  AdapterInfo,
-} from '@/core/plugin-handler/types';
+import { AdapterHandlerOptions, AdapterInfo } from '@/core/plugin-handler/types';
 import fs from 'fs-extra';
 import path from 'path';
 import got from 'got';
@@ -78,6 +75,7 @@ class AdapterHandler {
       // ...
     }
   }
+
   /**
    * 获取插件信息
    * @param {string} adapter 插件名称
@@ -141,9 +139,7 @@ class AdapterHandler {
    * @memberof AdapterHandler
    */
   async list() {
-    const installInfo = JSON.parse(
-      await fs.readFile(`${this.baseDir}/package.json`, 'utf-8')
-    );
+    const installInfo = JSON.parse(await fs.readFile(`${this.baseDir}/package.json`, 'utf-8'));
     const adapters: string[] = [];
     for (const adapter in installInfo.dependencies) {
       adapters.push(adapter);
@@ -158,15 +154,10 @@ class AdapterHandler {
   private async execCommand(cmd: string, modules: string[]): Promise<string> {
     return new Promise((resolve: any, reject: any) => {
       let args: string[] = [cmd].concat(
-        cmd !== 'uninstall' && cmd !== 'link'
-          ? modules.map((m) => `${m}@latest`)
-          : modules
+        cmd !== 'uninstall' && cmd !== 'link' ? modules.map((m) => `${m}@latest`) : modules
       );
       if (cmd !== 'link') {
-        args = args
-          .concat('--color=always')
-          .concat('--save')
-          .concat(`--registry=${this.registry}`);
+        args = args.concat('--color=always').concat('--save').concat(`--registry=${this.registry}`);
       }
 
       const npm = spawn('npm', args, {

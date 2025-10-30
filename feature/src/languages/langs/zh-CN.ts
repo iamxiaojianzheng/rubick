@@ -79,8 +79,7 @@ export default {
           shortcutKey: '快捷键',
           funtionKey: '功能关键字',
           addShortcutKey: '新增全局快捷功能',
-          addShortcutKeyTips:
-            '先按功能键（Ctrl、Shift、{optionKeyName}），再按其他普通键。或按 F1-F12 单键。',
+          addShortcutKeyTips: '先按功能键（Ctrl、Shift、{optionKeyName}），再按其他普通键。或按 F1-F12 单键。',
         },
         superPanel: {
           title: '超级面板设置',
@@ -110,6 +109,7 @@ export default {
         install: '安装',
         refreshPlugins: '刷新插件',
         installSuccess: '{pluginName}安装成功！',
+        installFail: '{pluginName}安装失败！',
         refreshSuccess: '{pluginName}刷新成功！',
       },
     },
