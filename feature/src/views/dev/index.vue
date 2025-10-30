@@ -2,22 +2,12 @@
   <div class="dev">
     <div class="view-title">{{ $t('feature.dev.title') }}</div>
     <div class="view-container">
-      <a-alert
-        style="margin-bottom: 40px"
-        :message="$t('feature.dev.tips')"
-        type="warning"
-      />
-      <a-form
-        ref="formRef"
-        :model="formState"
-        :rules="rules"
-        :label-col="labelCol"
-        :wrapper-col="wrapperCol"
-      >
+      <a-alert style="margin-bottom: 40px" :message="$t('feature.dev.tips')" type="warning" />
+      <a-form ref="formRef" :model="formState" :rules="rules" :label-col="labelCol" :wrapper-col="wrapperCol">
         <a-form-item :label="$t('feature.dev.pluginName')" name="name">
           <a-input v-model:value="formState.name" />
         </a-form-item>
-    
+
         <a-form-item :wrapper-col="{ span: 14, offset: 4 }">
           <a-button :loading="loading" type="primary" @click="onSubmit">
             {{ $t('feature.dev.install') }}
@@ -63,9 +53,9 @@ const downloadPlugin = async (pluginName) => {
     });
     message.success(t('feature.dev.installSuccess', { pluginName: pluginName }));
   } catch (e) {
-    console.log(e)
+    console.log(e);
     if (e.message.startsWith('错误:')) {
-      message.error(e.message)
+      message.error(e.message);
     } else {
       message.error(t('feature.dev.installFail', { pluginName: pluginName }));
     }
@@ -78,9 +68,7 @@ const refresh = () => {
     window.market.refreshPlugin({
       name: formState.name,
     });
-    message.success(
-      t('feature.dev.refreshSuccess', { pluginName: formState.name })
-    );
+    message.success(t('feature.dev.refreshSuccess', { pluginName: formState.name }));
   });
 };
 

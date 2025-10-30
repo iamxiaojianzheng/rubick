@@ -1,45 +1,17 @@
 <template>
-  <a-alert
-    :message="$t('feature.settings.intranet.tips')"
-    type="warning"
-    style="margin-bottom: 20px"
-  />
-  <a-form
-    name="custom-validation"
-    ref="formRef"
-    :model="formState"
-    :rules="rules"
-    v-bind="layout"
-  >
-    <a-form-item
-      has-feedback
-      :label="$t('feature.settings.intranet.npmMirror')"
-      name="register"
-    >
-      <a-input
-        placeholder="https://registry.npmmirror.com"
-        v-model:value="formState.register"
-      />
+  <a-alert :message="$t('feature.settings.intranet.tips')" type="warning" style="margin-bottom: 20px" />
+  <a-form name="custom-validation" ref="formRef" :model="formState" :rules="rules" v-bind="layout">
+    <a-form-item has-feedback :label="$t('feature.settings.intranet.npmMirror')" name="register">
+      <a-input placeholder="https://registry.npmmirror.com" v-model:value="formState.register" />
     </a-form-item>
-    <a-form-item
-      has-feedback
-      :label="$t('feature.settings.intranet.dbUrl')"
-      name="database"
-    >
+    <a-form-item has-feedback :label="$t('feature.settings.intranet.dbUrl')" name="database">
       <a-input
         placeholder="https://gitee.com/monkeyWang/rubickdatabase/raw/master"
         v-model:value="formState.database"
       />
     </a-form-item>
-    <a-form-item
-      has-feedback
-      :label="$t('feature.settings.intranet.accessToken')"
-      name="access_token"
-    >
-      <a-input
-        :placeholder="$t('feature.settings.intranet.placeholder')"
-        v-model:value="formState.access_token"
-      />
+    <a-form-item has-feedback :label="$t('feature.settings.intranet.accessToken')" name="access_token">
+      <a-input :placeholder="$t('feature.settings.intranet.placeholder')" v-model:value="formState.access_token" />
     </a-form-item>
     <a-form-item :wrapper-col="{ span: 18, offset: 6 }">
       <a-button @click="submit" type="primary">确定</a-button>

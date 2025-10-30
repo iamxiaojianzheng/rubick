@@ -1245,6 +1245,13 @@
   dependencies:
     "@types/node" "*"
 
+"@types/vue-router@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.npmmirror.com/@types/vue-router/-/vue-router-2.0.0.tgz#81094f2107e766a11b20af7fa0f34bec1f321e28"
+  integrity sha512-E454lQ6tp9ftVWdZ8VGZpRcIV4YeqVAcx/uifl3P1GGwscYsxOFdYfgIuKasKO0Fm6Np2JM/L378D3bcRQE9hg==
+  dependencies:
+    vue-router "*"
+
 "@types/webpack-env@^1.15.2":
   version "1.18.8"
   resolved "https://registry.npmmirror.com/@types/webpack-env/-/webpack-env-1.18.8.tgz#71f083718c094204d7b64443701d32f1db3989e3"
@@ -6049,7 +6056,7 @@ vue-loader@^17.0.0:
     hash-sum "^2.0.0"
     watchpack "^2.4.0"
 
-vue-router@^4.0.0-0:
+vue-router@*, vue-router@^4.0.0-0:
   version "4.6.3"
   resolved "https://registry.npmmirror.com/vue-router/-/vue-router-4.6.3.tgz#52a40a231b910806438a8203c065a411fd3f1faa"
   integrity sha512-ARBedLm9YlbvQomnmq91Os7ck6efydTSpRP3nuOKCvgJOHNrhRoJDSKtee8kcL1Vf7nz6U+PMBL+hTvR3bTVQg==

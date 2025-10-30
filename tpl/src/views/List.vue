@@ -40,10 +40,8 @@ const setList = (result) => {
 };
 
 watch([lists], () => {
-  const height =
-    lists.value.length > itemMaxNum
-      ? itemMaxNum * itemHeight
-      : itemHeight * lists.value.length;
+  const length = lists.value.length;
+  const height = length > itemMaxNum ? itemMaxNum * itemHeight : itemHeight * length;
   window.rubick.setExpendHeight(defaultHeight + height);
 });
 
@@ -55,10 +53,9 @@ if (enter) {
 
 const currentSelect = ref(0);
 ipcRenderer.on(`changeCurrent`, (e, result) => {
-  if (
-    currentSelect.value + result > lists.value.length - 1 ||
-    lists.value + result < 0
-  ) {
+  const length = lists.value.length;
+  const currentSelectValue = currentSelect.value;
+  if (currentSelectValue + result > length - 1 || lists.value + result < 0) {
     return;
   }
   currentSelect.value = currentSelect.value + result;
@@ -76,23 +73,28 @@ const selectItem = (item) => {
 };
 
 const onKeydownAction = (e) => {
+  const currentSelectValue = currentSelect.value;
   if (e.code === 'Enter') {
-    return selectItem(lists.value[currentSelect.value]);
+    return selectItem(lists.value[currentSelectValue]);
   }
+
   let index = 0;
   if (e.code === 'ArrowDown') {
     index = 1;
   }
+
   if (e.code === 'ArrowUp') {
     index = -1;
   }
-  if (!lists.value.length) return;
-  if (
-    currentSelect.value + index > lists.value.length - 1 ||
-    currentSelect.value + index < 0
-  )
+
+  const length = lists.value.length;
+  if (!length) return;
+
+  if (currentSelectValue + index > length - 1 || currentSelectValue + index < 0) {
     return;
-  currentSelect.value = currentSelect.value + index;
+  }
+
+  currentSelect.value = currentSelectValue + index;
 };
 
 window.addEventListener('keydown', onKeydownAction);

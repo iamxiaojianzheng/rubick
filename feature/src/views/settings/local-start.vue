@@ -10,7 +10,7 @@
           <a-list-item-meta :description="item.desc">
             <template #title>
               <div>
-                <span :class="item.del ? 'del-title' : ''">{{item.name}}</span>
+                <span :class="item.del ? 'del-title' : ''">{{ item.name }}</span>
                 <span v-if="item.del" class="has-del">文件不存在</span>
               </div>
             </template>
@@ -50,9 +50,7 @@ checkFileExists();
 const dropFile = (e) => {
   const files = Array.from(e.dataTransfer.files).map((file) => {
     const action =
-      process.platform === 'win32'
-        ? `start "dummyclient" "${file.path}"`
-        : `open ${file.path.replace(/ /g, '\\ ')}`;
+      process.platform === 'win32' ? `start "dummyclient" "${file.path}"` : `open ${file.path.replace(/ /g, '\\ ')}`;
     const plugin = {
       icon: window.rubick.getFileIcon(file.path),
       value: 'plugin',
@@ -66,24 +64,13 @@ const dropFile = (e) => {
     window.market.addLocalStartPlugin(plugin);
     return plugin;
   });
-  localStartList.value = [
-    ...localStartList.value,
-    ...files,
-  ];
-  window.rubick.dbStorage.setItem(
-    dbId,
-    JSON.parse(JSON.stringify(localStartList.value))
-  );
+  localStartList.value = [...localStartList.value, ...files];
+  window.rubick.dbStorage.setItem(dbId, JSON.parse(JSON.stringify(localStartList.value)));
 };
 
 const remove = (item) => {
-  localStartList.value = localStartList.value.filter(
-    (app) => app.desc !== item.desc
-  );
-  window.rubick.dbStorage.setItem(
-    dbId,
-    JSON.parse(JSON.stringify(localStartList.value))
-  );
+  localStartList.value = localStartList.value.filter((app) => app.desc !== item.desc);
+  window.rubick.dbStorage.setItem(dbId, JSON.parse(JSON.stringify(localStartList.value)));
   window.market.removeLocalStartPlugin(JSON.parse(JSON.stringify(item)));
 };
 

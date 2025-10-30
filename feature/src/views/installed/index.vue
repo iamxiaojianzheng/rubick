@@ -3,10 +3,7 @@
     <div class="view-title">{{ $t('feature.installed.title') }}</div>
     <div class="view-container">
       <div v-if="!localPlugins.length">
-        <a-result
-          class="error-content"
-          sub-title="哎呀，暂时还没有安装任何插件！"
-        >
+        <a-result class="error-content" sub-title="哎呀，暂时还没有安装任何插件！">
           <template #icon>
             <Vue3Lottie :animationData="emptyJson" :height="240" :width="240" />
           </template>
@@ -61,22 +58,13 @@
             </div>
           </div>
           <div class="feature-container">
-            <template
-              :key="index"
-              v-for="(item, index) in pluginDetail.features"
-            >
-              <div
-                class="desc-item"
-                v-if="item.cmds.filter(cmd => !cmd.label).length > 0"
-              >
+            <template :key="index" v-for="(item, index) in pluginDetail.features">
+              <div class="desc-item" v-if="item.cmds.filter((cmd) => !cmd.label).length > 0">
                 <div>{{ item.explain }}</div>
                 <template :key="cmd" v-for="cmd in item.cmds">
-                  <a-dropdown
-                    v-if="!cmd.label"
-                    :class="{ executable: !cmd.label }"
-                  >
+                  <a-dropdown v-if="!cmd.label" :class="{ executable: !cmd.label }">
                     <template #overlay>
-                      <a-menu @click="({key}) => handleMenuClick(key, item, cmd)">
+                      <a-menu @click="({ key }) => handleMenuClick(key, item, cmd)">
                         <a-menu-item key="open">
                           <CaretRightOutlined />
                           运行
@@ -110,13 +98,8 @@
 import { useStore } from 'vuex';
 import { computed, ref, toRaw, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import path from 'path';
-import {
-  PushpinOutlined,
-  PushpinFilled,
-  CaretRightOutlined,
-  DownOutlined,
-} from '@ant-design/icons-vue';
+// import path from 'path';
+import { PushpinOutlined, PushpinFilled, CaretRightOutlined, DownOutlined } from '@ant-design/icons-vue';
 import { message } from 'ant-design-vue';
 
 import emptyJson from '@/assets/lottie/empty.json';
@@ -127,16 +110,14 @@ const remote = window.require('@electron/remote');
 const fs = window.require('fs');
 
 const appPath = remote.app.getPath('userData');
-const baseDir = path.join(appPath, './rubick-plugins');
+// const baseDir = path.join(appPath, './rubick-plugins');
 
 const store = useStore();
 const route = useRoute();
 const router = useRouter();
 
 const localPlugins = computed(() =>
-  store.state.localPlugins.filter(
-    (plugin) => plugin.name !== 'rubick-system-feature'
-  )
+  store.state.localPlugins.filter((plugin) => plugin.name !== 'rubick-system-feature')
 );
 const updateLocalPlugin = () => store.dispatch('updateLocalPlugin');
 const startUnDownload = (name) => store.dispatch('startUnDownload', name);
@@ -149,9 +130,7 @@ watch(localPlugins, () => {
 });
 
 const pluginDetail = computed(() => {
-  return (
-    localPlugins.value.find((v) => v.name === currentSelect.value[0]) || {}
-  );
+  return localPlugins.value.find((v) => v.name === currentSelect.value[0]) || {};
 });
 
 const superPanelPlugins = ref(
@@ -162,15 +141,15 @@ const superPanelPlugins = ref(
 );
 
 const handleMenuClick = (key, item, cmd) => {
-  if(key === 'open') {
+  if (key === 'open') {
     openPlugin({
       code: item.code,
       cmd,
     });
   } else if (key === 'add') {
-    addCmdToSuperPanel({cmd, code: item.code});
+    addCmdToSuperPanel({ cmd, code: item.code });
   } else {
-    removePluginToSuperPanel({cmd, name: item.name})
+    removePluginToSuperPanel({ cmd, name: item.name });
   }
 };
 
@@ -190,12 +169,10 @@ const addCmdToSuperPanel = ({ cmd, code }) => {
 };
 
 const removePluginToSuperPanel = ({ cmd, name }) => {
-  superPanelPlugins.value.data = toRaw(superPanelPlugins.value).data.filter(
-    (item) => {
-      if (name) return item.name !== name;
-      return item.cmd !== cmd;
-    }
-  );
+  superPanelPlugins.value.data = toRaw(superPanelPlugins.value).data.filter((item) => {
+    if (name) return item.name !== name;
+    return item.cmd !== cmd;
+  });
   const { rev } = window.rubick.db.put(toRaw(superPanelPlugins.value));
   superPanelPlugins.value._rev = rev;
 };
