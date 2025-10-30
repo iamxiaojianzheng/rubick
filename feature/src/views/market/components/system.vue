@@ -17,11 +17,12 @@ import PluginList from './plugin-list.vue';
 import { useStore } from 'vuex';
 const store = useStore();
 const totalPlugins = computed(() => store.state.totalPlugins);
+const allPluginData = computed(() => store.state.allPluginData);
 
 const data = ref([]);
 
 onBeforeMount(async () => {
-  data.value = await request.getSystemDetail();
+  data.value = allPluginData.value?.systeDetail || await request.getSystemDetail();
 });
 
 const system = computed(() => {

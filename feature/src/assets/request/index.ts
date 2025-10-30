@@ -17,6 +17,16 @@ const instance = axios.create({
 });
 
 export default {
+  async getAllPluginData() {
+    let targetPath = 'plugins/all.json';
+    if (access_token) {
+      targetPath = `${encodeURIComponent(targetPath)}?access_token=${access_token}&ref=master`;
+    }
+    const res = await instance.get(targetPath);
+    console.log('all data', res);
+    return res.data;
+  },
+
   async getTotalPlugins() {
     let targetPath = 'plugins/total-plugins.json';
     if (access_token) {
