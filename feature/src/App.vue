@@ -1,11 +1,7 @@
 <template>
   <div class="main-container">
     <div class="left-menu">
-      <a-menu
-        @select="({ key }) => changeMenu(key)"
-        :selectedKeys="active"
-        mode="vertical"
-      >
+      <a-menu @select="({ key }) => changeMenu(key)" :selectedKeys="active" mode="vertical">
         <a-menu-item key="finder">
           <template #icon>
             <StarOutlined style="font-size: 16px" />
@@ -74,15 +70,7 @@
     </div>
     <div
       :class="
-        [
-          'finder',
-          'result',
-          'devPlugin',
-          'image',
-          'tools',
-          'worker',
-          'system',
-        ].includes(active[0])
+        ['finder', 'result', 'devPlugin', 'image', 'tools', 'worker', 'system'].includes(active[0])
           ? 'container'
           : 'more'
       "
@@ -128,17 +116,7 @@ window.rubick.onPluginEnter(({ code }: { code: string }) => {
 });
 
 window.rubick.setSubInput((e: any) => {
-  if (
-    [
-      'finder',
-      'result',
-      'devPlugin',
-      'image',
-      'tools',
-      'worker',
-      'system',
-    ].includes(active.value[0])
-  ) {
+  if (['finder', 'result', 'devPlugin', 'image', 'tools', 'worker', 'system'].includes(active.value[0])) {
     if (e.text) {
       store.commit('setSearchValue', e.text);
       router.push('result');
