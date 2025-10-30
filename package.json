@@ -1,7 +1,7 @@
 {
   "name": "rubick",
   "version": "4.3.6",
-  "author": "muwoo <2424880409@qq.com>",
+  "author": "JIAHE",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
