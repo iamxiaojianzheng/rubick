@@ -15,6 +15,7 @@ const isDownload = (item: Market.Plugin, targets: any[]) => {
 export default createStore({
   state: {
     totalPlugins: [],
+    allPluginData: {},
     localPlugins: [],
     searchValue: '',
     active: ['finder'],
@@ -31,7 +32,8 @@ export default createStore({
   },
   actions: {
     async init({ commit }) {
-      const totalPlugins = await request.getTotalPlugins();
+      const allPluginData = await request.getAllPluginData();
+      const totalPlugins = allPluginData?.totalPlugins || (await request.getTotalPlugins());
       const localPlugins = window.market.getLocalPlugins();
 
       totalPlugins.forEach((origin: Market.Plugin) => {
@@ -45,6 +47,7 @@ export default createStore({
 
       commit('commonUpdate', {
         localPlugins,
+        allPluginData,
         totalPlugins,
       });
     },
@@ -104,7 +107,8 @@ export default createStore({
 
     async updateLocalPlugin({ commit }) {
       const localPlugins = window.market.getLocalPlugins();
-      const totalPlugins = await request.getTotalPlugins();
+      const allPluginData = await request.getAllPluginData();
+      const totalPlugins = allPluginData?.totalPlugins || (await request.getTotalPlugins());
 
       totalPlugins.forEach((origin: Market.Plugin) => {
         origin.isdownload = isDownload(origin, localPlugins);
@@ -113,6 +117,7 @@ export default createStore({
 
       commit('commonUpdate', {
         localPlugins,
+        allPluginData,
         totalPlugins,
       });
     },

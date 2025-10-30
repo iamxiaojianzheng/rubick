@@ -32,11 +32,12 @@ import PluginList from './plugin-list.vue';
 import { useStore } from 'vuex';
 const store = useStore();
 const totalPlugins = computed(() => store.state.totalPlugins);
+const allPluginData = computed(() => store.state.allPluginData);
 
 const data = ref([]);
 
 onBeforeMount(async () => {
-  data.value = await request.getFinderDetail();
+  data.value = allPluginData.value?.finderDetail || await request.getFinderDetail();
 });
 
 const must = computed(() => {
