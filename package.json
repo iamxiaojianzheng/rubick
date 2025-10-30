@@ -1,8 +1,9 @@
 {
   "name": "rubick",
   "version": "4.3.6",
-  "author": "JIAHE",
+  "author": "JIAHE <xjz.jiahe@gmail.com>",
   "private": true,
+  "homepage": "https://github.com/iamxiaojianzheng/rubick",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
