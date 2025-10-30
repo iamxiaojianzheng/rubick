@@ -1,6 +1,6 @@
 <template>
   <div class="settings">
-    <div class="view-title"> {{ $t('feature.settings.title') }}</div>
+    <div class="view-title">{{ $t('feature.settings.title') }}</div>
     <div class="view-container">
       <a-menu v-model:selectedKeys="currentSelect" mode="horizontal">
         <a-menu-item key="userInfo">
@@ -44,29 +44,18 @@
                   <span>{{ tipText }}</span>
                   <template v-if="isWindows">
                     <br />
+                    <span style="cursor: pointer; text-decoration: underline" @click="resetDefault('Alt')">
+                      Alt+Space
+                    </span>
                     <span
-                      style="cursor: pointer; text-decoration: underline"
-                      @click="resetDefault('Alt')"
-                    >
-                    Alt+Space
-                  </span>
-                    <span
-                      style="
-                      cursor: pointer;
-                      margin-left: 8px;
-                      text-decoration: underline;
-                    "
+                      style="cursor: pointer; margin-left: 8px; text-decoration: underline"
                       @click="resetDefault('Ctrl')"
                     >
-                    Ctrl+Space
-                  </span>
+                      Ctrl+Space
+                    </span>
                   </template>
                 </template>
-                <div
-                  class="value"
-                  tabIndex="-1"
-                  @keyup="(e) => changeShortCut(e, 'showAndHidden')"
-                >
+                <div class="value" tabIndex="-1" @keyup="(e) => changeShortCut(e, 'showAndHidden')">
                   {{ shortCut.showAndHidden }}
                 </div>
               </a-tooltip>
@@ -79,11 +68,7 @@
                 <template #title>
                   <span>{{ tipText }}</span>
                 </template>
-                <div
-                  class="value"
-                  tabIndex="-1"
-                  @keyup="(e) => changeShortCut(e, 'capture')"
-                >
+                <div class="value" tabIndex="-1" @keyup="(e) => changeShortCut(e, 'capture')">
                   {{ shortCut.capture }}
                 </div>
               </a-tooltip>
@@ -159,10 +144,7 @@
         </div>
         <div v-if="currentSelect[0] === 'global'">
           <a-collapse>
-            <a-collapse-panel
-              key="1"
-              :header="$t('feature.settings.global.instructions')"
-            >
+            <a-collapse-panel key="1" :header="$t('feature.settings.global.instructions')">
               <div>
                 {{ $t('feature.settings.global.tips') }}
               </div>
@@ -191,15 +173,9 @@
                   <template #title>
                     <span>{{ tipText }}</span>
                   </template>
-                  <div
-                    class="value"
-                    tabIndex="2"
-                    @keyup="(e) => changeGlobalKey(e, index)"
-                  >
+                  <div class="value" tabIndex="2" @keyup="(e) => changeGlobalKey(e, index)">
                     {{ item.key }}
-                    <MinusCircleOutlined
-                      @click.stop="deleteGlobalKey(e, index)"
-                    />
+                    <MinusCircleOutlined @click.stop="deleteGlobalKey(e, index)" />
                   </div>
                 </a-tooltip>
               </template>
@@ -281,9 +257,11 @@ const DOUBLE_CLICK_THRESHOLD = 300; // 双击时间阈值（毫秒）
 const isWindows = window?.rubick?.isWindows();
 const tipText = computed(() => {
   const optionKeyName = isWindows ? 'Alt' : 'Option、Command';
-  return t('feature.settings.global.addShortcutKeyTips', {
-    optionKeyName: optionKeyName,
-  }) + `此外你也可以双击修饰键如（Ctrl+Ctrl）`;
+  return (
+    t('feature.settings.global.addShortcutKeyTips', {
+      optionKeyName: optionKeyName,
+    }) + `此外你也可以双击修饰键如（Ctrl+Ctrl）`
+  );
 });
 
 const currentSelect = ref(['userInfo']);
@@ -330,19 +308,23 @@ const changeShortCut = (e, key) => {
 
   // 处理双击功能键的情况
   if (isDoubleClick) {
-    if (e.keyCode === 17) { // Ctrl
+    if (e.keyCode === 17) {
+      // Ctrl
       state.shortCut[key] = 'Ctrl+Ctrl';
       return;
     }
-    if (e.keyCode === 18) { // Alt
+    if (e.keyCode === 18) {
+      // Alt
       state.shortCut[key] = 'Option+Option';
       return;
     }
-    if (e.keyCode === 16) { // Shift
+    if (e.keyCode === 16) {
+      // Shift
       state.shortCut[key] = 'Shift+Shift';
       return;
     }
-    if (e.keyCode === 93) { // Command
+    if (e.keyCode === 93) {
+      // Command
       state.shortCut[key] = 'Command+Command';
       return;
     }
@@ -350,7 +332,7 @@ const changeShortCut = (e, key) => {
 
   // 处理功能键+普通键的组合
   let hasModifierKey = false;
-  
+
   if (e.ctrlKey && e.keyCode !== 17) {
     compose += '+Ctrl';
     hasModifierKey = true;
@@ -400,13 +382,7 @@ const changeGlobalKey = (e, index) => {
   }
   compose += '+' + keycodes[e.keyCode].toUpperCase();
   compose = compose.substring(1);
-  if (
-    incluFuncKeys &&
-    e.keyCode !== 16 &&
-    e.keyCode !== 17 &&
-    e.keyCode !== 18 &&
-    e.keyCode !== 93
-  ) {
+  if (incluFuncKeys && e.keyCode !== 16 && e.keyCode !== 17 && e.keyCode !== 18 && e.keyCode !== 93) {
     state.global[index].key = compose;
   } else {
     // 不做处理
@@ -558,7 +534,8 @@ const changeLanguage = (value) => {
           background: var(--color-input-hover) !important;
           color: var(--color-text-content);
         }
-        .ant-input-password-icon, .ant-select-arrow {
+        .ant-input-password-icon,
+        .ant-select-arrow {
           color: var(--color-action-color);
         }
       }

@@ -18,11 +18,7 @@
       :title="$t('feature.market.finder.recommended')"
       :list="recommend"
     />
-    <PluginList
-      v-if="newList && !!newList.length"
-      :title="$t('feature.market.finder.lastUpdated')"
-      :list="newList"
-    />
+    <PluginList v-if="newList && !!newList.length" :title="$t('feature.market.finder.lastUpdated')" :list="newList" />
   </div>
 </template>
 
@@ -103,7 +99,6 @@ const newList = computed(() => {
     margin: 17px 0;
   }
 }
-
 
 .carousel__item {
   cursor: pointer;

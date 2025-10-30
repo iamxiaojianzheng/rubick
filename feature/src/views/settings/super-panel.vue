@@ -1,27 +1,14 @@
 <template>
   <p>{{ $t('feature.settings.superPanel.tips') }}</p>
   <div class="super-list-item panel-item">
-    <a-list
-      :grid="{ gutter: 16, column: 2 }"
-      :data-source="localPlugins.filter((item) => !!item)"
-    >
+    <a-list :grid="{ gutter: 16, column: 2 }" :data-source="localPlugins.filter((item) => !!item)">
       <template #renderItem="{ item }">
         <a-list-item v-if="item">
           <template #actions>
-            <a-button
-              v-if="!hasAdded(item)"
-              @click="addPluginToSuperPanel(item)"
-              style="color: #7ec699"
-              type="text"
-            >
+            <a-button v-if="!hasAdded(item)" @click="addPluginToSuperPanel(item)" style="color: #7ec699" type="text">
               {{ $t('feature.settings.superPanel.add') }}
             </a-button>
-            <a-button
-              v-else
-              @click="removePluginToSuperPanel(item)"
-              style="color: #ff4ea4"
-              type="text"
-            >
+            <a-button v-else @click="removePluginToSuperPanel(item)" style="color: #ff4ea4" type="text">
               {{ $t('feature.settings.superPanel.remove') }}
             </a-button>
           </template>
@@ -48,9 +35,7 @@ import { computed, ref, toRaw } from 'vue';
 const store = useStore();
 const localPlugins = computed(() =>
   store.state.localPlugins.filter(
-    (plugin) =>
-      plugin.name !== 'rubick-system-feature' &&
-      plugin.name !== 'rubick-system-super-panel'
+    (plugin) => plugin.name !== 'rubick-system-feature' && plugin.name !== 'rubick-system-super-panel'
   )
 );
 
@@ -79,11 +64,9 @@ const addPluginToSuperPanel = (plugin) => {
 };
 
 const removePluginToSuperPanel = (plugin) => {
-  superPanelPlugins.value.data = toRaw(superPanelPlugins.value).data.filter(
-    (item) => {
-      return item.name !== plugin.name;
-    }
-  );
+  superPanelPlugins.value.data = toRaw(superPanelPlugins.value).data.filter((item) => {
+    return item.name !== plugin.name;
+  });
   window.rubick.db.put(toRaw(superPanelPlugins.value));
 };
 </script>

@@ -2,18 +2,11 @@
   <div class="panel-item">
     <h3 class="title">{{ title }}</h3>
     <div class="list-item">
-      <a-list
-        :grid="{ gutter: 16, column: 2 }"
-        :data-source="list.filter((item) => !!item)"
-      >
+      <a-list :grid="{ gutter: 16, column: 2 }" :data-source="list.filter((item) => !!item)">
         <template #renderItem="{ item, index }">
           <a-list-item v-if="item" @click="showDetail(index)">
             <template #actions>
-              <a-button
-                class="download-plugin-btn"
-                type="text"
-                :loading="item.isloading"
-              >
+              <a-button class="download-plugin-btn" type="text" :loading="item.isloading">
                 <CloudDownloadOutlined
                   v-if="!item.isloading && !item.isdownload"
                   @click.stop="downloadPlugin(item, index)"
@@ -72,9 +65,7 @@
                 :loading="detail.isloading"
               >
                 <template #icon>
-                  <CloudDownloadOutlined
-                    v-show="!detail.isloading && !detail.isdownload"
-                  />
+                  <CloudDownloadOutlined v-show="!detail.isloading && !detail.isdownload" />
                 </template>
                 {{ $t('feature.market.install') }}
               </a-button>
@@ -84,11 +75,7 @@
       </template>
       <a-spin :spinning="!content" tip="内容加载中...">
         <div v-if="content !== 'error'" v-html="content" class="home-page-container"></div>
-        <a-result
-          class="error-content"
-          v-else
-          sub-title="插件主页内容走丢啦！"
-        >
+        <a-result class="error-content" v-else sub-title="插件主页内容走丢啦！">
           <template #icon>
             <Vue3Lottie :animationData="notFountJson" :height="240" :width="240" />
           </template>
@@ -99,11 +86,7 @@
 </template>
 
 <script setup>
-import {
-  CloudDownloadOutlined,
-  ArrowLeftOutlined,
-  SelectOutlined
-} from '@ant-design/icons-vue';
+import { CloudDownloadOutlined, ArrowLeftOutlined, SelectOutlined } from '@ant-design/icons-vue';
 
 import { defineProps, ref, computed } from 'vue';
 import { useStore } from 'vuex';
@@ -160,10 +143,10 @@ const showDetail = async (index) => {
 const detail = computed(() => props.list[showIndex.value]);
 
 const openPlugin = (item) => {
-  store.commit('commonUpdate', {active: ['installed']})
+  store.commit('commonUpdate', { active: ['installed'] });
   router.push({
     path: '/installed',
-    query: {plugin: item.name}
+    query: { plugin: item.name },
   });
 };
 </script>

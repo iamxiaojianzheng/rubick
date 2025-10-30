@@ -1,23 +1,20 @@
 <template>
   <div class="account">
     <!-- todo 暂时先去掉登录，等小程序做好了再加回来吧 -->
-<!--    <a-result-->
-<!--      v-if="!userInfo"-->
-<!--      title="请先登录"-->
-<!--      sub-title="登录后可开启用户个性化设置"-->
-<!--    >-->
-<!--      <template #extra>-->
-<!--        <a-button @click="showModal" type="primary">-->
-<!--          使用微信小程序登录-->
-<!--        </a-button>-->
-<!--      </template>-->
-<!--    </a-result>-->
+    <!--    <a-result-->
+    <!--      v-if="!userInfo"-->
+    <!--      title="请先登录"-->
+    <!--      sub-title="登录后可开启用户个性化设置"-->
+    <!--    >-->
+    <!--      <template #extra>-->
+    <!--        <a-button @click="showModal" type="primary">-->
+    <!--          使用微信小程序登录-->
+    <!--        </a-button>-->
+    <!--      </template>-->
+    <!--    </a-result>-->
     <Index />
     <a-modal :footer="null" v-model:visible="visible">
-      <a-result
-        title="请使用微信扫码登录!"
-        sub-title="使用微信扫描上面的 rubick 小程序二维码进行授权登录"
-      >
+      <a-result title="请使用微信扫码登录!" sub-title="使用微信扫描上面的 rubick 小程序二维码进行授权登录">
         <template #icon>
           <img width="200" :src="imgCode" />
         </template>
