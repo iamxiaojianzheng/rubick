@@ -28,8 +28,7 @@ export default {
         functionKey: 'Function Key',
         detailInfo: 'Detail Info',
         addToPanel: 'Click the + sign to pin the keyword to the super panel',
-        removeFromPanel:
-          'Click the - sign to remove the keyword from the super panel',
+        removeFromPanel: 'Click the - sign to remove the keyword from the super panel',
       },
       settings: {
         title: 'Account And Setting',
