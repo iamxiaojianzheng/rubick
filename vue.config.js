@@ -21,17 +21,11 @@ module.exports = {
       nodeIntegration: true,
       mainProcessFile: 'src/main/index.ts',
       mainProcessWatch: ['src/main'],
-      externals: [
-        'pouchdb',
-        'extract-file-icon',
-        'npm',
-        'electron-screenshots',
-        '@electron/remote',
-      ],
+      externals: ['pouchdb', 'extract-file-icon', 'npm', 'electron-screenshots', '@electron/remote'],
       // Use this to change the entry point of your app's render process. default src/[main|index].[js|ts]
       builderOptions: {
         productName: 'rubick',
-        appId: 'com.muwoo.rubick',
+        appId: 'com.xiaojianzheng.rubick',
         compression: 'maximum',
         // afterPack: './release.js',
         // afterAllArtifactBuild: () => {
@@ -47,7 +41,7 @@ module.exports = {
         publish: [
           {
             provider: 'github',
-            owner: 'rubickCenter',
+            owner: 'iamxiaojianzheng',
             repo: 'rubick',
           },
         ],
