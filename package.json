@@ -22,7 +22,7 @@
     "@better-scroll/core": "^2.4.2",
     "@electron/remote": "^2.0.10",
     "ant-design-vue": "^3.2.14",
-    "axios": "^1.13.1",
+    "axios": "^0.24.0",
     "core-js": "^3.46.0",
     "cross-spawn": "^7.0.3",
     "electron-updater": "^6.6.2",

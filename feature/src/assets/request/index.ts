@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-let baseURL = 'https://gitee.com/monkeyWang/rubickdatabase/raw/master';
+let baseURL = 'https://rubick.jiahe.host/';
 let access_token = '';
 
 try {
@@ -12,8 +12,8 @@ try {
 }
 
 const instance = axios.create({
-  timeout: 4000,
-  baseURL: baseURL || 'https://gitee.com/monkeyWang/rubickdatabase/raw/master',
+  timeout: 10000,
+  baseURL: baseURL || 'https://rubick.jiahe.host/',
 });
 
 export default {
