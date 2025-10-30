@@ -1,19 +1,20 @@
 <template>
   <div :class="[process.platform, 'detach']">
     <div class="info">
-      <img :src="plugInfo.logo"/>
+      <img :src="pluginInfo.logo"/>
       <input
         autofocus
         @input="changeValue"
         v-if="showInput"
-        :value="plugInfo.subInput?.value"
-        :placeholder="plugInfo.subInput?.placeholder"
+        :value="pluginInfo.subInput?.value"
+        :placeholder="pluginInfo.subInput?.placeholder"
       />
-      <span v-else>{{ plugInfo.pluginName }}</span>
+      <span v-else>{{ pluginInfo.pluginName }}</span>
     </div>
     <div class="handle-container">
       <div class="handle">
         <div class="devtool" @click="openDevTool" title="开发者工具"></div>
+        <div :class="pinStatus ? 'pin' : 'unpin'" @click="pinWindow" :title="pinStatus ? '取消置顶' : '置顶'"></div>
       </div>
       <div class="window-handle" v-if="process.platform !== 'darwin'">
         <div class="minimize" @click="minimize"></div>
@@ -26,7 +27,7 @@
 
 <script setup>
 import throttle from 'lodash.throttle';
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 
 const { ipcRenderer } = window.require('electron');
 
@@ -34,15 +35,20 @@ const process = window.require('process');
 const showInput = ref(false);
 
 const storeInfo = localStorage.getItem('rubick-system-detach') || '{}';
-const plugInfo = ref({});
+const pluginInfo = ref({});
 
-window.initDetach = (pluginInfo) => {
-  plugInfo.value = pluginInfo;
-  showInput.value =
-    pluginInfo.subInput &&
-    (!!pluginInfo.subInput.value || !!pluginInfo.subInput.placeholder);
-  localStorage.setItem('rubick-system-detach', JSON.stringify(pluginInfo));
+window.initDetach = (info) => {
+  const { subInput } = info
+  pluginInfo.value = info;
+  pluginInfo.value.pin = false
+  showInput.value = subInput && (!!subInput.value || !!subInput.placeholder);
+  localStorage.setItem('rubick-system-detach', JSON.stringify(info));
 };
+
+const pinStatus = computed(() => {
+  const { pin } = pluginInfo.value
+  return pin === true ? true : false;
+})
 
 try {
   window.initDetach(JSON.parse(storeInfo));
@@ -63,6 +69,17 @@ const openDevTool = () => {
   ipcRenderer.send('msg-trigger', { type: 'openPluginDevTools' });
 };
 
+const pinWindow = () => {
+  console.log('pin')
+  const { pin } = pluginInfo.value
+  if (pin) {
+    ipcRenderer.send('detach:service', { type: 'unpin' });
+  } else {
+    ipcRenderer.send('detach:service', { type: 'pin' });
+  }
+  pluginInfo.value.pin = !pin
+}
+
 const minimize = () => {
   ipcRenderer.send('detach:service', { type: 'minimize' });
 };
@@ -77,13 +94,13 @@ const close = () => {
 
 Object.assign(window, {
   setSubInputValue: ({ value }) => {
-    plugInfo.value.subInput.value = value;
+    pluginInfo.value.subInput.value = value;
   },
   setSubInput: (placeholder) => {
-    plugInfo.value.subInput.placeholder = placeholder;
+    pluginInfo.value.subInput.placeholder = placeholder;
   },
   removeSubInput: () => {
-    plugInfo.value.subInput = null;
+    pluginInfo.value.subInput = null;
   },
 });
 
@@ -215,6 +232,14 @@ html, body {
 
 .handle .devtool {
   background: center no-repeat url("./assets/tool.svg")
+}
+
+.handle .pin {
+  background: center no-repeat url("./assets/pin.svg")
+}
+
+.handle .unpin {
+  background: center no-repeat url("./assets/unpin.svg")
 }
 
 .handle-container {
