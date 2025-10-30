@@ -3,6 +3,7 @@
   "version": "4.3.5",
   "author": "muwoo <2424880409@qq.com>",
   "private": true,
+  "homepage": "https://github.com/iamxiaojianzheng/rubick",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
