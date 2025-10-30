@@ -13,6 +13,7 @@ export const getLatestVersion = async (isCheckBetaUpdate = false) => {
       })
       .then((r) => {
         const list = r.data;
+        if (list?.length < 1) return;
         if (isCheckBetaUpdate) {
           const betaList = list.filter((item) => item.name.includes('beta'));
           return betaList[0].name;
