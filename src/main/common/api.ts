@@ -1,23 +1,10 @@
-import {
-  BrowserWindow,
-  ipcMain,
-  dialog,
-  app,
-  Notification,
-  nativeImage,
-  clipboard,
-  screen,
-  shell,
-} from 'electron';
+import { BrowserWindow, ipcMain, dialog, app, Notification, nativeImage, clipboard, screen, shell } from 'electron';
 import fs from 'fs';
 import { screenCapture } from '@/core';
 import plist from 'plist';
 import ks from 'node-key-sender';
 
-import {
-  DECODE_KEY,
-  PLUGIN_INSTALL_DIR as baseDir,
-} from '@/common/constans/main';
+import { DECODE_KEY, PLUGIN_INSTALL_DIR as baseDir } from '@/common/constans/main';
 import getCopyFiles from '@/common/utils/getCopyFiles';
 import common from '@/common/utils/commonConst';
 
@@ -41,9 +28,7 @@ class API extends DBInstance {
       // event.sender.send(`msg-back-${arg.type}`, data);
     });
     // 按 ESC 退出插件
-    mainWindow.webContents.on('before-input-event', (event, input) =>
-      this.__EscapeKeyDown(event, input, mainWindow)
-    );
+    mainWindow.webContents.on('before-input-event', (event, input) => this.__EscapeKeyDown(event, input, mainWindow));
   }
 
   public getCurrentWindow = (window, e) => {
@@ -76,9 +61,7 @@ class API extends DBInstance {
   }
 
   public loadPlugin({ data: plugin }, window) {
-    window.webContents.executeJavaScript(
-      `window.loadPlugin(${JSON.stringify(plugin)})`
-    );
+    window.webContents.executeJavaScript(`window.loadPlugin(${JSON.stringify(plugin)})`);
     this.openPlugin({ data: plugin }, window);
   }
 
@@ -94,22 +77,14 @@ class API extends DBInstance {
     this.removePlugin(null, window);
     // 模板文件
     if (!plugin.main) {
-      plugin.tplPath = common.dev()
-        ? 'http://localhost:8083/#/'
-        : `file://${__static}/tpl/index.html`;
+      plugin.tplPath = common.dev() ? 'http://localhost:8083/#/' : `file://${__static}/tpl/index.html`;
     }
     if (plugin.name === 'rubick-system-feature') {
       plugin.logo = plugin.logo || `file://${__static}/logo.png`;
-      plugin.indexPath = commonConst.dev()
-        ? 'http://localhost:8081/#/'
-        : `file://${__static}/feature/index.html`;
+      plugin.indexPath = commonConst.dev() ? 'http://localhost:8081/#/' : `file://${__static}/feature/index.html`;
     } else if (!plugin.indexPath) {
       const pluginPath = path.resolve(baseDir, 'node_modules', plugin.name);
-      plugin.indexPath = `file://${path.join(
-        pluginPath,
-        './',
-        plugin.main || ''
-      )}`;
+      plugin.indexPath = `file://${path.join(pluginPath, './', plugin.main || '')}`;
     }
     runnerInstance.init(plugin, window);
     this.currentPlugin = plugin;
@@ -121,9 +96,7 @@ class API extends DBInstance {
     window.show();
     const view = runnerInstance.getView();
     if (!view.inited) {
-      view.webContents.on('before-input-event', (event, input) =>
-        this.__EscapeKeyDown(event, input, window)
-      );
+      view.webContents.on('before-input-event', (event, input) => this.__EscapeKeyDown(event, input, window));
     }
   }
 
@@ -159,10 +132,7 @@ class API extends DBInstance {
     originWindow.setSize(originWindow.getSize()[0], targetHeight);
     const screenPoint = screen.getCursorScreenPoint();
     const display = screen.getDisplayNearestPoint(screenPoint);
-    const position =
-      originWindow.getPosition()[1] + targetHeight > display.bounds.height
-        ? height - 60
-        : 0;
+    const position = originWindow.getPosition()[1] + targetHeight > display.bounds.height ? height - 60 : 0;
     originWindow.webContents.executeJavaScript(
       `window.setPosition && typeof window.setPosition === "function" && window.setPosition(${position})`
     );
@@ -231,10 +201,7 @@ class API extends DBInstance {
 
   public copyFile({ data }) {
     if (data.file && fs.existsSync(data.file)) {
-      clipboard.writeBuffer(
-        'NSFilenamesPboardType',
-        Buffer.from(plist.build([data.file]))
-      );
+      clipboard.writeBuffer('NSFilenamesPboardType', Buffer.from(plist.build([data.file])));
       return true;
     }
     return false;
@@ -306,21 +273,19 @@ class API extends DBInstance {
     if (!this.currentPlugin) return;
     const view = window.getBrowserView();
     window.setBrowserView(null);
-    window.webContents
-      .executeJavaScript(`window.getMainInputInfo()`)
-      .then((res) => {
-        detachInstance.init(
-          {
-            ...this.currentPlugin,
-            subInput: res,
-          },
-          window.getBounds(),
-          view
-        );
-        window.webContents.executeJavaScript(`window.initRubick()`);
-        window.setSize(window.getSize()[0], 60);
-        this.currentPlugin = null;
-      });
+    window.webContents.executeJavaScript(`window.getMainInputInfo()`).then((res) => {
+      detachInstance.init(
+        {
+          ...this.currentPlugin,
+          subInput: res,
+        },
+        window.getBounds(),
+        view
+      );
+      window.webContents.executeJavaScript(`window.initRubick()`);
+      window.setSize(window.getSize()[0], 60);
+      this.currentPlugin = null;
+    });
   }
 
   public detachInputChange({ data }) {

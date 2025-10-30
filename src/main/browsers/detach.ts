@@ -66,15 +66,11 @@ export default () => {
       const config = await localConfig.getConfig();
       const darkMode = config.perf.common.darkMode;
       darkMode &&
-        createWin.webContents.executeJavaScript(
-          `document.body.classList.add("dark");window.rubick.theme="dark"`
-        );
+        createWin.webContents.executeJavaScript(`document.body.classList.add("dark");window.rubick.theme="dark"`);
       view.setAutoResize({ width: true, height: true });
       createWin.setBrowserView(view);
       view.inDetach = true;
-      createWin.webContents.executeJavaScript(
-        `window.initDetach(${JSON.stringify(pluginInfo)})`
-      );
+      createWin.webContents.executeJavaScript(`window.initDetach(${JSON.stringify(pluginInfo)})`);
       createWin.show();
     });
 
@@ -98,14 +94,8 @@ export default () => {
       if (!view) return;
       const bounds = createWin.getBounds();
       const display = screen.getDisplayMatching(bounds);
-      const width =
-        (display.scaleFactor * bounds.width) % 1 == 0
-          ? bounds.width
-          : bounds.width - 2;
-      const height =
-        (display.scaleFactor * bounds.height) % 1 == 0
-          ? bounds.height
-          : bounds.height - 2;
+      const width = (display.scaleFactor * bounds.width) % 1 == 0 ? bounds.width : bounds.width - 2;
+      const height = (display.scaleFactor * bounds.height) % 1 == 0 ? bounds.height : bounds.height - 2;
       view.setBounds({
         x: 0,
         y: WINDOW_MIN_HEIGHT,
@@ -123,14 +113,10 @@ export default () => {
 
     if (commonConst.macOS()) {
       createWin.on('enter-full-screen', () => {
-        createWin.webContents.executeJavaScript(
-          'window.enterFullScreenTrigger()'
-        );
+        createWin.webContents.executeJavaScript('window.enterFullScreenTrigger()');
       });
       createWin.on('leave-full-screen', () => {
-        createWin.webContents.executeJavaScript(
-          'window.leaveFullScreenTrigger()'
-        );
+        createWin.webContents.executeJavaScript('window.leaveFullScreenTrigger()');
       });
     }
 
@@ -169,6 +155,12 @@ export default () => {
     },
     close: () => {
       win.close();
+    },
+    pin: () => {
+      win.setAlwaysOnTop(true);
+    },
+    unpin: () => {
+      win.setAlwaysOnTop(false);
     },
     endFullScreen: () => {
       win.isFullScreen() && win.setFullScreen(false);
