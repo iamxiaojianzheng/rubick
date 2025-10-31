@@ -2,9 +2,9 @@
   <div class="system">
     <PluginList
       v-if="dev && !!dev.length"
-      @downloadSuccess="downloadSuccess"
       :title="$t('feature.market.developTool')"
       :list="dev"
+      @download-success="downloadSuccess"
     />
   </div>
 </template>
@@ -22,7 +22,7 @@ const allPluginData = computed(() => store.state.allPluginData);
 const data = ref([]);
 
 onBeforeMount(async () => {
-  data.value = allPluginData.value?.devDetail || await request.getDevDetail();
+  data.value = allPluginData.value?.devDetail || (await request.getDevDetail());
 });
 
 const dev = computed(() => {

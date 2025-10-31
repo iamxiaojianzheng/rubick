@@ -9,13 +9,13 @@
               <a-button class="download-plugin-btn" type="text" :loading="item.isloading">
                 <CloudDownloadOutlined
                   v-if="!item.isloading && !item.isdownload"
-                  @click.stop="downloadPlugin(item, index)"
                   style="font-size: 20px; cursor: pointer"
+                  @click.stop="downloadPlugin(item, index)"
                 />
                 <SelectOutlined
                   v-if="!item.isloading && item.isdownload"
-                  @click.stop="openPlugin(item)"
                   style="font-size: 18px; cursor: pointer"
+                  @click.stop="openPlugin(item)"
                 />
               </a-button>
             </template>
@@ -35,8 +35,8 @@
       </a-list>
     </div>
     <a-drawer
-      width="77%"
       v-if="visible"
+      width="77%"
       placement="right"
       :closable="false"
       :visible="visible"
@@ -59,10 +59,10 @@
               </div>
               <a-button
                 v-if="!detail.isdownload"
-                @click.stop="downloadPlugin(detail)"
                 shape="round"
                 type="primary"
                 :loading="detail.isloading"
+                @click.stop="downloadPlugin(detail)"
               >
                 <template #icon>
                   <CloudDownloadOutlined v-show="!detail.isloading && !detail.isdownload" />
@@ -74,10 +74,10 @@
         </div>
       </template>
       <a-spin :spinning="!content" tip="内容加载中...">
-        <div v-if="content !== 'error'" v-html="content" class="home-page-container"></div>
-        <a-result class="error-content" v-else sub-title="插件主页内容走丢啦！">
+        <div v-if="content !== 'error'" class="home-page-container" v-html="content"></div>
+        <a-result v-else class="error-content" sub-title="插件主页内容走丢啦！">
           <template #icon>
-            <Vue3Lottie :animationData="notFountJson" :height="240" :width="240" />
+            <Vue3Lottie :animation-data="notFountJson" :height="240" :width="240" />
           </template>
         </a-result>
       </a-spin>
@@ -88,7 +88,7 @@
 <script setup>
 import { CloudDownloadOutlined, ArrowLeftOutlined, SelectOutlined } from '@ant-design/icons-vue';
 
-import { defineProps, ref, computed } from 'vue';
+import { ref, computed } from 'vue';
 import { useStore } from 'vuex';
 import { message } from 'ant-design-vue';
 import MarkdownIt from 'markdown-it';
@@ -109,7 +109,10 @@ const props = defineProps({
     type: [Array],
     default: () => [],
   },
-  title: String,
+  title: {
+    type: String,
+    default: '',
+  },
 });
 
 const downloadPlugin = async (plugin) => {

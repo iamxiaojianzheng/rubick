@@ -1,16 +1,16 @@
 <template>
   <div class="export-header">
-    <a-button @click="exportData" size="small" type="primary" style="margin-right: 10px">
+    <a-button size="small" type="primary" style="margin-right: 10px" @click="exportData">
       导出数据
       <template #icon>
         <ExportOutlined />
       </template>
     </a-button>
     <a-button
-      @click="importData"
       danger
       size="small"
       style="margin-right: 10px; background-color: var(--color-input-hover)"
+      @click="importData"
     >
       导入数据
       <template #icon>
@@ -67,13 +67,14 @@
     placement="right"
     class="exportDrawer"
   >
-    <p class="key-item" :key="key" @click="() => showDetail(key)" v-for="key in currentSelect.keys">
+    <p v-for="key in currentSelect.keys" :key="key" class="key-item" @click="() => showDetail(key)">
       {{ key }}
     </p>
   </a-drawer>
   <a-modal
+    v-model:visible="show"
     centered
-    :bodyStyle="{
+    :body-style="{
       maxHeight: '500px',
       overflow: 'auto',
       backgroundColor: 'var(--color-body-bg)',
@@ -81,14 +82,13 @@
     }"
     :footer="null"
     :closable="false"
-    v-model:visible="show"
   >
     <pre>{{ JSON.stringify(detail, null, 2) }}</pre>
   </a-modal>
   <a-modal v-model:visible="showSetting" title="webdav 账户配置" :footer="null" class="webdavModel">
     <a-alert v-if="formState.suport === 'jianguo'" style="margin-bottom: 20px" type="info" show-icon>
       <template #message>
-        <div @click="openHelp" class="openHelp">点击查看如何获取坚果云账号密码</div>
+        <div class="openHelp" @click="openHelp">点击查看如何获取坚果云账号密码</div>
       </template>
     </a-alert>
     <a-form
@@ -106,9 +106,9 @@
         </a-select>
       </a-form-item>
       <a-form-item
+        v-show="formState.suport === 'auto'"
         label="服务器地址"
         name="url"
-        v-show="formState.suport === 'auto'"
         :rules="[{ required: true, message: '请填写服务器地址!' }]"
       >
         <a-input v-model:value="formState.url" />

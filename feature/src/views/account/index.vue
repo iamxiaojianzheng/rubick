@@ -2,10 +2,10 @@
   <div class="account">
     <a-result v-if="!userInfo" title="请先登录" sub-title="用户暂未登录，无法体验更多设置">
       <template #extra>
-        <a-button @click="showModal" type="primary">使用微信小程序登录</a-button>
+        <a-button type="primary" @click="showModal">使用微信小程序登录</a-button>
       </template>
     </a-result>
-    <a-modal :footer="null" v-model:visible="visible">
+    <a-modal v-model:visible="visible" :footer="null">
       <a-result title="请使用微信扫码登录!" sub-title="使用微信扫描上面的 rubick 小程序二维码进行授权登录">
         <template #icon>
           <img width="200" :src="imgCode" />

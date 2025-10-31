@@ -2,7 +2,7 @@
   <div class="settings">
     <div class="view-title">{{ $t('feature.settings.title') }}</div>
     <div class="view-container">
-      <a-menu v-model:selectedKeys="currentSelect" mode="horizontal">
+      <a-menu v-model:selected-keys="currentSelect" mode="horizontal">
         <a-menu-item key="userInfo">
           {{ $t('feature.settings.account.accountInfo') }}
         </a-menu-item>
@@ -168,7 +168,7 @@
           <div class="feature-container">
             <div class="keywords item">
               <div>{{ $t('feature.settings.global.shortcutKey') }}</div>
-              <template :key="index" v-for="(item, index) in global">
+              <template v-for="(item, index) in global" :key="index">
                 <a-tooltip placement="top" trigger="click">
                   <template #title>
                     <span>{{ tipText }}</span>
@@ -186,14 +186,14 @@
                 <a-input
                   :value="item.value"
                   class="value"
-                  allowClear
+                  allow-clear
                   :disabled="!item.key"
                   @change="(e) => changeGlobalValue(index, e.target.value)"
                 />
               </template>
             </div>
           </div>
-          <div @click="addConfig" class="add-global">
+          <div class="add-global" @click="addConfig">
             <PlusCircleOutlined />
             {{ $t('feature.settings.global.addShortcutKey') }}
           </div>

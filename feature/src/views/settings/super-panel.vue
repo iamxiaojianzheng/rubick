@@ -5,10 +5,10 @@
       <template #renderItem="{ item }">
         <a-list-item v-if="item">
           <template #actions>
-            <a-button v-if="!hasAdded(item)" @click="addPluginToSuperPanel(item)" style="color: #7ec699" type="text">
+            <a-button v-if="!hasAdded(item)" style="color: #7ec699" type="text" @click="addPluginToSuperPanel(item)">
               {{ $t('feature.settings.superPanel.add') }}
             </a-button>
-            <a-button v-else @click="removePluginToSuperPanel(item)" style="color: #ff4ea4" type="text">
+            <a-button v-else style="color: #ff4ea4" type="text" @click="removePluginToSuperPanel(item)">
               {{ $t('feature.settings.superPanel.remove') }}
             </a-button>
           </template>

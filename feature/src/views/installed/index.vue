@@ -5,20 +5,20 @@
       <div v-if="!localPlugins.length">
         <a-result class="error-content" sub-title="哎呀，暂时还没有安装任何插件！">
           <template #icon>
-            <Vue3Lottie :animationData="emptyJson" :height="240" :width="240" />
+            <Vue3Lottie :animation-data="emptyJson" :height="240" :width="240" />
           </template>
           <template #extra>
-            <a-button @click="gotoFinder" key="console" type="primary">去插件市场看看吧</a-button>
+            <a-button key="console" type="primary" @click="gotoFinder">去插件市场看看吧</a-button>
           </template>
         </a-result>
       </div>
-      <div class="container" v-else>
+      <div v-else class="container">
         <div class="installed-list">
           <div
-            :class="currentSelect[0] === plugin.name ? 'item active' : 'item'"
-            :key="index"
-            @click="currentSelect = [plugin.name]"
             v-for="(plugin, index) in localPlugins"
+            :key="index"
+            :class="currentSelect[0] === plugin.name ? 'item active' : 'item'"
+            @click="currentSelect = [plugin.name]"
           >
             <img :src="plugin.logo" />
             <div class="info">
@@ -58,10 +58,10 @@
             </div>
           </div>
           <div class="feature-container">
-            <template :key="index" v-for="(item, index) in pluginDetail.features">
-              <div class="desc-item" v-if="item.cmds.filter((cmd) => !cmd.label).length > 0">
+            <template v-for="(item, index) in pluginDetail.features" :key="index">
+              <div v-if="item.cmds.filter((cmd) => !cmd.label).length > 0" class="desc-item">
                 <div>{{ item.explain }}</div>
-                <template :key="cmd" v-for="cmd in item.cmds">
+                <template v-for="cmd in item.cmds" :key="cmd">
                   <a-dropdown v-if="!cmd.label" :class="{ executable: !cmd.label }">
                     <template #overlay>
                       <a-menu @click="({ key }) => handleMenuClick(key, item, cmd)">

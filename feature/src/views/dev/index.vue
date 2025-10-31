@@ -12,7 +12,7 @@
           <a-button :loading="loading" type="primary" @click="onSubmit">
             {{ $t('feature.dev.install') }}
           </a-button>
-          <a-button @click="refresh" style="margin-left: 10px">
+          <a-button style="margin-left: 10px" @click="refresh">
             {{ $t('feature.dev.refreshPlugins') }}
           </a-button>
         </a-form-item>
