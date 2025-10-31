@@ -46,39 +46,39 @@ module.exports = {
           },
         ],
         // files: ["dist_electron/**/*"],
-        dmg: {
-          contents: [
-            {
-              x: 410,
-              y: 150,
-              type: 'link',
-              path: '/Applications',
-            },
-            {
-              x: 130,
-              y: 150,
-              type: 'file',
-            },
-          ],
-        },
-        mac: {
-          icon: 'public/icons/icon.icns',
-          target: [
-            {
-              target: 'dmg',
-              arch: ['x64', 'arm64'],
-            },
-          ],
-          artifactName: 'rubick-${version}-${arch}.dmg',
-          gatekeeperAssess: false,
-          entitlementsInherit: './release/entitlements.mac.plist',
-          entitlements: './release/entitlements.mac.plist',
-          hardenedRuntime: true,
-          category: 'public.app-category.developer-tools',
-          extendInfo: {
-            LSUIElement: 1,
-          },
-        },
+        // dmg: {
+        //   contents: [
+        //     {
+        //       x: 410,
+        //       y: 150,
+        //       type: 'link',
+        //       path: '/Applications',
+        //     },
+        //     {
+        //       x: 130,
+        //       y: 150,
+        //       type: 'file',
+        //     },
+        //   ],
+        // },
+        // mac: {
+        //   icon: 'public/icons/icon.icns',
+        //   target: [
+        //     {
+        //       target: 'dmg',
+        //       arch: ['x64', 'arm64'],
+        //     },
+        //   ],
+        //   artifactName: 'rubick-${version}-${arch}.dmg',
+        //   gatekeeperAssess: false,
+        //   entitlementsInherit: './release/entitlements.mac.plist',
+        //   entitlements: './release/entitlements.mac.plist',
+        //   hardenedRuntime: true,
+        //   category: 'public.app-category.developer-tools',
+        //   extendInfo: {
+        //     LSUIElement: 1,
+        //   },
+        // },
         win: {
           icon: 'public/icons/icon.ico',
           artifactName: 'rubick-Setup-${version}-${arch}.exe',
@@ -95,11 +95,11 @@ module.exports = {
           allowToChangeInstallationDirectory: true,
           include: 'public/installer.nsh',
         },
-        linux: {
-          icon: 'public/icons/',
-          publish: ['github'],
-          target: 'deb',
-        },
+        // linux: {
+        //   icon: 'public/icons/',
+        //   publish: ['github'],
+        //   target: 'deb',
+        // },
       },
     },
   },
