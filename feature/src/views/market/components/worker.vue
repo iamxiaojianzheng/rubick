@@ -2,9 +2,9 @@
   <div class="worker">
     <PluginList
       v-if="system && !!system.length"
-      @downloadSuccess="downloadSuccess"
       :title="$t('feature.market.efficiency')"
       :list="system"
+      @download-success="downloadSuccess"
     />
   </div>
 </template>
@@ -22,7 +22,7 @@ const allPluginData = computed(() => store.state.allPluginData);
 const data = ref([]);
 
 onBeforeMount(async () => {
-  data.value = allPluginData.value?.worker || await request.getWorkerDetail();
+  data.value = allPluginData.value?.worker || (await request.getWorkerDetail());
 });
 
 const system = computed(() => {

@@ -7,11 +7,7 @@ const db = new DBInstance();
 const localConfig = {
   async init(): Promise<any> {
     const localConfig: any = await db.dbGet({ data: { id: LOCAL_CONFIG_KEY } });
-    if (
-      !localConfig ||
-      !localConfig.data ||
-      localConfig.data.version !== defaultConfig.version
-    ) {
+    if (!localConfig || !localConfig.data || localConfig.data.version !== defaultConfig.version) {
       const data: any = {
         _id: LOCAL_CONFIG_KEY,
         data: defaultConfig,
@@ -25,14 +21,12 @@ const localConfig = {
     }
   },
   async getConfig(): Promise<any> {
-    const data: any =
-      (await db.dbGet({ data: { id: LOCAL_CONFIG_KEY } })) || {};
+    const data: any = (await db.dbGet({ data: { id: LOCAL_CONFIG_KEY } })) || {};
     return data.data;
   },
 
   async setConfig(data) {
-    const localConfig: any =
-      (await db.dbGet({ data: { id: LOCAL_CONFIG_KEY } })) || {};
+    const localConfig: any = (await db.dbGet({ data: { id: LOCAL_CONFIG_KEY } })) || {};
     await db.dbPut({
       data: {
         data: {

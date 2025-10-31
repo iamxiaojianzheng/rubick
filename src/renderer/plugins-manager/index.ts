@@ -8,10 +8,7 @@ import commonConst from '@/common/utils/commonConst';
 import { exec } from 'child_process';
 import searchManager from './search';
 import optionsManager from './options';
-import {
-  PLUGIN_INSTALL_DIR as baseDir,
-  PLUGIN_HISTORY,
-} from '@/common/constans/renderer';
+import { PLUGIN_INSTALL_DIR as baseDir, PLUGIN_HISTORY } from '@/common/constans/renderer';
 import { message } from 'ant-design-vue';
 
 const createPluginManager = (): any => {
@@ -158,27 +155,17 @@ const createPluginManager = (): any => {
     });
   };
 
-  const { searchValue, onSearch, setSearchValue, placeholder } =
-    searchManager();
-  const {
-    options,
-    searchFocus,
-    setOptionsRef,
-    clipboardFile,
-    clearClipboardFile,
-    readClipboardContent,
-  } = optionsManager({
-    searchValue,
-    appList,
-    openPlugin,
-    currentPlugin: toRefs(state).currentPlugin,
-  });
+  const { searchValue, onSearch, setSearchValue, placeholder } = searchManager();
+  const { options, searchFocus, setOptionsRef, clipboardFile, clearClipboardFile, readClipboardContent } =
+    optionsManager({
+      searchValue,
+      appList,
+      openPlugin,
+      currentPlugin: toRefs(state).currentPlugin,
+    });
   // plugin operation
   const getPluginInfo = async ({ pluginName, pluginPath }) => {
-    const pluginInfo = await pluginInstance.getAdapterInfo(
-      pluginName,
-      pluginPath
-    );
+    const pluginInfo = await pluginInstance.getAdapterInfo(pluginName, pluginPath);
     return {
       ...pluginInfo,
       icon: pluginInfo.logo,

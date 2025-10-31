@@ -1,20 +1,20 @@
 <template>
   <a-alert :message="$t('feature.settings.intranet.tips')" type="warning" style="margin-bottom: 20px" />
-  <a-form name="custom-validation" ref="formRef" :model="formState" :rules="rules" v-bind="layout">
+  <a-form ref="formRef" name="custom-validation" :model="formState" :rules="rules" v-bind="layout">
     <a-form-item has-feedback :label="$t('feature.settings.intranet.npmMirror')" name="register">
-      <a-input placeholder="https://registry.npmmirror.com" v-model:value="formState.register" />
+      <a-input v-model:value="formState.register" placeholder="https://registry.npmmirror.com" />
     </a-form-item>
     <a-form-item has-feedback :label="$t('feature.settings.intranet.dbUrl')" name="database">
       <a-input
-        placeholder="https://gitee.com/monkeyWang/rubickdatabase/raw/master"
         v-model:value="formState.database"
+        placeholder="https://gitee.com/monkeyWang/rubickdatabase/raw/master"
       />
     </a-form-item>
     <a-form-item has-feedback :label="$t('feature.settings.intranet.accessToken')" name="access_token">
-      <a-input :placeholder="$t('feature.settings.intranet.placeholder')" v-model:value="formState.access_token" />
+      <a-input v-model:value="formState.access_token" :placeholder="$t('feature.settings.intranet.placeholder')" />
     </a-form-item>
     <a-form-item :wrapper-col="{ span: 18, offset: 6 }">
-      <a-button @click="submit" type="primary">确定</a-button>
+      <a-button type="primary" @click="submit">确定</a-button>
       <a-button style="margin-left: 10px" @click="resetForm">恢复默认</a-button>
     </a-form-item>
   </a-form>

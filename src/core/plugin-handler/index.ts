@@ -31,10 +31,7 @@ class AdapterHandler {
     // 初始化插件存放
     if (!fs.existsSync(options.baseDir)) {
       fs.mkdirsSync(options.baseDir);
-      fs.writeFileSync(
-        `${options.baseDir}/package.json`,
-        '{"dependencies":{}}'
-      );
+      fs.writeFileSync(`${options.baseDir}/package.json`, '{"dependencies":{}}');
     }
     this.baseDir = options.baseDir;
 
@@ -54,9 +51,7 @@ class AdapterHandler {
 
   async upgrade(name: string): Promise<void> {
     // 创建一个npm-registry-client实例
-    const packageJSON = JSON.parse(
-      fs.readFileSync(`${this.baseDir}/package.json`, 'utf-8')
-    );
+    const packageJSON = JSON.parse(fs.readFileSync(`${this.baseDir}/package.json`, 'utf-8'));
     const registryUrl = `https://registry.npmmirror.com/${name}`;
 
     // 从npm源中获取依赖包的最新版本
@@ -82,24 +77,15 @@ class AdapterHandler {
    * @param {string} adapterPath 插件指定路径
    * @memberof PluginHandler
    */
-  async getAdapterInfo(
-    adapter: string,
-    adapterPath: string
-  ): Promise<AdapterInfo> {
+  async getAdapterInfo(adapter: string, adapterPath: string): Promise<AdapterInfo> {
     let adapterInfo: AdapterInfo;
-    const infoPath =
-      adapterPath ||
-      path.resolve(this.baseDir, 'node_modules', adapter, 'plugin.json');
+    const infoPath = adapterPath || path.resolve(this.baseDir, 'node_modules', adapter, 'plugin.json');
     // 从本地获取
     if (await fs.pathExists(infoPath)) {
-      adapterInfo = JSON.parse(
-        fs.readFileSync(infoPath, 'utf-8')
-      ) as AdapterInfo;
+      adapterInfo = JSON.parse(fs.readFileSync(infoPath, 'utf-8')) as AdapterInfo;
     } else {
       // 本地没有从远程获取
-      const resp = await got.get(
-        `https://cdn.jsdelivr.net/npm/${adapter}/plugin.json`
-      );
+      const resp = await got.get(`https://cdn.jsdelivr.net/npm/${adapter}/plugin.json`);
       // Todo 校验合法性
       adapterInfo = JSON.parse(resp.body) as AdapterInfo;
     }

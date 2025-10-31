@@ -28,10 +28,7 @@ export default function getApps(resolve, reject, filterByAppName = false) {
       // @ts-ignore
       const [installedApps] = plist.parse(resultBuffer.toString());
       if (!filterByAppName) return resolve(installedApps._items);
-      return resolve(
-        installedApps._items.filter((apps) => apps._name === filterByAppName)
-          .length !== 0
-      );
+      return resolve(installedApps._items.filter((apps) => apps._name === filterByAppName).length !== 0);
     } catch (err) {
       reject(err);
     }

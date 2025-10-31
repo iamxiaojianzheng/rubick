@@ -32,15 +32,10 @@ const getSearchFiles = (argv = process.argv, cwd = process.cwd()) => {
 };
 
 const putFileToRubick = (webContents, files) => {
-  webContents.executeJavaScript(
-    `window.searchFocus(${JSON.stringify(files)}, false)`
-  );
+  webContents.executeJavaScript(`window.searchFocus(${JSON.stringify(files)}, false)`);
 };
 
-const copyFileOutsideOfElectronAsar = function (
-  sourceInAsarArchive,
-  destOutsideAsarArchive
-) {
+const copyFileOutsideOfElectronAsar = function (sourceInAsarArchive, destOutsideAsarArchive) {
   if (fs.existsSync(sourceInAsarArchive)) {
     // file will be copied
     if (fs.statSync(sourceInAsarArchive).isFile()) {
@@ -73,10 +68,7 @@ const macBeforeOpen = () => {
   } else {
     // 如果不存在就复制过去
     try {
-      copyFileOutsideOfElectronAsar(
-        path.join(__static, 'rubick.workflow'),
-        dest
-      );
+      copyFileOutsideOfElectronAsar(path.join(__static, 'rubick.workflow'), dest);
     } catch (e) {
       console.log(e);
     }

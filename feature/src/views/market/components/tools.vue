@@ -2,9 +2,9 @@
   <div class="tools">
     <PluginList
       v-if="tools && !!tools.length"
-      @downloadSuccess="downloadSuccess"
       :title="$t('feature.market.searchTool')"
       :list="tools"
+      @download-success="downloadSuccess"
     />
   </div>
 </template>
@@ -22,7 +22,7 @@ const allPluginData = computed(() => store.state.allPluginData);
 const data = ref([]);
 
 onBeforeMount(async () => {
-  data.value = allPluginData.value?.imageDetail || await request.getSearchDetail();
+  data.value = allPluginData.value?.imageDetail || (await request.getSearchDetail());
 });
 
 const tools = computed(() => {

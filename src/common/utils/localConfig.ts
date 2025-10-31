@@ -14,20 +14,13 @@ global.OP_CONFIG = {
     try {
       if (!global.OP_CONFIG.config) {
         global.OP_CONFIG.config = JSON.parse(
-          fs.readFileSync(configPath, 'utf8') ||
-            JSON.stringify(defaultConfigForAnyPlatform)
+          fs.readFileSync(configPath, 'utf8') || JSON.stringify(defaultConfigForAnyPlatform)
         );
       }
       // 重置
-      if (
-        !global.OP_CONFIG.config.version ||
-        global.OP_CONFIG.config.version < defaultConfigForAnyPlatform.version
-      ) {
+      if (!global.OP_CONFIG.config.version || global.OP_CONFIG.config.version < defaultConfigForAnyPlatform.version) {
         global.OP_CONFIG.config = defaultConfigForAnyPlatform;
-        fs.writeFileSync(
-          configPath,
-          JSON.stringify(defaultConfigForAnyPlatform)
-        );
+        fs.writeFileSync(configPath, JSON.stringify(defaultConfigForAnyPlatform));
       }
       return global.OP_CONFIG.config;
     } catch (e) {

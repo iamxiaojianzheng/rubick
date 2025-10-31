@@ -2,13 +2,13 @@
   <div class="result">
     <PluginList
       v-if="result && !!result.length"
-      @downloadSuccess="downloadSuccess"
       :title="$t('feature.market.searchResult')"
       :list="result"
+      @download-success="downloadSuccess"
     />
-    <a-result class="error-content" v-else sub-title="哎呀，暂时还没有这个插件哟！">
+    <a-result v-else class="error-content" sub-title="哎呀，暂时还没有这个插件哟！">
       <template #icon>
-        <Vue3Lottie :animationData="emptyJson" :height="240" :width="240" />
+        <Vue3Lottie :animation-data="emptyJson" :height="240" :width="240" />
       </template>
     </a-result>
   </div>

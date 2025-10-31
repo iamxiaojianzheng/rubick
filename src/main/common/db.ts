@@ -15,9 +15,7 @@ export default class DBInstance {
       if (!dbInfo) {
         dbInfo = { data: [], _id: this.DB_INFO_KET };
       }
-      const item = dbInfo.data.find(
-        (it) => it.name === this.currentPlugin.name
-      );
+      const item = dbInfo.data.find((it) => it.name === this.currentPlugin.name);
       if (item) {
         !item.keys.includes(data.data._id) && item.keys.push(data.data._id);
       } else {

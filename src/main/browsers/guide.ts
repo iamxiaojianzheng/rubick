@@ -1,18 +1,13 @@
 import { BrowserWindow, ipcMain, nativeTheme, screen } from 'electron';
 import path from 'path';
-import {
-  GUIDE_WIDTH,
-  WINDOW_MIN_HEIGHT,
-  GUIDE_HEIGHT,
-} from '@/common/constans/common';
+import { GUIDE_WIDTH, WINDOW_MIN_HEIGHT, GUIDE_HEIGHT } from '@/common/constans/common';
 
 const getWindowPos = (width, height) => {
   const screenPoint = screen.getCursorScreenPoint();
   const displayPoint = screen.getDisplayNearestPoint(screenPoint);
   return [
     displayPoint.bounds.x + Math.round((displayPoint.bounds.width - width) / 2),
-    displayPoint.bounds.y +
-      Math.round((displayPoint.bounds.height - height) / 2),
+    displayPoint.bounds.y + Math.round((displayPoint.bounds.height - height) / 2),
   ];
 };
 

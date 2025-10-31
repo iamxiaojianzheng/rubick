@@ -1,7 +1,7 @@
 <template>
   <div class="main-container">
     <div class="left-menu">
-      <a-menu @select="({ key }) => changeMenu(key)" :selectedKeys="active" mode="vertical">
+      <a-menu :selected-keys="active" mode="vertical" @select="({ key }) => changeMenu(key)">
         <a-menu-item key="finder">
           <template #icon>
             <StarOutlined style="font-size: 16px" />

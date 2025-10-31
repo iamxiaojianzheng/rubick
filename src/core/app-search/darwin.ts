@@ -72,13 +72,7 @@ export default async (nativeImage: any) => {
   });
   for (const app of apps) {
     if (await getAppIcon(app.path, nativeImage, app._name)) {
-      app.icon =
-        'image://' +
-        path.join(
-          os.tmpdir(),
-          'ProcessIcon',
-          `${encodeURIComponent(app._name)}.png`
-        );
+      app.icon = 'image://' + path.join(os.tmpdir(), 'ProcessIcon', `${encodeURIComponent(app._name)}.png`);
     }
     // todo getApp size
   }

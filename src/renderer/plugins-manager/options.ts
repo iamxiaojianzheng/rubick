@@ -27,12 +27,7 @@ function searchKeyValues(lists, value, strict = false) {
   });
 }
 
-const optionsManager = ({
-  searchValue,
-  appList,
-  openPlugin,
-  currentPlugin,
-}) => {
+const optionsManager = ({ searchValue, appList, openPlugin, currentPlugin }) => {
   const optionsRef = ref([]);
 
   // 全局快捷键
@@ -155,12 +150,7 @@ const optionsManager = ({
     optionsRef.value = options;
   };
 
-  const {
-    searchFocus,
-    clipboardFile,
-    clearClipboardFile,
-    readClipboardContent,
-  } = useFocus({
+  const { searchFocus, clipboardFile, clearClipboardFile, readClipboardContent } = useFocus({
     currentPlugin,
     optionsRef,
     openPlugin,

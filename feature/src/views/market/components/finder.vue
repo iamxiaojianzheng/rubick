@@ -1,22 +1,22 @@
 <template>
   <div class="finder">
-    <Carousel :itemsToShow="2" :transition="500">
-      <Slide :key="index" v-for="(banner, index) in data?.banners || []">
-        <img class="carousel__item" @click="jumpTo(banner.link)" :src="banner.src" />
+    <Carousel :items-to-show="2" :transition="500">
+      <Slide v-for="(banner, index) in data?.banners || []" :key="index">
+        <img class="carousel__item" :src="banner.src" @click="jumpTo(banner.link)" />
       </Slide>
     </Carousel>
     <a-divider />
     <PluginList
       v-if="must && !!must.length"
-      @downloadSuccess="downloadSuccess"
       :title="$t('feature.market.finder.must')"
       :list="must"
+      @download-success="downloadSuccess"
     />
     <PluginList
       v-if="recommend && !!recommend.length"
-      @downloadSuccess="downloadSuccess"
       :title="$t('feature.market.finder.recommended')"
       :list="recommend"
+      @download-success="downloadSuccess"
     />
     <PluginList v-if="newList && !!newList.length" :title="$t('feature.market.finder.lastUpdated')" :list="newList" />
   </div>
@@ -37,7 +37,7 @@ const allPluginData = computed(() => store.state.allPluginData);
 const data = ref([]);
 
 onBeforeMount(async () => {
-  data.value = allPluginData.value?.finderDetail || await request.getFinderDetail();
+  data.value = allPluginData.value?.finderDetail || (await request.getFinderDetail());
 });
 
 const must = computed(() => {

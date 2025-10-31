@@ -3,16 +3,11 @@ import path from 'path';
 import os from 'os';
 import { shell } from 'electron';
 
-const filePath = path.resolve(
-  'C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs'
-);
+const filePath = path.resolve('C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs');
 
 const appData = path.join(os.homedir(), './AppData/Roaming');
 
-const startMenu = path.join(
-  appData,
-  'Microsoft\\Windows\\Start Menu\\Programs'
-);
+const startMenu = path.join(appData, 'Microsoft\\Windows\\Start Menu\\Programs');
 
 const fileLists: any = [];
 const isZhRegex = /[\u4e00-\u9fa5]/;
@@ -65,11 +60,7 @@ function fileDisplay(filePath) {
               } catch (e) {
                 //
               }
-              if (
-                !appDetail.target ||
-                appDetail.target.toLowerCase().indexOf('unin') >= 0
-              )
-                return;
+              if (!appDetail.target || appDetail.target.toLowerCase().indexOf('unin') >= 0) return;
 
               // C:/program/cmd.exe => cmd
               keyWords.push(path.basename(appDetail.target, '.exe'));
@@ -89,11 +80,7 @@ function fileDisplay(filePath) {
                 keyWords.push(firstLatter);
               }
 
-              const icon = path.join(
-                os.tmpdir(),
-                'ProcessIcon',
-                `${encodeURIComponent(appName)}.png`
-              );
+              const icon = path.join(os.tmpdir(), 'ProcessIcon', `${encodeURIComponent(appName)}.png`);
 
               const appInfo = {
                 value: 'plugin',

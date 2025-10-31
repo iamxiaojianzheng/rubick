@@ -11,10 +11,7 @@ function createTray(window: BrowserWindow): Promise<Tray> {
     if (commonConst.macOS()) {
       icon = './icons/iconTemplate@2x.png';
     } else if (commonConst.windows()) {
-      icon =
-        parseInt(os.release()) < 10
-          ? './icons/icon@2x.png'
-          : './icons/icon.ico';
+      icon = parseInt(os.release()) < 10 ? './icons/icon@2x.png' : './icons/icon.ico';
     } else {
       icon = './icons/icon@2x.png';
     }

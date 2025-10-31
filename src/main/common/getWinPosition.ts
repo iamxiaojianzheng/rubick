@@ -9,16 +9,8 @@ const winPosition = {
     const currentDisplay = screen.getDisplayNearestPoint({ x, y });
     if (winPosition.id !== currentDisplay.id) {
       winPosition.id = currentDisplay.id;
-      winPosition.x = parseInt(
-        String(
-          currentDisplay.workArea.x + currentDisplay.workArea.width / 2 - 400
-        )
-      );
-      winPosition.y = parseInt(
-        String(
-          currentDisplay.workArea.y + currentDisplay.workArea.height / 2 - 200
-        )
-      );
+      winPosition.x = parseInt(String(currentDisplay.workArea.x + currentDisplay.workArea.width / 2 - 400));
+      winPosition.y = parseInt(String(currentDisplay.workArea.y + currentDisplay.workArea.height / 2 - 200));
     }
     return {
       x: winPosition.x,

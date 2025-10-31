@@ -2,9 +2,9 @@
   <div class="system">
     <PluginList
       v-if="system && !!system.length"
-      @downloadSuccess="downloadSuccess"
       :title="$t('feature.market.systemTool')"
       :list="system"
+      @download-success="downloadSuccess"
     />
   </div>
 </template>
@@ -22,7 +22,7 @@ const allPluginData = computed(() => store.state.allPluginData);
 const data = ref([]);
 
 onBeforeMount(async () => {
-  data.value = allPluginData.value?.systeDetail || await request.getSystemDetail();
+  data.value = allPluginData.value?.systeDetail || (await request.getSystemDetail());
 });
 
 const system = computed(() => {

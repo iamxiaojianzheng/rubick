@@ -6,7 +6,7 @@
           {{ $t('feature.settings.account.themeColor') }}
         </div>
         <div class="settings-item-li">
-          <a-radio-group @change="changeTheme" v-model:value="theme" button-style="solid">
+          <a-radio-group v-model:value="theme" button-style="solid" @change="changeTheme">
             <a-radio-button value="SPRING">{{ $t('feature.settings.account.spring') }}</a-radio-button>
             <a-radio-button value="SUMMER">{{ $t('feature.settings.account.summer') }}</a-radio-button>
             <a-radio-button value="AUTUMN">{{ $t('feature.settings.account.autumn') }}</a-radio-button>
@@ -36,7 +36,7 @@
           </div>
           <div class="img-container">
             <img class="custom-img" :src="custom.logo" />
-            <a-button class="btn" @click="changeLogo" shape="round" size="small" type="primary">
+            <a-button class="btn" shape="round" size="small" type="primary" @click="changeLogo">
               {{ $t('feature.settings.account.replace') }}
             </a-button>
           </div>

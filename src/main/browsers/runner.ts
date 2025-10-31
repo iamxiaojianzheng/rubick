@@ -3,16 +3,10 @@ import path from 'path';
 import commonConst from '../../common/utils/commonConst';
 import { PLUGIN_INSTALL_DIR as baseDir } from '@/common/constans/main';
 import localConfig from '@/main/common/initLocalConfig';
-import {
-  WINDOW_HEIGHT,
-  WINDOW_PLUGIN_HEIGHT,
-  WINDOW_WIDTH,
-} from '@/common/constans/common';
+import { WINDOW_HEIGHT, WINDOW_PLUGIN_HEIGHT, WINDOW_WIDTH } from '@/common/constans/common';
 
 const getRelativePath = (indexPath) => {
-  return commonConst.windows()
-    ? indexPath.replace('file://', '')
-    : indexPath.replace('file:', '');
+  return commonConst.windows() ? indexPath.replace('file://', '') : indexPath.replace('file:', '');
 };
 
 const getPreloadPath = (plugin, pluginIndexPath) => {
@@ -74,10 +68,7 @@ export default () => {
     executeHooks('PluginReady', ext);
     const config = await localConfig.getConfig();
     const darkMode = config.perf.common.darkMode;
-    darkMode &&
-      view.webContents.executeJavaScript(
-        `document.body.classList.add("dark");window.rubick.theme="dark"`
-      );
+    darkMode && view.webContents.executeJavaScript(`document.body.classList.add("dark");window.rubick.theme="dark"`);
     window.webContents.executeJavaScript(`window.pluginLoaded()`);
   };
 
@@ -99,15 +90,7 @@ export default () => {
   };
 
   const createView = (plugin, window: BrowserWindow) => {
-    const {
-      tplPath,
-      indexPath,
-      development,
-      name,
-      main = 'index.html',
-      pluginSetting,
-      ext,
-    } = plugin;
+    const { tplPath, indexPath, development, name, main = 'index.html', pluginSetting, ext } = plugin;
     let pluginIndexPath = tplPath || indexPath;
     let preloadPath;
     let darkMode;
@@ -119,9 +102,7 @@ export default () => {
     }
     // 再尝试去找
     if (plugin.name === 'rubick-system-feature' && !pluginIndexPath) {
-      pluginIndexPath = commonConst.dev()
-        ? 'http://localhost:8081/#/'
-        : `file://${__static}/feature/index.html`;
+      pluginIndexPath = commonConst.dev() ? 'http://localhost:8081/#/' : `file://${__static}/feature/index.html`;
     }
     if (!pluginIndexPath) {
       const pluginPath = path.resolve(baseDir, 'node_modules', name);
@@ -153,24 +134,20 @@ export default () => {
     view.webContents.loadURL(pluginIndexPath);
     view.webContents.once('dom-ready', () => viewReadyFn(window, plugin));
     // 修复请求跨域问题
-    view.webContents.session.webRequest.onBeforeSendHeaders(
-      (details, callback) => {
-        callback({
-          requestHeaders: { referer: '*', ...details.requestHeaders },
-        });
-      }
-    );
+    view.webContents.session.webRequest.onBeforeSendHeaders((details, callback) => {
+      callback({
+        requestHeaders: { referer: '*', ...details.requestHeaders },
+      });
+    });
 
-    view.webContents.session.webRequest.onHeadersReceived(
-      (details, callback) => {
-        callback({
-          responseHeaders: {
-            'Access-Control-Allow-Origin': ['*'],
-            ...details.responseHeaders,
-          },
-        });
-      }
-    );
+    view.webContents.session.webRequest.onHeadersReceived((details, callback) => {
+      callback({
+        responseHeaders: {
+          'Access-Control-Allow-Origin': ['*'],
+          ...details.responseHeaders,
+        },
+      });
+    });
   };
 
   const removeView = (window: BrowserWindow) => {
