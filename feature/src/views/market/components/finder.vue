@@ -1,7 +1,7 @@
 <template>
   <div class="finder">
     <Carousel :itemsToShow="2" :transition="500">
-      <Slide :key="index" v-for="(banner, index) in data.banners || []">
+      <Slide :key="index" v-for="(banner, index) in data?.banners || []">
         <img class="carousel__item" @click="jumpTo(banner.link)" :src="banner.src" />
       </Slide>
     </Carousel>
@@ -41,7 +41,7 @@ onBeforeMount(async () => {
 });
 
 const must = computed(() => {
-  const defaultData = data.value.must || [];
+  const defaultData = data?.value?.must || [];
   if (!defaultData.length) return [];
   return defaultData.map((plugin) => {
     let searchInfo = null;
@@ -59,7 +59,7 @@ const jumpTo = (url) => {
 };
 
 const recommend = computed(() => {
-  const defaultData = data.value.recommend || [];
+  const defaultData = data?.value?.recommend || [];
   if (!defaultData.length) return [];
   return defaultData.map((plugin) => {
     let searchInfo = null;
@@ -73,7 +73,7 @@ const recommend = computed(() => {
 });
 
 const newList = computed(() => {
-  const defaultData = data.value.new || [];
+  const defaultData = data?.value?.new || [];
   if (!defaultData.length) return [];
   return defaultData.map((plugin) => {
     let searchInfo = null;

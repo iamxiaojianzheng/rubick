@@ -5,12 +5,14 @@ import { PLUGIN_INSTALL_DIR as baseDir } from '@/common/constans/main';
 import API from '@/main/common/api';
 
 const configPath = path.join(baseDir, './rubick-local-plugin.json');
-const checkDevPlugin = plugin => {
-    const { name: pluginName, isDev } = plugin;
-    if (isDev && !fs.existsSync(path.resolve(baseDir, 'node_modules', pluginName))) {
-      throw new Error(`错误: 插件【${pluginName}】所在路径为空`);
-    }
-}
+const checkDevPlugin = (plugin) => {
+  const { name: pluginName, isDev } = plugin;
+  const pluginPath = path.resolve(baseDir, 'node_modules', pluginName);
+  console.log('pluginPath:', pluginPath);
+  if (isDev && !fs.existsSync(pluginPath)) {
+    throw new Error(`错误: 插件【${pluginName}】所在路径为空`);
+  }
+};
 
 let registry;
 let pluginInstance;
@@ -38,12 +40,12 @@ let pluginInstance;
 global.LOCAL_PLUGINS = {
   PLUGINS: [],
   async downloadPlugin(plugin) {
-    checkDevPlugin(plugin)
     const { name: pluginName, isDev } = plugin;
 
     await pluginInstance.install([pluginName], { isDev });
 
     if (isDev) {
+      checkDevPlugin(plugin);
       // 获取 dev 插件信息
       const pluginPath = path.resolve(baseDir, 'node_modules', pluginName);
       const pluginInfo = JSON.parse(fs.readFileSync(path.join(pluginPath, './package.json'), 'utf8'));
@@ -56,7 +58,8 @@ global.LOCAL_PLUGINS = {
     const { name: pluginName } = plugin;
     // 获取 dev 插件信息
     const pluginPath = path.resolve(baseDir, 'node_modules', pluginName);
-    const packageContent = fs.readFileSync(path.join(pluginPath, './package.json'), 'utf8');
+    const packagePath = path.join(pluginPath, './package.json');
+    const packageContent = fs.readFileSync(packagePath, 'utf8');
     const pluginInfo = JSON.parse(packageContent);
 
     plugin = { ...plugin, ...pluginInfo };

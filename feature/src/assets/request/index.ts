@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { message } from 'ant-design-vue';
 
 let baseURL = 'https://rubick.jiahe.host/';
 let access_token = '';
@@ -12,7 +13,7 @@ try {
 }
 
 const instance = axios.create({
-  timeout: 10000,
+  timeout: 4000,
   baseURL: baseURL || 'https://rubick.jiahe.host/',
 });
 
@@ -22,9 +23,11 @@ export default {
     if (access_token) {
       targetPath = `${encodeURIComponent(targetPath)}?access_token=${access_token}&ref=master`;
     }
-    const res = await instance.get(targetPath);
-    console.log('all data', res);
-    return res.data;
+    const res = await instance.get(targetPath).catch((e) => {
+      message.error('插件数据获取失败');
+      return { data: {} };
+    });
+    return res?.data || {};
   },
 
   async getTotalPlugins() {
@@ -32,8 +35,10 @@ export default {
     if (access_token) {
       targetPath = `${encodeURIComponent(targetPath)}?access_token=${access_token}&ref=master`;
     }
-    const res = await instance.get(targetPath);
-    console.log('total plugsin', res);
+    const res = await instance.get(targetPath).catch((e) => {
+      message.error('插件数据获取失败');
+      return { data: [] };
+    });
     return res.data;
   },
 
@@ -42,7 +47,7 @@ export default {
     if (access_token) {
       targetPath = `${encodeURIComponent(targetPath)}?access_token=${access_token}&ref=master`;
     }
-    const res = await instance.get(targetPath);
+    const res = await instance.get(targetPath).catch((e) => message.error('插件数据获取失败'));
     return res.data;
   },
 
@@ -51,7 +56,7 @@ export default {
     if (access_token) {
       targetPath = `${encodeURIComponent(targetPath)}?access_token=${access_token}&ref=master`;
     }
-    const res = await instance.get(targetPath);
+    const res = await instance.get(targetPath).catch((e) => message.error('系统模块的插件数据获取失败'));
     return res.data;
   },
   async getWorkerDetail() {
@@ -59,7 +64,7 @@ export default {
     if (access_token) {
       targetPath = `${encodeURIComponent(targetPath)}?access_token=${access_token}&ref=master`;
     }
-    const res = await instance.get(targetPath);
+    const res = await instance.get(targetPath).catch((e) => message.error('效率模块的插件数据获取失败'));
     return res.data;
   },
 
@@ -73,16 +78,16 @@ export default {
     if (access_token) {
       targetPath = `${encodeURIComponent(targetPath)}?access_token=${access_token}&ref=master`;
     }
-    const res = await instance.get(targetPath);
-    return res.data;
+    const res = await instance.get(targetPath).catch((e) => message.error('搜索工具模块的插件数据获取失败'));
+    return res?.data || [];
   },
   async getDevDetail() {
     let targetPath = 'plugins/dev.json';
     if (access_token) {
       targetPath = `${encodeURIComponent(targetPath)}?access_token=${access_token}&ref=master`;
     }
-    const res = await instance.get(targetPath);
-    return res.data;
+    const res = await instance.get(targetPath).catch((e) => message.error('开发模块的插件数据获取失败'));
+    return res?.data || [];
   },
   async getImageDetail() {
     let targetPath = 'plugins/image.json';

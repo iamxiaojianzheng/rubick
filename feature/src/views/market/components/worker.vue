@@ -22,7 +22,7 @@ const allPluginData = computed(() => store.state.allPluginData);
 const data = ref([]);
 
 onBeforeMount(async () => {
-  data.value = allPluginData.value?.imageDetail || await request.getWorkerDetail();
+  data.value = allPluginData.value?.worker || await request.getWorkerDetail();
 });
 
 const system = computed(() => {
