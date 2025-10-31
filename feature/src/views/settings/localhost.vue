@@ -5,10 +5,7 @@
       <a-input v-model:value="formState.register" placeholder="https://registry.npmmirror.com" />
     </a-form-item>
     <a-form-item has-feedback :label="$t('feature.settings.intranet.dbUrl')" name="database">
-      <a-input
-        v-model:value="formState.database"
-        placeholder="https://gitee.com/monkeyWang/rubickdatabase/raw/master"
-      />
+      <a-input v-model:value="formState.database" placeholder="https://rubick.jiahe.host/"/>
     </a-form-item>
     <a-form-item has-feedback :label="$t('feature.settings.intranet.accessToken')" name="access_token">
       <a-input v-model:value="formState.access_token" :placeholder="$t('feature.settings.intranet.placeholder')" />
@@ -27,7 +24,7 @@ let _rev: any;
 
 let defaultConfig = {
   register: 'https://registry.npmmirror.com',
-  database: 'https://gitee.com/monkeyWang/rubickdatabase/raw/master',
+  database: 'https://rubick.jiahe.host/',
   access_token: '',
 };
 
@@ -53,7 +50,7 @@ const layout = {
 const resetForm = () => {
   formState.value = {
     register: 'https://registry.npmmirror.com',
-    database: 'https://gitee.com/monkeyWang/rubickdatabase/raw/master',
+    database: 'https://rubick.jiahe.host/',
     access_token: '',
   };
 };
