@@ -1,7 +1,7 @@
 <template>
   <div :class="[process.platform, 'detach']">
     <div class="info">
-      <img :src="pluginInfo.logo"/>
+      <img :src="pluginInfo.logo" />
       <input
         autofocus
         @input="changeValue"
@@ -38,17 +38,17 @@ const storeInfo = localStorage.getItem('rubick-system-detach') || '{}';
 const pluginInfo = ref({});
 
 window.initDetach = (info) => {
-  const { subInput } = info
+  const { subInput } = info;
   pluginInfo.value = info;
-  pluginInfo.value.pin = false
+  pluginInfo.value.pin = false;
   showInput.value = subInput && (!!subInput.value || !!subInput.placeholder);
   localStorage.setItem('rubick-system-detach', JSON.stringify(info));
 };
 
 const pinStatus = computed(() => {
-  const { pin } = pluginInfo.value
+  const { pin } = pluginInfo.value;
   return pin === true ? true : false;
-})
+});
 
 try {
   window.initDetach(JSON.parse(storeInfo));
@@ -70,15 +70,15 @@ const openDevTool = () => {
 };
 
 const pinWindow = () => {
-  console.log('pin')
-  const { pin } = pluginInfo.value
+  console.log('pin');
+  const { pin } = pluginInfo.value;
   if (pin) {
     ipcRenderer.send('detach:service', { type: 'unpin' });
   } else {
     ipcRenderer.send('detach:service', { type: 'pin' });
   }
-  pluginInfo.value.pin = !pin
-}
+  pluginInfo.value.pin = !pin;
+};
 
 const minimize = () => {
   ipcRenderer.send('detach:service', { type: 'minimize' });
@@ -115,7 +115,7 @@ window.leaveFullScreenTrigger = () => {
 };
 
 window.maximizeTrigger = () => {
-  const btnMaximize = document.querySelector('.maximize')
+  const btnMaximize = document.querySelector('.maximize');
   if (!btnMaximize || btnMaximize.classList.contains('unmaximize')) return;
   btnMaximize.classList.add('unmaximize');
 };
@@ -133,24 +133,25 @@ if (process.platform === 'darwin') {
       return;
     }
     if (e.metaKey && (e.code === 'KeyW' || e.code === 'KeyQ')) {
-      window.handle.close()
+      window.handle.close();
     }
-  }
+  };
 } else {
   window.onkeydown = (e) => {
     if (e.ctrlKey && e.code === 'KeyW') {
-      window.handle.close()
-      return
+      window.handle.close();
+      return;
     }
-  }
+  };
 }
 </script>
 
 <style>
-html, body {
+html,
+body {
   margin: 0;
   padding: 0;
-  font-family: system-ui, "PingFang SC", "Helvetica Neue", "Microsoft Yahei", sans-serif;
+  font-family: system-ui, 'PingFang SC', 'Helvetica Neue', 'Microsoft Yahei', sans-serif;
   user-select: none;
   overflow: hidden;
 }
@@ -231,15 +232,15 @@ html, body {
 }
 
 .handle .devtool {
-  background: center no-repeat url("./assets/tool.svg")
+  background: center no-repeat url('./assets/tool.svg');
 }
 
 .handle .pin {
-  background: center no-repeat url("./assets/pin.svg")
+  background: center no-repeat url('./assets/pin.svg');
 }
 
 .handle .unpin {
-  background: center no-repeat url("./assets/unpin.svg")
+  background: center no-repeat url('./assets/unpin.svg');
 }
 
 .handle-container {
@@ -264,24 +265,23 @@ html, body {
 }
 
 .window-handle .minimize {
-  background: center / 20px no-repeat url("./assets/minimize.svg");
+  background: center / 20px no-repeat url('./assets/minimize.svg');
 }
 
 .window-handle .maximize {
-  background: center / 20px no-repeat url("./assets/maximize.svg");
+  background: center / 20px no-repeat url('./assets/maximize.svg');
 }
 
 .window-handle .unmaximize {
-  background: center / 20px no-repeat url("./assets/unmaximize.svg");
+  background: center / 20px no-repeat url('./assets/unmaximize.svg');
 }
 
 .window-handle .close {
-  background: center / 20px no-repeat url("./assets/close.svg");
+  background: center / 20px no-repeat url('./assets/close.svg');
 }
 
 .window-handle .close:hover {
   background-color: #e53935 !important;
-  background-image: url("./assets/close-hover.svg") !important;
+  background-image: url('./assets/close-hover.svg') !important;
 }
-
 </style>
