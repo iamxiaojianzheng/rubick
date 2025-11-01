@@ -17,17 +17,14 @@
   </div>
 </template>
 <script setup lang="ts">
-import { useRoute } from 'vue-router';
 import { ref, onBeforeUnmount, watch } from 'vue';
 const { ipcRenderer } = window.require('electron');
-
-const route = useRoute();
 
 const itemHeight = 60;
 const itemMaxNum = 10;
 const defaultHeight = 60;
 
-const { code, type, payload } = route.params;
+const { code, type, payload } = history.state.params;
 const current = window.exports[code];
 const { args } = current;
 const { enter, search, select } = args;

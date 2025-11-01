@@ -14,10 +14,12 @@ window.rubick.onPluginEnter(({ code, type, payload }) => {
   }
   router.push({
     name: current.mode,
-    params: {
-      code,
-      type,
-      payload,
+    state: {
+      params: {
+        code,
+        type,
+        payload,
+      }
     },
   });
 });
