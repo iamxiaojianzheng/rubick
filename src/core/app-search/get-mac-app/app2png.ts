@@ -10,23 +10,15 @@ const getIconFile = (appFileInput) => {
     const plistPath = path.join(appFileInput, 'Contents', 'Info.plist');
     plist.readFile(plistPath, (err, data) => {
       if (err || !data.CFBundleIconFile) {
-        return resolve(
-          '/System/Library/CoreServices/CoreTypes.bundle/Contents/Resources/GenericApplicationIcon.icns'
-        );
+        return resolve('/System/Library/CoreServices/CoreTypes.bundle/Contents/Resources/GenericApplicationIcon.icns');
       }
-      const iconFile = path.join(
-        appFileInput,
-        'Contents',
-        'Resources',
-        data.CFBundleIconFile
-      );
+      const iconFile = path.join(appFileInput, 'Contents', 'Resources', data.CFBundleIconFile);
       const iconFiles = [iconFile, iconFile + '.icns', iconFile + '.tiff'];
       const existedIcon = iconFiles.find((iconFile) => {
         return fs.existsSync(iconFile);
       });
       resolve(
-        existedIcon ||
-          '/System/Library/CoreServices/CoreTypes.bundle/Contents/Resources/GenericApplicationIcon.icns'
+        existedIcon || '/System/Library/CoreServices/CoreTypes.bundle/Contents/Resources/GenericApplicationIcon.icns'
       );
     });
   });
@@ -34,12 +26,9 @@ const getIconFile = (appFileInput) => {
 
 const tiffToPng = (iconFile, pngFileOutput) => {
   return new Promise((resolve, reject) => {
-    exec(
-      `sips -s format png '${iconFile}' --out '${pngFileOutput}' --resampleHeightWidth 64 64`,
-      (error) => {
-        error ? reject(error) : resolve(null);
-      }
-    );
+    exec(`sips -s format png '${iconFile}' --out '${pngFileOutput}' --resampleHeightWidth 64 64`, (error) => {
+      error ? reject(error) : resolve(null);
+    });
   });
 };
 

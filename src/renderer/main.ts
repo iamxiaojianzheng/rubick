@@ -1,16 +1,5 @@
 import { createApp } from 'vue';
-import {
-  Button,
-  List,
-  Spin,
-  Input,
-  Avatar,
-  Tag,
-  ConfigProvider,
-  Row,
-  Col,
-  Divider,
-} from 'ant-design-vue';
+import { Button, List, Spin, Input, Avatar, Tag, ConfigProvider, Row, Col, Divider } from 'ant-design-vue';
 import App from './App.vue';
 import localConfig from './confOp';
 

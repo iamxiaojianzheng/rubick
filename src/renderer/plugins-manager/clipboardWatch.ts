@@ -33,9 +33,7 @@ export default ({ currentPlugin, optionsRef, openPlugin, setOptionsRef }) => {
         },
       ];
       // 判断复制的文件类型是否一直
-      const commonLen = fileList.filter(
-        (file) => path.extname(fileList[0].path) === path.extname(file.path)
-      ).length;
+      const commonLen = fileList.filter((file) => path.extname(fileList[0].path) === path.extname(file.path)).length;
       // 复制路径
       if (commonLen !== fileList.length) {
         setOptionsRef(options);
@@ -52,11 +50,7 @@ export default ({ currentPlugin, optionsRef, openPlugin, setOptionsRef }) => {
             const ext = path.extname(fileList[0].path);
             fe.cmds.forEach((cmd) => {
               const regImg = /\.(png|jpg|gif|jpeg|webp)$/;
-              if (
-                cmd.type === 'img' &&
-                regImg.test(ext) &&
-                fileList.length === 1
-              ) {
+              if (cmd.type === 'img' && regImg.test(ext) && fileList.length === 1) {
                 const option = {
                   name: cmd.label,
                   value: 'plugin',
@@ -71,9 +65,7 @@ export default ({ currentPlugin, optionsRef, openPlugin, setOptionsRef }) => {
                       ext: {
                         code: fe.code,
                         type: cmd.type || 'text',
-                        payload: nativeImage
-                          .createFromPath(fileList[0].path)
-                          .toDataURL(),
+                        payload: nativeImage.createFromPath(fileList[0].path).toDataURL(),
                       },
                       openPlugin,
                       option,
@@ -84,10 +76,7 @@ export default ({ currentPlugin, optionsRef, openPlugin, setOptionsRef }) => {
                 options.push(option);
               }
               // 如果是文件，且符合文件正则类型
-              if (
-                fileList.length > 1 ||
-                (cmd.type === 'file' && new RegExp(cmd.match).test(ext))
-              ) {
+              if (fileList.length > 1 || (cmd.type === 'file' && new RegExp(cmd.match).test(ext))) {
                 const option = {
                   name: cmd,
                   value: 'plugin',
@@ -136,6 +125,7 @@ export default ({ currentPlugin, optionsRef, openPlugin, setOptionsRef }) => {
     clipboardFile.value = [];
     optionsRef.value = [];
   };
+
   // 触发 ctrl + v 主动粘贴时
   const readClipboardContent = () => {
     // read image

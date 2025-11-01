@@ -1,10 +1,5 @@
 'use strict';
-import electron, {
-  app,
-  globalShortcut,
-  protocol,
-  BrowserWindow,
-} from 'electron';
+import electron, { app, globalShortcut, protocol, BrowserWindow } from 'electron';
 import { main, guide } from './browsers';
 import commonConst from '../common/utils/commonConst';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -13,11 +8,7 @@ import API from './common/api';
 import createTray from './common/tray';
 import registerHotKey from './common/registerHotKey';
 import localConfig from './common/initLocalConfig';
-import {
-  getSearchFiles,
-  putFileToRubick,
-  macBeforeOpen,
-} from './common/getSearchFiles';
+import { getSearchFiles, putFileToRubick, macBeforeOpen } from './common/getSearchFiles';
 
 import '../common/utils/localPlugin';
 
@@ -29,9 +20,7 @@ class App {
   private systemPlugins: any;
 
   constructor() {
-    protocol.registerSchemesAsPrivileged([
-      { scheme: 'app', privileges: { secure: true, standard: true } },
-    ]);
+    protocol.registerSchemesAsPrivileged([{ scheme: 'app', privileges: { secure: true, standard: true } }]);
     this.windowCreator = main();
     const gotTheLock = app.requestSingleInstanceLock();
     if (!gotTheLock) {

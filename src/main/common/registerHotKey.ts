@@ -1,12 +1,4 @@
-import {
-  globalShortcut,
-  nativeTheme,
-  BrowserWindow,
-  BrowserView,
-  ipcMain,
-  app,
-  Notification,
-} from 'electron';
+import { globalShortcut, nativeTheme, BrowserWindow, BrowserView, ipcMain, app, Notification } from 'electron';
 import screenCapture from '@/core/screen-capture';
 import localConfig from '@/main/common/initLocalConfig';
 import winPosition from './getWinPosition';
@@ -37,23 +29,15 @@ const registerHotKey = (mainWindow: BrowserWindow): void => {
     const isDark = config.perf.common.darkMode;
     if (isDark) {
       nativeTheme.themeSource = 'dark';
-      mainWindow.webContents.executeJavaScript(
-        `document.body.classList.add("dark");window.rubick.theme="dark"`
-      );
+      mainWindow.webContents.executeJavaScript(`document.body.classList.add("dark");window.rubick.theme="dark"`);
       mainWindow.getBrowserViews().forEach((view: BrowserView) => {
-        view.webContents.executeJavaScript(
-          `document.body.classList.add("dark");window.rubick.theme="dark"`
-        );
+        view.webContents.executeJavaScript(`document.body.classList.add("dark");window.rubick.theme="dark"`);
       });
     } else {
       nativeTheme.themeSource = 'light';
-      mainWindow.webContents.executeJavaScript(
-        `document.body.classList.remove("dark");window.rubick.theme="light"`
-      );
+      mainWindow.webContents.executeJavaScript(`document.body.classList.remove("dark");window.rubick.theme="light"`);
       mainWindow.getBrowserViews().forEach((view: BrowserView) => {
-        view.webContents.executeJavaScript(
-          `document.body.classList.remove("dark");window.rubick.theme="light"`
-        );
+        view.webContents.executeJavaScript(`document.body.classList.remove("dark");window.rubick.theme="light"`);
       });
     }
   };
@@ -84,7 +68,7 @@ const registerHotKey = (mainWindow: BrowserWindow): void => {
     // 处理显示/隐藏快捷键的注册
     const doublePressShortcuts = ['Ctrl+Ctrl', 'Option+Option', 'Shift+Shift', 'Command+Command'];
     const isDoublePressShortcut = doublePressShortcuts.includes(config.perf.shortCut.showAndHidden);
-    
+
     if (isDoublePressShortcut) {
       // 双击快捷键（如 Ctrl+Ctrl）详见 uIOhookRegister 函数实现
     } else {
@@ -112,8 +96,7 @@ const registerHotKey = (mainWindow: BrowserWindow): void => {
 
     // 添加局部快捷键监听
     mainWindow.webContents.on('before-input-event', (event, input) => {
-      if (input.key.toLowerCase() === 'w'
-        && (input.control || input.meta) && !input.alt && !input.shift) {
+      if (input.key.toLowerCase() === 'w' && (input.control || input.meta) && !input.alt && !input.shift) {
         event.preventDefault();
         if (mainWindow && !mainWindow.isDestroyed()) {
           mainWindow.hide();
@@ -144,12 +127,7 @@ function uIOhookRegister(callback: () => void) {
     const config = await localConfig.getConfig(); // 此处还有优化空间
 
     if (
-      ![
-        'Ctrl+Ctrl',
-        'Option+Option',
-        'Shift+Shift',
-        'Command+Command',
-      ].includes(config.perf.shortCut.showAndHidden)
+      !['Ctrl+Ctrl', 'Option+Option', 'Shift+Shift', 'Command+Command'].includes(config.perf.shortCut.showAndHidden)
     ) {
       return;
     }
