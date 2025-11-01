@@ -36,6 +36,7 @@ export default () => {
         nodeIntegration: true,
         preload: path.join(__static, 'preload.js'),
         spellcheck: false,
+        sandbox: false,
       },
     });
     if (process.env.WEBPACK_DEV_SERVER_URL) {
