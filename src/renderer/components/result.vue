@@ -13,7 +13,7 @@
           v-for="(item, index) in pluginHistory"
           :key="index"
         >
-          <a-avatar style="width: 28px; height: 28px" :src="item.icon" />
+          <a-avatar style="width: 28px; height: 28px" shape="square" :src="item.icon" />
           <div class="name ellpise">
             {{ item.cmd || item.pluginName || item._name || item.name }}
           </div>
