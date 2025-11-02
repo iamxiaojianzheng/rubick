@@ -50,10 +50,10 @@
       </div>
     </div>
     <div class="footer">
-      <div></div>
       <div class="step">
-        <span class="step-num">{{ step + 1 }} / 4</span>
-        <div class="button" @click="netStep">{{ step + 1 === 4 ? '完成' : '下一步' }}</div>
+        <div class="step-num">{{ step + 1 }} / 4</div>
+        <div v-show="step" class="button" @click="prevStep">上一步</div>
+        <div class="button" @click="nextStep">{{ step + 1 === 4 ? '完成' : '下一步' }}</div>
       </div>
     </div>
   </div>
@@ -65,7 +65,12 @@ import { ref } from 'vue';
 const step = ref(0);
 const { ipcRenderer } = window.require('electron');
 
-const netStep = () => {
+const prevStep = () => {
+  if (step.value > 0) {
+    step.value = step.value - 1;
+  }
+};
+const nextStep = () => {
   if (step.value >= 3) {
     return ipcRenderer.send('guide:service', { type: 'close' });
   }
@@ -145,28 +150,28 @@ const netStep = () => {
   width: 100%;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: end;
   padding: 20px;
   box-sizing: border-box;
   .step {
     display: flex;
     align-items: center;
-  }
-  .step-num {
-    margin-right: 20px;
-  }
-  .button {
-    width: 100px;
-    height: 40px;
-    line-height: 40px;
-    background: @primary-color;
-    color: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 4px;
-    cursor: pointer;
-    user-select: none;
+    div + div {
+      margin-left: 20px;
+    }
+    .button {
+      width: 100px;
+      height: 30px;
+      line-height: 30px;
+      background: @primary-color;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 4px;
+      cursor: pointer;
+      user-select: none;
+    }
   }
 }
 
