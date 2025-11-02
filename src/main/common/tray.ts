@@ -26,14 +26,14 @@ function createTray(window: BrowserWindow): Promise<Tray> {
 
     const createContextMenu = () =>
       Menu.buildFromTemplate([
-        {
-          label: '帮助文档',
-          click: () => {
-            process.nextTick(() => {
-              shell.openExternal('https://github.com/clouDr-f2e/rubick');
-            });
-          },
-        },
+        // {
+        //   label: '帮助文档',
+        //   click: () => {
+        //     process.nextTick(() => {
+        //       shell.openExternal('https://github.com/clouDr-f2e/rubick');
+        //     });
+        //   },
+        // },
         {
           label: '引导教学',
           click: () => {
@@ -44,7 +44,7 @@ function createTray(window: BrowserWindow): Promise<Tray> {
           label: '意见反馈',
           click: () => {
             process.nextTick(() => {
-              shell.openExternal('https://github.com/clouDr-f2e/rubick/issues');
+              shell.openExternal('https://github.com/iamxiaojianzheng/rubick/issues');
             });
           },
         },
@@ -81,7 +81,7 @@ function createTray(window: BrowserWindow): Promise<Tray> {
             dialog.showMessageBox({
               title: '拉比克',
               message: '极简、插件化的现代桌面软件',
-              detail: `Version: ${pkg.version}\nAuthor: muwoo`,
+              detail: `Version: ${pkg.version}\nAuthor: JIAHE\nGitHub: https://github.com/iamxiaojianzheng/rubick`,
             });
           },
         },
