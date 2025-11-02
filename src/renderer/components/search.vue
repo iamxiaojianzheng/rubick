@@ -1,9 +1,6 @@
 <template>
   <div class="rubick-select">
-    <div
-      :class="clipboardFile[0].name ? 'clipboard-tag' : 'clipboard-img'"
-      v-if="!!clipboardFile.length"
-    >
+    <div :class="clipboardFile[0].name ? 'clipboard-tag' : 'clipboard-img'" v-if="!!clipboardFile.length">
       <img style="margin-right: 8px" :src="getIcon()" />
       <div class="ellipse">{{ clipboardFile[0].name }}</div>
       <a-tag color="#aaa" v-if="clipboardFile.length > 1">
@@ -11,11 +8,7 @@
       </a-tag>
     </div>
     <div v-else :class="currentPlugin.cmd ? 'rubick-tag' : ''">
-      <img
-        @click="() => emit('openMenu')"
-        class="rubick-logo"
-        :src="currentPlugin.logo || config.perf.custom.logo"
-      />
+      <img @click="() => emit('openMenu')" class="rubick-logo" :src="currentPlugin.logo || config.perf.custom.logo" />
       <div class="select-tag" v-show="currentPlugin.cmd">
         {{ currentPlugin.cmd }}
       </div>
@@ -32,11 +25,7 @@
       @keydown.up="(e) => keydownEvent(e, 'up')"
       @keydown="(e) => checkNeedInit(e)"
       :value="searchValue"
-      :placeholder="
-        pluginLoading
-          ? '更新检测中...'
-          : placeholder || config.perf.custom.placeholder
-      "
+      :placeholder="pluginLoading ? '更新检测中...' : placeholder || config.perf.custom.placeholder"
       @keypress.enter="(e) => keydownEvent(e, 'enter')"
       @keypress.space="(e) => keydownEvent(e, 'space')"
       @focus="emit('focus')"
@@ -327,7 +316,7 @@ window.rubick.hooks.onHide = () => {
 
   .rubick-logo {
     width: 32px;
-    border-radius: 100%;
+    // border-radius: 100%;
   }
   .icon-tool {
     width: 40px;
@@ -336,7 +325,7 @@ window.rubick.hooks.onHide = () => {
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 100%;
+    // border-radius: 100%;
     img {
       width: 32px;
     }

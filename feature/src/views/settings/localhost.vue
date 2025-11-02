@@ -1,20 +1,22 @@
 <template>
-  <a-alert :message="$t('feature.settings.intranet.tips')" type="warning" style="margin-bottom: 20px" />
-  <a-form ref="formRef" name="custom-validation" :model="formState" :rules="rules" v-bind="layout">
-    <a-form-item has-feedback :label="$t('feature.settings.intranet.npmMirror')" name="register">
-      <a-input v-model:value="formState.register" placeholder="https://registry.npmmirror.com" />
-    </a-form-item>
-    <a-form-item has-feedback :label="$t('feature.settings.intranet.dbUrl')" name="database">
-      <a-input v-model:value="formState.database" placeholder="https://rubick.jiahe.host/"/>
-    </a-form-item>
-    <a-form-item has-feedback :label="$t('feature.settings.intranet.accessToken')" name="access_token">
-      <a-input v-model:value="formState.access_token" :placeholder="$t('feature.settings.intranet.placeholder')" />
-    </a-form-item>
-    <a-form-item :wrapper-col="{ span: 18, offset: 6 }">
-      <a-button type="primary" @click="submit">确定</a-button>
-      <a-button style="margin-left: 10px" @click="resetForm">恢复默认</a-button>
-    </a-form-item>
-  </a-form>
+  <div>
+    <a-alert :message="$t('feature.settings.intranet.tips')" type="warning" style="margin-bottom: 20px" />
+    <a-form ref="formRef" name="custom-validation" :model="formState" :rules="rules" v-bind="layout">
+      <a-form-item has-feedback :label="$t('feature.settings.intranet.npmMirror')" name="register">
+        <a-input v-model:value="formState.register" placeholder="https://registry.npmmirror.com" />
+      </a-form-item>
+      <a-form-item has-feedback :label="$t('feature.settings.intranet.dbUrl')" name="database">
+        <a-input v-model:value="formState.database" placeholder="https://rubick.jiahe.host/" />
+      </a-form-item>
+      <a-form-item has-feedback :label="$t('feature.settings.intranet.accessToken')" name="access_token">
+        <a-input v-model:value="formState.access_token" :placeholder="$t('feature.settings.intranet.placeholder')" />
+      </a-form-item>
+      <a-form-item :wrapper-col="{ span: 18, offset: 6 }">
+        <a-button type="primary" @click="submit">确定</a-button>
+        <a-button style="margin-left: 10px" @click="resetForm">恢复默认</a-button>
+      </a-form-item>
+    </a-form>
+  </div>
 </template>
 <script lang="ts" setup>
 import { ref, toRaw } from 'vue';

@@ -19,7 +19,7 @@ window.rubick.onPluginEnter(({ code, type, payload }) => {
         code,
         type,
         payload,
-      }
+      },
     },
   });
 });

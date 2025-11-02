@@ -1,129 +1,131 @@
 <template>
-  <div class="export-header">
-    <a-button size="small" type="primary" style="margin-right: 10px" @click="exportData">
-      导出数据
-      <template #icon>
-        <ExportOutlined />
-      </template>
-    </a-button>
-    <a-button
-      danger
-      size="small"
-      style="margin-right: 10px; background-color: var(--color-input-hover)"
-      @click="importData"
-    >
-      导入数据
-      <template #icon>
-        <ImportOutlined />
-      </template>
-    </a-button>
-    <a-button type="link" size="small" @click="showSetting = true">
-      <template #icon>
-        <SettingOutlined />
-      </template>
-    </a-button>
-  </div>
-  <a-list item-layout="horizontal" :data-source="dataPlugins">
-    <template #renderItem="{ item }">
-      <a-list-item>
-        <template #actions>
-          <a
-            v-if="!item.plugin?.isdownload && !item.plugin?.isloading"
-            key="list-loadmore-edit"
-            @click="() => downloadPlugin(item.plugin)"
-          >
-            <CloudDownloadOutlined style="font-size: 18px" />
-          </a>
-          <a v-if="item.plugin?.isloading" key="list-loadmore-edit">
-            <LoadingOutlined style="font-size: 18px" />
-          </a>
-          <a key="list-loadmore-edit" @click="() => showKeys(item)">
-            <DatabaseOutlined style="font-size: 18px" />
-          </a>
+  <div>
+    <div class="export-header">
+      <a-button size="small" type="primary" style="margin-right: 10px" @click="exportData">
+        导出数据
+        <template #icon>
+          <ExportOutlined />
         </template>
-        <a-list-item-meta>
-          <template #title>
-            <div style="color: var(--color-text-content)">
-              <span>{{ item.plugin?.pluginName }}</span>
-            </div>
-          </template>
-          <template #avatar>
-            <a-avatar shape="square" :src="item.plugin?.logo" />
-          </template>
-          <template #description>
-            <div style="color: var(--color-text-desc)">
-              <span>{{ item.keys.length }} 份文档</span>
-            </div>
-          </template>
-        </a-list-item-meta>
-      </a-list-item>
-    </template>
-  </a-list>
-  <a-drawer
-    v-model:visible="open"
-    width="400"
-    :closable="false"
-    :title="currentSelect.plugin.pluginName"
-    placement="right"
-    class="exportDrawer"
-  >
-    <p v-for="key in currentSelect.keys" :key="key" class="key-item" @click="() => showDetail(key)">
-      {{ key }}
-    </p>
-  </a-drawer>
-  <a-modal
-    v-model:visible="show"
-    centered
-    :body-style="{
-      maxHeight: '500px',
-      overflow: 'auto',
-      backgroundColor: 'var(--color-body-bg)',
-      color: 'var(--color-text-primary)',
-    }"
-    :footer="null"
-    :closable="false"
-  >
-    <pre>{{ JSON.stringify(detail, null, 2) }}</pre>
-  </a-modal>
-  <a-modal v-model:visible="showSetting" title="webdav 账户配置" :footer="null" class="webdavModel">
-    <a-alert v-if="formState.suport === 'jianguo'" style="margin-bottom: 20px" type="info" show-icon>
-      <template #message>
-        <div class="openHelp" @click="openHelp">点击查看如何获取坚果云账号密码</div>
-      </template>
-    </a-alert>
-    <a-form
-      :model="formState"
-      name="basic"
-      :label-col="{ span: 8 }"
-      :wrapper-col="{ span: 16 }"
-      autocomplete="off"
-      @finish="handleOk"
-    >
-      <a-form-item label="webdav 提供商" name="suport">
-        <a-select v-model:value="formState.suport">
-          <a-select-option value="jianguo">坚果云</a-select-option>
-          <a-select-option value="auto">自定义</a-select-option>
-        </a-select>
-      </a-form-item>
-      <a-form-item
-        v-show="formState.suport === 'auto'"
-        label="服务器地址"
-        name="url"
-        :rules="[{ required: true, message: '请填写服务器地址!' }]"
+      </a-button>
+      <a-button
+        danger
+        size="small"
+        style="margin-right: 10px; background-color: var(--color-input-hover)"
+        @click="importData"
       >
-        <a-input v-model:value="formState.url" />
-      </a-form-item>
-      <a-form-item label="账户" name="username" :rules="[{ required: true, message: '请填写 username!' }]">
-        <a-input v-model:value="formState.username" />
-      </a-form-item>
-      <a-form-item label="密码" name="password" :rules="[{ required: true, message: '请填写 password!' }]">
-        <a-input-password v-model:value="formState.password" />
-      </a-form-item>
-      <a-form-item :wrapper-col="{ offset: 8, span: 16 }">
-        <a-button type="primary" html-type="submit">保存设置</a-button>
-      </a-form-item>
-    </a-form>
-  </a-modal>
+        导入数据
+        <template #icon>
+          <ImportOutlined />
+        </template>
+      </a-button>
+      <a-button type="link" size="small" @click="showSetting = true">
+        <template #icon>
+          <SettingOutlined />
+        </template>
+      </a-button>
+    </div>
+    <a-list item-layout="horizontal" :data-source="dataPlugins">
+      <template #renderItem="{ item }">
+        <a-list-item>
+          <template #actions>
+            <a
+              v-if="!item.plugin?.isdownload && !item.plugin?.isloading"
+              key="list-loadmore-edit"
+              @click="() => downloadPlugin(item.plugin)"
+            >
+              <CloudDownloadOutlined style="font-size: 18px" />
+            </a>
+            <a v-if="item.plugin?.isloading" key="list-loadmore-edit">
+              <LoadingOutlined style="font-size: 18px" />
+            </a>
+            <a key="list-loadmore-edit" @click="() => showKeys(item)">
+              <DatabaseOutlined style="font-size: 18px" />
+            </a>
+          </template>
+          <a-list-item-meta>
+            <template #title>
+              <div style="color: var(--color-text-content)">
+                <span>{{ item.plugin?.pluginName }}</span>
+              </div>
+            </template>
+            <template #avatar>
+              <a-avatar shape="square" :src="item.plugin?.logo" />
+            </template>
+            <template #description>
+              <div style="color: var(--color-text-desc)">
+                <span>{{ item.keys.length }} 份文档</span>
+              </div>
+            </template>
+          </a-list-item-meta>
+        </a-list-item>
+      </template>
+    </a-list>
+    <a-drawer
+      v-model:visible="open"
+      width="400"
+      :closable="false"
+      :title="currentSelect.plugin.pluginName"
+      placement="right"
+      class="exportDrawer"
+    >
+      <p v-for="key in currentSelect.keys" :key="key" class="key-item" @click="() => showDetail(key)">
+        {{ key }}
+      </p>
+    </a-drawer>
+    <a-modal
+      v-model:visible="show"
+      centered
+      :body-style="{
+        maxHeight: '500px',
+        overflow: 'auto',
+        backgroundColor: 'var(--color-body-bg)',
+        color: 'var(--color-text-primary)',
+      }"
+      :footer="null"
+      :closable="false"
+    >
+      <pre>{{ JSON.stringify(detail, null, 2) }}</pre>
+    </a-modal>
+    <a-modal v-model:visible="showSetting" title="webdav 账户配置" :footer="null" class="webdavModel">
+      <a-alert v-if="formState.suport === 'jianguo'" style="margin-bottom: 20px" type="info" show-icon>
+        <template #message>
+          <div class="openHelp" @click="openHelp">点击查看如何获取坚果云账号密码</div>
+        </template>
+      </a-alert>
+      <a-form
+        :model="formState"
+        name="basic"
+        :label-col="{ span: 8 }"
+        :wrapper-col="{ span: 16 }"
+        autocomplete="off"
+        @finish="handleOk"
+      >
+        <a-form-item label="webdav 提供商" name="suport">
+          <a-select v-model:value="formState.suport">
+            <a-select-option value="jianguo">坚果云</a-select-option>
+            <a-select-option value="auto">自定义</a-select-option>
+          </a-select>
+        </a-form-item>
+        <a-form-item
+          v-show="formState.suport === 'auto'"
+          label="服务器地址"
+          name="url"
+          :rules="[{ required: true, message: '请填写服务器地址!' }]"
+        >
+          <a-input v-model:value="formState.url" />
+        </a-form-item>
+        <a-form-item label="账户" name="username" :rules="[{ required: true, message: '请填写 username!' }]">
+          <a-input v-model:value="formState.username" />
+        </a-form-item>
+        <a-form-item label="密码" name="password" :rules="[{ required: true, message: '请填写 password!' }]">
+          <a-input-password v-model:value="formState.password" />
+        </a-form-item>
+        <a-form-item :wrapper-col="{ offset: 8, span: 16 }">
+          <a-button type="primary" html-type="submit">保存设置</a-button>
+        </a-form-item>
+      </a-form>
+    </a-modal>
+  </div>
 </template>
 <script setup>
 import { useStore } from 'vuex';

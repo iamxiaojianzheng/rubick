@@ -6,7 +6,8 @@
     "dev": "vue-cli-service serve --port 8081",
     "serve": "vue-cli-service serve --port 8081",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "eslint . --ext .js,.vue",
+    "lint:fix": "eslint . --ext .js,.vue --fix"
   },
   "dependencies": {
     "@ant-design/icons-vue": "^6.1.0",

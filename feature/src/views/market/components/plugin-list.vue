@@ -90,7 +90,7 @@
 <script setup>
 import { CloudDownloadOutlined, ArrowLeftOutlined, SelectOutlined } from '@ant-design/icons-vue';
 
-import { ref, computed } from 'vue';
+import { ref, computed, defineProps } from 'vue';
 import { useStore } from 'vuex';
 import { message } from 'ant-design-vue';
 import MarkdownIt from 'markdown-it';
@@ -98,7 +98,6 @@ import { useRouter } from 'vue-router';
 import request from '@/assets/request/index';
 import notFountJson from '@/assets/lottie/404.json';
 import { useI18n } from 'vue-i18n';
-const fs = window.require('fs');
 const { t } = useI18n();
 
 const store = useStore();

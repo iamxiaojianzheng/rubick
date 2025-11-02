@@ -2,20 +2,13 @@
   <div v-show="!currentPlugin.name" class="options">
     <div
       class="history-plugins"
-      v-if="
-        !options.length &&
-        !searchValue &&
-        !clipboardFile.length &&
-        config.perf.common.history
-      "
+      v-if="!options.length && !searchValue && !clipboardFile.length && config.perf.common.history"
     >
       <a-row>
         <a-col
           @click="() => openPlugin(item)"
-          @contextmenu.prevent="openMenu($event,item)"
-          :class="
-            currentSelect === index ? 'active history-item' : 'history-item'
-          "
+          @contextmenu.prevent="openMenu($event, item)"
+          :class="currentSelect === index ? 'active history-item' : 'history-item'"
           :span="3"
           v-for="(item, index) in pluginHistory"
           :key="index"
@@ -30,10 +23,7 @@
     </div>
     <a-list v-else item-layout="horizontal" :dataSource="sort(options)">
       <template #renderItem="{ item, index }">
-        <a-list-item
-          @click="() => item.click()"
-          :class="currentSelect === index ? 'active op-item' : 'op-item'"
-        >
+        <a-list-item @click="() => item.click()" :class="currentSelect === index ? 'active op-item' : 'op-item'">
           <a-list-item-meta :description="renderDesc(item.desc)">
             <template #title>
               <span v-html="renderTitle(item.name, item.match)"></span>
@@ -86,18 +76,12 @@ const renderTitle = (title, match) => {
   return `<div>${title.substring(
     0,
     match[0]
-  )}<span style='color: var(--ant-error-color)'>${result}</span>${title.substring(
-    match[1] + 1,
-    title.length
-  )}</div>`;
+  )}<span style='color: var(--ant-error-color)'>${result}</span>${title.substring(match[1] + 1, title.length)}</div>`;
 };
 
 const renderDesc = (desc = '') => {
   if (desc.length > 80) {
-    return `${desc.substr(0, 63)}...${desc.substr(
-      desc.length - 14,
-      desc.length
-    )}`;
+    return `${desc.substr(0, 63)}...${desc.substr(desc.length - 14, desc.length)}`;
   }
   return desc;
 };

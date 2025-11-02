@@ -58,11 +58,11 @@
             </div>
           </div>
           <div class="feature-container">
-            <template v-for="(item, index) in pluginDetail.features" :key="index">
-              <div v-if="item.cmds.filter((cmd) => !cmd.label).length > 0" class="desc-item">
+            <template v-for="(item, index) in pluginDetail.features">
+              <div v-if="item.cmds.filter((cmd) => !cmd.label).length > 0" :key="index" class="desc-item">
                 <div>{{ item.explain }}</div>
-                <template v-for="cmd in item.cmds" :key="cmd">
-                  <a-dropdown v-if="!cmd.label" :class="{ executable: !cmd.label }">
+                <template v-for="cmd in item.cmds">
+                  <a-dropdown v-if="!cmd.label" :key="cmd" :class="{ executable: !cmd.label }">
                     <template #overlay>
                       <a-menu @click="({ key }) => handleMenuClick(key, item, cmd)">
                         <a-menu-item key="open">
