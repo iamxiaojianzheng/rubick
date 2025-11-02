@@ -50,12 +50,14 @@
             <img :src="detail.logo" class="plugin-icon" />
             <div class="plugin-desc">
               <div>
-                <div class="title">
-                  {{ detail.pluginName }}
+                <div class="title">{{ detail.pluginName }}</div>
+                <div class="meta">
+                  <span v-for="item in ['author', 'version']" :key="item" :class="item">
+                    <span>{{ $t(`feature.market.${item}`) }}</span>
+                    <span>{{ detail[item] }}</span>
+                  </span>
                 </div>
-                <div class="desc">
-                  {{ detail.description }}
-                </div>
+                <div class="desc">{{ detail.description }}</div>
               </div>
               <a-button
                 v-if="!detail.isdownload"
@@ -96,6 +98,7 @@ import { useRouter } from 'vue-router';
 import request from '@/assets/request/index';
 import notFountJson from '@/assets/lottie/404.json';
 import { useI18n } from 'vue-i18n';
+const fs = window.require('fs');
 const { t } = useI18n();
 
 const store = useStore();
@@ -143,7 +146,10 @@ const showDetail = async (index) => {
   }
 };
 
-const detail = computed(() => props.list[showIndex.value]);
+const detail = computed(() => {
+  const item = props.list[showIndex.value];
+  return item;
+});
 
 const openPlugin = (item) => {
   store.commit('commonUpdate', { active: ['installed'] });
@@ -244,7 +250,17 @@ const openPlugin = (item) => {
         font-weight: bold;
         color: var(--color-text-primary);
       }
-
+      .meta {
+        font-size: 12px;
+        color: var(--color-text-desc);
+        margin: 5px 0;
+        & > span > span + span {
+          font-size: 14px;
+          font-weight: blod;
+          color: var(--color-text-primary);
+          margin: 0 10px;
+        }
+      }
       .desc {
         font-size: 12px;
         font-weight: normal;

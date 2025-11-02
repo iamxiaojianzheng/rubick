@@ -17,6 +17,9 @@ export default {
           lastUpdated: '全部',
         },
         install: '安装',
+        author: '开发者',
+        version: '版本',
+        size: '大小',
       },
       installed: {
         title: '已安装',
