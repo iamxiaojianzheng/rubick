@@ -44,7 +44,7 @@ function createTray(window: BrowserWindow): Promise<Tray> {
           label: '意见反馈',
           click: () => {
             process.nextTick(() => {
-              shell.openExternal('https://github.com/iamxiaojianzheng/rubick/issues');
+              shell.openExternal('https://github.com/iamxiaojianzheng/ruck/issues');
             });
           },
         },
@@ -79,9 +79,9 @@ function createTray(window: BrowserWindow): Promise<Tray> {
           label: '关于',
           click() {
             dialog.showMessageBox({
-              title: '拉比克',
-              message: '极简、插件化的现代桌面软件',
-              detail: `Version: ${pkg.version}\nAuthor: JIAHE\nGitHub: https://github.com/iamxiaojianzheng/rubick`,
+              title: 'Ruck',
+              message: '只需要用你想要用的（Only use you want）',
+              detail: `Version: ${pkg.version}\nAuthor: JIAHE\nGitHub: https://github.com/iamxiaojianzheng/ruck`,
             });
           },
         },
