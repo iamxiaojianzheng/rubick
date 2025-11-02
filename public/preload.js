@@ -57,8 +57,7 @@ window.rubick = {
     ipcSendSync('setExpendHeight', height);
   },
   setSubInput(onChange, placeholder = '', isFocus) {
-    typeof onChange === 'function' &&
-      (window.rubick.hooks.onSubInputChange = onChange);
+    typeof onChange === 'function' && (window.rubick.hooks.onSubInputChange = onChange);
     ipcSendSync('setSubInput', {
       placeholder,
       isFocus,
@@ -95,8 +94,7 @@ window.rubick = {
     remove: (doc) => ipcSendSync('dbRemove', { doc }),
     bulkDocs: (docs) => ipcSendSync('dbBulkDocs', { docs }),
     allDocs: (key) => ipcSendSync('dbAllDocs', { key }),
-    postAttachment: (docId, attachment, type) =>
-      ipcSendSync('dbPostAttachment', { docId, attachment, type }),
+    postAttachment: (docId, attachment, type) => ipcSendSync('dbPostAttachment', { docId, attachment, type }),
     getAttachment: (docId) => ipcSendSync('dbGetAttachment', { docId }),
     getAttachmentType: (docId) => ipcSendSync('dbGetAttachmentType', { docId }),
   },
@@ -204,11 +202,7 @@ window.rubick = {
   createBrowserWindow: (url, options, callback) => {
     const winUrl = path.resolve(baseDir, 'node_modules', options.name);
     const winIndex = `file://${path.join(winUrl, './', url || '')}`;
-    const preloadPath = path.join(
-      winUrl,
-      './',
-      options.webPreferences.preload || ''
-    );
+    const preloadPath = path.join(winUrl, './', options.webPreferences.preload || '');
     let win = new BrowserWindow({
       useContentSize: true,
       resizable: true,

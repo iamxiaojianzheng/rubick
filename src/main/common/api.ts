@@ -1,19 +1,18 @@
 import { BrowserWindow, ipcMain, dialog, app, Notification, nativeImage, clipboard, screen, shell } from 'electron';
 import fs from 'fs';
-import { screenCapture } from '@/core';
-import plist from 'plist';
+import path from 'path';
 import ks from 'node-key-sender';
+import clipboardFiles from 'clipboard-files';
 
-import { DECODE_KEY, PLUGIN_INSTALL_DIR as baseDir } from '@/common/constans/main';
+import { screenCapture } from '@/core';
+import commonConst from '@/common/utils/commonConst';
 import getCopyFiles from '@/common/utils/getCopyFiles';
-import common from '@/common/utils/commonConst';
+import { DECODE_KEY, PLUGIN_INSTALL_DIR as baseDir } from '@/common/constans/main';
 
 import mainInstance from '../index';
 import { runner, detach } from '../browsers';
 import DBInstance from './db';
 import getWinPosition from './getWinPosition';
-import path from 'path';
-import commonConst from '@/common/utils/commonConst';
 
 const runnerInstance = runner();
 const detachInstance = detach();
@@ -77,7 +76,7 @@ class API extends DBInstance {
     this.removePlugin(null, window);
     // 模板文件
     if (!plugin.main) {
-      plugin.tplPath = common.dev() ? 'http://localhost:8083/#/' : `file://${__static}/tpl/index.html`;
+      plugin.tplPath = commonConst.dev() ? 'http://localhost:8083/#/' : `file://${__static}/tpl/index.html`;
     }
     if (plugin.name === 'rubick-system-feature') {
       plugin.logo = plugin.logo || `file://${__static}/logo.png`;
@@ -200,11 +199,31 @@ class API extends DBInstance {
   }
 
   public copyFile({ data }) {
-    if (data.file && fs.existsSync(data.file)) {
-      clipboard.writeBuffer('NSFilenamesPboardType', Buffer.from(plist.build([data.file])));
-      return true;
+    const { file } = data;
+    if (!file) {
+      return false;
     }
-    return false;
+    let files = [];
+    if (typeof file === 'string') {
+      if (!fs.existsSync(file)) {
+        return false;
+      }
+      files = [file];
+    } else if (Array.isArray(file)) {
+      if (file.length === 0) {
+        return false;
+      }
+      file.forEach((item) => {
+        if (fs.existsSync(item)) {
+          files.push(item);
+        }
+      });
+    }
+    if (files.length === 0) {
+      return false;
+    }
+    clipboardFiles.writeFiles(typeof file === 'string' ? [file] : file);
+    return true;
   }
 
   public getFeatures() {
