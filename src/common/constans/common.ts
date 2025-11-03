@@ -1,3 +1,4 @@
+export const APP_NAME = 'Ruck';
 export const WINDOW_WIDTH = 900;
 export const WINDOW_HEIGHT = 60;
 export const WINDOW_PLUGIN_HEIGHT = 600;

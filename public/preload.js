@@ -206,7 +206,7 @@ window.rubick = {
     let win = new BrowserWindow({
       useContentSize: true,
       resizable: true,
-      title: '拉比克',
+      title: 'Ruck',
       show: false,
       backgroundColor: nativeTheme.shouldUseDarkColors ? '#1c1c28' : '#fff',
       ...options,

@@ -3,7 +3,7 @@ import path from 'path';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 // import versonHandler from '../common/versionHandler';
 import localConfig from '@/main/common/initLocalConfig';
-import { WINDOW_HEIGHT, WINDOW_MIN_HEIGHT, WINDOW_WIDTH } from '@/common/constans/common';
+import { APP_NAME, WINDOW_HEIGHT, WINDOW_MIN_HEIGHT, WINDOW_WIDTH } from '@/common/constans/common';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 require('@electron/remote/main').initialize();
 
@@ -24,7 +24,7 @@ export default () => {
       resizable: true,
       width: WINDOW_WIDTH,
       frame: false,
-      title: '拉比克',
+      title: APP_NAME,
       show: false,
       skipTaskbar: true,
       backgroundColor: nativeTheme.shouldUseDarkColors ? '#1c1c28' : '#fff',
