@@ -6,6 +6,7 @@ import clipboardFiles from 'clipboard-files';
 
 import { screenCapture } from '@/core';
 import commonConst from '@/common/utils/commonConst';
+import commonUtil from '@/common/utils/commonUtil';
 import getCopyFiles from '@/common/utils/getCopyFiles';
 import { DECODE_KEY, PLUGIN_INSTALL_DIR as baseDir } from '@/common/constans/main';
 
@@ -72,30 +73,33 @@ class API extends DBInstance {
         icon: plugin.logo,
       }).show();
     }
+
     window.setSize(window.getSize()[0], 60);
     this.removePlugin(null, window);
+
     // 模板文件
     if (!plugin.main) {
-      plugin.tplPath = commonConst.dev() ? 'http://localhost:8083/#/' : `file://${__static}/tpl/index.html`;
+      plugin.tplPath = commonUtil.getTplIndex();
     }
+
     if (plugin.name === 'rubick-system-feature') {
       plugin.logo = plugin.logo || `file://${__static}/logo.png`;
-      plugin.indexPath = commonConst.dev() ? 'http://localhost:8081/#/' : `file://${__static}/feature/index.html`;
+      plugin.indexPath = commonUtil.getFeatureIndex();
     } else if (!plugin.indexPath) {
-      const pluginPath = path.resolve(baseDir, 'node_modules', plugin.name);
-      plugin.indexPath = `file://${path.join(pluginPath, './', plugin.main || '')}`;
+      plugin.indexPath = commonUtil.getPluginIndex(plugin, null);
     }
+
     runnerInstance.init(plugin, window);
     this.currentPlugin = plugin;
     window.webContents.executeJavaScript(
-      `window.setCurrentPlugin(${JSON.stringify({
-        currentPlugin: this.currentPlugin,
-      })})`
+      `window.setCurrentPlugin(${JSON.stringify({ currentPlugin: this.currentPlugin })})`
     );
+
     window.show();
+
     const view = runnerInstance.getView();
     if (!view.inited) {
-      view.webContents.on('before-input-event', (event, input) => this.__EscapeKeyDown(event, input, window));
+      view?.webContents?.on('before-input-event', (event, input) => this.__EscapeKeyDown(event, input, window));
     }
 
     window.webContents.on('before-input-event', (event, input) => {

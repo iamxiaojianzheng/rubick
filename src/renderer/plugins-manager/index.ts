@@ -79,7 +79,7 @@ const createPluginManager = (): any => {
     });
     window.initRubick();
     if (plugin.pluginType === 'ui' || plugin.pluginType === 'system') {
-      if (state.currentPlugin && state.currentPlugin.name === plugin.name) {
+      if (state?.currentPlugin?.name === plugin.name) {
         window.rubick.showMainWindow();
         return;
       }
@@ -163,6 +163,7 @@ const createPluginManager = (): any => {
       openPlugin,
       currentPlugin: toRefs(state).currentPlugin,
     });
+
   // plugin operation
   const getPluginInfo = async ({ pluginName, pluginPath }) => {
     const pluginInfo = await pluginInstance.getAdapterInfo(pluginName, pluginPath);

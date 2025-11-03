@@ -8,19 +8,13 @@ const appPath = app.getPath('userData');
 const baseDir = path.join(appPath, './rubick-plugins-new');
 
 const ipcSendSync = (type, data) => {
-  const returnValue = ipcRenderer.sendSync('msg-trigger', {
-    type,
-    data,
-  });
+  const returnValue = ipcRenderer.sendSync('msg-trigger', { type, data });
   if (returnValue instanceof Error) throw returnValue;
   return returnValue;
 };
 
 const ipcSend = (type, data) => {
-  ipcRenderer.send('msg-trigger', {
-    type,
-    data,
-  });
+  ipcRenderer.send('msg-trigger', { type, data });
 };
 
 window.rubick = {

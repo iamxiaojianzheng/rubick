@@ -129,9 +129,8 @@ function uIOhookRegister(callback: () => void) {
   uIOhook.on('keydown', async (uio_event) => {
     const config = await localConfig.getConfig(); // 此处还有优化空间
 
-    if (
-      !['Ctrl+Ctrl', 'Option+Option', 'Shift+Shift', 'Command+Command'].includes(config.perf.shortCut.showAndHidden)
-    ) {
+    const defaultShort = ['Ctrl+Ctrl', 'Option+Option', 'Shift+Shift', 'Command+Command'];
+    if (!defaultShort.includes(config.perf.shortCut.showAndHidden)) {
       return;
     }
 

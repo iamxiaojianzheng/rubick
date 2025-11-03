@@ -1,9 +1,12 @@
 import { app } from 'electron';
 import path from 'path';
 
+import { PLUGIN_INSTALL_DIR_NAME } from '@/common/constans/common';
+
 const appPath = app.getPath('userData');
 
-const PLUGIN_INSTALL_DIR = path.join(appPath, './rubick-plugins-new');
+const PLUGIN_INSTALL_DIR = path.join(appPath, PLUGIN_INSTALL_DIR_NAME);
+const PLUGIN_INSTALL_ROOT_DIR = path.join(appPath, PLUGIN_INSTALL_DIR_NAME, 'node_modules');
 
 const DECODE_KEY = {
   Backspace: 'Backspace',
@@ -84,4 +87,4 @@ const DECODE_KEY = {
   Quote: "'",
 };
 
-export { PLUGIN_INSTALL_DIR, DECODE_KEY };
+export { PLUGIN_INSTALL_DIR, PLUGIN_INSTALL_ROOT_DIR, DECODE_KEY };

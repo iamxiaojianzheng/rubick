@@ -1,4 +1,6 @@
 export const APP_NAME = 'Ruck';
+export const PLUGIN_INSTALL_DIR_NAME = 'rubick-plugins-new';
+
 export const WINDOW_WIDTH = 900;
 export const WINDOW_HEIGHT = 60;
 export const WINDOW_PLUGIN_HEIGHT = 600;

@@ -1,13 +1,13 @@
 import path from 'path';
 import fs from 'fs';
 import { PluginHandler } from '@/core';
-import { PLUGIN_INSTALL_DIR as baseDir } from '@/common/constans/main';
+import { PLUGIN_INSTALL_DIR as baseDir, PLUGIN_INSTALL_ROOT_DIR } from '@/common/constans/main';
 import API from '@/main/common/api';
 
 const configPath = path.join(baseDir, './rubick-local-plugin.json');
 const checkDevPlugin = (plugin) => {
   const { name: pluginName, isDev } = plugin;
-  const pluginPath = path.resolve(baseDir, 'node_modules', pluginName);
+  const pluginPath = path.resolve(PLUGIN_INSTALL_ROOT_DIR, pluginName);
   console.log('pluginPath:', pluginPath);
   if (isDev && !fs.existsSync(pluginPath)) {
     throw new Error(`错误: 插件【${pluginName}】所在路径为空`);
@@ -43,11 +43,11 @@ global.LOCAL_PLUGINS = {
     const { name: pluginName, isDev } = plugin;
 
     await pluginInstance.install([pluginName], { isDev });
+    const pluginPath = path.resolve(PLUGIN_INSTALL_ROOT_DIR, pluginName);
 
     if (isDev) {
       checkDevPlugin(plugin);
       // 获取 dev 插件信息
-      const pluginPath = path.resolve(baseDir, 'node_modules', pluginName);
       const pluginInfo = JSON.parse(fs.readFileSync(path.join(pluginPath, './package.json'), 'utf8'));
       plugin = { ...plugin, ...pluginInfo };
     }
@@ -57,7 +57,7 @@ global.LOCAL_PLUGINS = {
   refreshPlugin(plugin) {
     const { name: pluginName } = plugin;
     // 获取 dev 插件信息
-    const pluginPath = path.resolve(baseDir, 'node_modules', pluginName);
+    const pluginPath = path.resolve(PLUGIN_INSTALL_ROOT_DIR, pluginName);
     const packagePath = path.join(pluginPath, './package.json');
     const packageContent = fs.readFileSync(packagePath, 'utf8');
     const pluginInfo = JSON.parse(packageContent);

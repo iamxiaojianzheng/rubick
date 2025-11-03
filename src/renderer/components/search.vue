@@ -98,9 +98,7 @@ const keydownEvent = (e, key: string) => {
       modifiers,
     },
   });
-  const runPluginDisable =
-    (e.target.value === '' && !props.pluginHistory.length) ||
-    props.currentPlugin.name;
+  const runPluginDisable = (e.target.value === '' && !props.pluginHistory.length) || props.currentPlugin.name;
   switch (key) {
     case 'up':
       emit('changeCurrent', -1);
@@ -164,10 +162,7 @@ const showSeparate = () => {
       click: changeHideOnBlur,
     },
     {
-      label:
-        config.value.perf.common.lang === 'zh-CN'
-          ? '切换语言'
-          : 'Change Language',
+      label: config.value.perf.common.lang === 'zh-CN' ? '切换语言' : 'Change Language',
       submenu: [
         {
           label: '简体中文',
@@ -184,6 +179,7 @@ const showSeparate = () => {
       ],
     },
   ];
+
   if (props.currentPlugin && props.currentPlugin.logo) {
     pluginMenu = pluginMenu.concat([
       {
@@ -195,14 +191,7 @@ const showSeparate = () => {
       },
       {
         label: '当前插件信息',
-        submenu: [
-          {
-            label: '简介',
-          },
-          {
-            label: '功能',
-          },
-        ],
+        submenu: [{ label: '简介' }, { label: '功能' }],
       },
       {
         label: '分离窗口',
