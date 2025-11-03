@@ -9,8 +9,8 @@ export default {
       successColor: '#c0d695',
       infoColor: '#aa8eeB',
       logo: `file://${__static}/logo.png`,
-      placeholder: '你好，Rubick！请输入插件关键词',
-      username: 'Rubick',
+      placeholder: '你好，Ruck！请输入插件关键词',
+      username: 'Ruck',
     },
     shortCut: {
       showAndHidden: 'Option+R',
@@ -19,6 +19,7 @@ export default {
       capture: 'Ctrl+Shift+A',
     },
     common: {
+      appName: 'Ruck',
       start: true,
       space: true,
       hideOnBlur: true,
