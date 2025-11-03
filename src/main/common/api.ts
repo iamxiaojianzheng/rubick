@@ -97,6 +97,15 @@ class API extends DBInstance {
     if (!view.inited) {
       view.webContents.on('before-input-event', (event, input) => this.__EscapeKeyDown(event, input, window));
     }
+
+    window.webContents.on('before-input-event', (event, input) => {
+      if (input.key.toLowerCase() === 'd' && (input.control || input.meta) && !input.alt && !input.shift) {
+        event.preventDefault();
+        if (window && !window.isDestroyed()) {
+          this.detachPlugin(null, window);
+        }
+      }
+    });
   }
 
   public removePlugin(e, window) {

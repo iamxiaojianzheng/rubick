@@ -94,6 +94,9 @@ const registerHotKey = (mainWindow: BrowserWindow): void => {
       // mainWindow.show();
     });
 
+    // globalShortcut.register(config.perf.shortCut.separate, () => {
+    // });
+
     // 添加局部快捷键监听
     mainWindow.webContents.on('before-input-event', (event, input) => {
       if (input.key.toLowerCase() === 'w' && (input.control || input.meta) && !input.alt && !input.shift) {

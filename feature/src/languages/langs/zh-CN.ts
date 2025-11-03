@@ -56,6 +56,7 @@ export default {
           shortcutKey: '快捷键',
           showOrHiddle: '显示/隐藏快捷键',
           screenCapture: '截屏',
+          separate: '分离窗口',
           common: '通用',
           autoPaste: '输入框自动粘贴',
           autoBoot: '开机启动',
