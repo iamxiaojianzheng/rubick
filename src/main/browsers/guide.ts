@@ -71,7 +71,7 @@ export default () => {
 
   const operation = {
     close: () => {
-      win.close();
+      win?.close();
       win = null;
     },
   };
