@@ -56,7 +56,7 @@
                   </template>
                 </template>
                 <div class="value" tabIndex="-1" @keydown="(e) => changeShortCut(e, 'showAndHidden')">
-                  {{ shortCut.showAndHidden }}
+                  {{ shortCutFormatText(shortCut.showAndHidden) }}
                 </div>
               </a-tooltip>
             </div>
@@ -69,7 +69,7 @@
                   <span>{{ tipText }}</span>
                 </template>
                 <div class="value" tabIndex="-1" @keydown="(e) => changeShortCut(e, 'capture')">
-                  {{ shortCut.capture }}
+                  {{ shortCutFormatText(shortCut.capture) }}
                 </div>
               </a-tooltip>
             </div>
@@ -82,7 +82,7 @@
                   <span>{{ tipText }}</span>
                 </template>
                 <div class="value" tabIndex="-1" @keydown="(e) => changeShortCut(e, 'separate')">
-                  {{ shortCut.separate }}
+                  {{ shortCutFormatText(shortCut.separate) }}
                 </div>
               </a-tooltip>
             </div>
@@ -276,6 +276,14 @@ const tipText = computed(() => {
     }) + `此外你也可以双击修饰键如（Ctrl+Ctrl）`
   );
 });
+
+const shortCutFormatText = (text) => {
+  if (isWindows) {
+    return text.replace('Option', 'Alt').replace('Command', 'Win');
+  } else {
+    return text;
+  }
+};
 
 const currentSelect = ref(['userInfo']);
 
