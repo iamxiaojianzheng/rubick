@@ -36,10 +36,11 @@
                 {{ pluginDetail.pluginName }}
                 <a-tag>{{ pluginDetail.version }}</a-tag>
               </div>
-              <div class="desc">
-                {{ $t('feature.installed.developer') }}：{{
-                  `${pluginDetail.author || $t('feature.installed.unknown')}`
-                }}
+              <div class="meta">
+                <span v-for="item in ['author', 'version']" :key="item" :class="item">
+                  <span>{{ $t(`feature.installed.${item}`) }}</span>
+                  <span>{{ pluginDetail[item] || $t('feature.installed.unknown') }}</span>
+                </span>
               </div>
               <div class="desc">
                 {{ pluginDetail.description }}
@@ -249,7 +250,12 @@ const gotoFinder = () => {
   }
   .keyword-tag {
     font-size: 13px;
-    margin: 4px;
+    & + & {
+      margin-left: 10px;
+    }
+  }
+  .keyword-tag + .keyword-tag {
+    margin-left: 10px;
   }
 
   .container {
@@ -317,6 +323,7 @@ const gotoFinder = () => {
       margin-bottom: 12px;
       .title {
         font-size: 16px;
+        font-weight: bold;
         display: flex;
         align-items: center;
         color: var(--color-text-primary);
@@ -325,6 +332,18 @@ const gotoFinder = () => {
           border: 1px solid var(--color-border-light);
           color: var(--color-text-content);
           margin-left: 8px;
+        }
+      }
+
+      .meta {
+        font-size: 12px;
+        color: var(--color-text-desc);
+        margin: 5px 0;
+        & > span > span + span {
+          font-size: 14px;
+          font-weight: 600;
+          color: var(--color-text-primary);
+          margin: 0 10px;
         }
       }
 
@@ -345,7 +364,7 @@ const gotoFinder = () => {
     }
 
     .desc-item {
-      padding: 10px 0;
+      // padding: 10px 0;
       color: var(--color-text-content);
       .ant-tag {
         margin-top: 6px;
@@ -367,6 +386,10 @@ const gotoFinder = () => {
 
       .desc-info {
         color: var(--color-text-desc);
+      }
+
+      &+.desc-item {
+        padding-top: 10px;
       }
     }
   }

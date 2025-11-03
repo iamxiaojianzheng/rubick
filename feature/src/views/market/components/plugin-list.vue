@@ -255,7 +255,7 @@ const openPlugin = (item) => {
         margin: 5px 0;
         & > span > span + span {
           font-size: 14px;
-          font-weight: blod;
+          font-weight: 600;
           color: var(--color-text-primary);
           margin: 0 10px;
         }

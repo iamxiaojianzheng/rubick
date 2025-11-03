@@ -40,7 +40,7 @@
         </a-menu-item>
         <a-sub-menu class="user-info">
           <template #icon>
-            <a-avatar :size="32">
+            <a-avatar shape="square" :size="32">
               <template #icon>
                 <img :src="perf.custom.logo" />
               </template>
