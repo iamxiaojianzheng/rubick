@@ -98,14 +98,14 @@ const registerHotKey = (mainWindow: BrowserWindow): void => {
     // });
 
     // 添加局部快捷键监听
-    mainWindow.webContents.on('before-input-event', (event, input) => {
-      if (input.key.toLowerCase() === 'w' && (input.control || input.meta) && !input.alt && !input.shift) {
-        event.preventDefault();
-        if (mainWindow && !mainWindow.isDestroyed()) {
-          mainWindow.hide();
-        }
-      }
-    });
+    // mainWindow.webContents.on('before-input-event', (event, input) => {
+    //   if (input.key.toLowerCase() === 'w' && (input.control || input.meta) && !input.alt && !input.shift) {
+    //     event.preventDefault();
+    //     if (mainWindow && !mainWindow.isDestroyed()) {
+    //       mainWindow.hide();
+    //     }
+    //   }
+    // });
 
     // 注册自定义全局快捷键
     config.global.forEach((sc) => {
