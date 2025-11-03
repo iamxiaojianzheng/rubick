@@ -55,15 +55,25 @@ class App {
       checkVersion();
       await localConfig.init();
       const config = await localConfig.getConfig();
-      if (!config.perf.common.guide) {
+      const { common, shortCut } = config?.perf;
+      // console.log(common, shortCut);
+      if (!common.guide) {
         guide().init();
-        config.perf.common.guide = true;
+        common.guide = true;
         localConfig.setConfig(config);
       }
       this.createWindow();
       const mainWindow = this.windowCreator.getWindow();
       API.init(mainWindow);
-      createTray(this.windowCreator.getWindow());
+      const appTray = createTray(this.windowCreator.getWindow());
+      appTray.then((tray) => {
+        const showAndHidden = shortCut?.showAndHidden;
+        const tooltip = `${common.appName || 'Ruck'}(${showAndHidden})`;
+        if (tooltip) {
+          tray.setToolTip(tooltip);
+        }
+      });
+
       registerHotKey(this.windowCreator.getWindow());
       this.systemPlugins.triggerReadyHooks(
         Object.assign(electron, {

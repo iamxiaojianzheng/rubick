@@ -15,7 +15,7 @@ function createTray(window: BrowserWindow): Promise<Tray> {
     } else {
       icon = './icons/icon@2x.png';
     }
-    const appIcon = new Tray(path.join(__static, icon));
+    const appTray = new Tray(path.join(__static, icon));
 
     const openSettings = () => {
       window.webContents.executeJavaScript(
@@ -87,18 +87,18 @@ function createTray(window: BrowserWindow): Promise<Tray> {
         },
       ]);
 
-    appIcon.on('click', () => {
+    appTray.on('click', () => {
       window.show();
     });
 
-    appIcon.on('right-click', () => {
-      appIcon.setContextMenu(createContextMenu());
-      appIcon.popUpContextMenu();
+    appTray.on('right-click', () => {
+      appTray.setContextMenu(createContextMenu());
+      appTray.popUpContextMenu();
     });
 
-    appIcon.setContextMenu(createContextMenu());
+    appTray.setContextMenu(createContextMenu());
 
-    resolve(appIcon);
+    resolve(appTray);
   });
 }
 
