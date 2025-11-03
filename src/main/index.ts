@@ -120,10 +120,14 @@ class App {
     app.on('window-all-closed', () => {
       if (process.platform !== 'darwin') {
         app.quit();
+      } else {
+        // mac环境注销所有快捷键
+        globalShortcut.unregisterAll();
       }
     });
 
     app.on('will-quit', () => {
+      // windows环境注销所有快捷键
       globalShortcut.unregisterAll();
     });
 
