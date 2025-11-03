@@ -86,10 +86,16 @@ function createTray(window: BrowserWindow): Promise<Tray> {
           },
         },
       ]);
+
     appIcon.on('click', () => {
+      window.show();
+    });
+
+    appIcon.on('right-click', () => {
       appIcon.setContextMenu(createContextMenu());
       appIcon.popUpContextMenu();
     });
+
     appIcon.setContextMenu(createContextMenu());
 
     resolve(appIcon);
