@@ -388,7 +388,7 @@ const gotoFinder = () => {
         color: var(--color-text-desc);
       }
 
-      &+.desc-item {
+      & + .desc-item {
         padding-top: 10px;
       }
     }

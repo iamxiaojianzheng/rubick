@@ -27,7 +27,7 @@
                 <span class="ellipse">{{ item.pluginName }}</span>
               </template>
               <template #avatar>
-                <a-avatar :src="item.logo" />
+                <a-avatar shape="square" :src="item.logo" />
               </template>
             </a-list-item-meta>
           </a-list-item>
