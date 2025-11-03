@@ -1,5 +1,7 @@
 import path from 'path';
 import fs from 'fs';
+import https from 'https';
+import request from 'request';
 import { PluginHandler } from '@/core';
 import { PLUGIN_INSTALL_DIR as baseDir, PLUGIN_INSTALL_ROOT_DIR } from '@/common/constans/main';
 import API from '@/main/common/api';
@@ -13,6 +15,24 @@ const checkDevPlugin = (plugin) => {
     throw new Error(`错误: 插件【${pluginName}】所在路径为空`);
   }
 };
+
+function downloadImage(url, savePath) {
+  return new Promise((resolve, reject) => {
+    const writeStream = fs.createWriteStream(savePath);
+
+    // 使用 request 发送请求
+    request({ url, proxy: false })
+      .pipe(writeStream)
+      .on('close', () => {
+        // 下载完成后，触发 resolve()
+        resolve('图片下载并保存成功！');
+      })
+      .on('error', (err) => {
+        // 如果发生错误，触发 reject()
+        reject('下载图片时出错: ' + err);
+      });
+  });
+}
 
 let registry;
 let pluginInstance;
@@ -40,7 +60,7 @@ let pluginInstance;
 global.LOCAL_PLUGINS = {
   PLUGINS: [],
   async downloadPlugin(plugin) {
-    const { name: pluginName, isDev } = plugin;
+    const { name: pluginName, isDev, logo } = plugin;
 
     await pluginInstance.install([pluginName], { isDev });
     const pluginPath = path.resolve(PLUGIN_INSTALL_ROOT_DIR, pluginName);
@@ -50,6 +70,17 @@ global.LOCAL_PLUGINS = {
       // 获取 dev 插件信息
       const pluginInfo = JSON.parse(fs.readFileSync(path.join(pluginPath, './package.json'), 'utf8'));
       plugin = { ...plugin, ...pluginInfo };
+    }
+    if (/^(http|https):\/\//.test(logo)) {
+      const logoPath = path.join(pluginPath, 'logo' + path.extname(logo));
+      console.log(logo);
+      console.log(logoPath);
+      await downloadImage(logo, logoPath);
+      if (fs.existsSync(logoPath)) {
+        plugin.logoPath = logoPath;
+      }
+    } else if (fs.existsSync(path.join(pluginPath, logo))) {
+      plugin.logoPath = path.join(pluginPath, logo);
     }
     global.LOCAL_PLUGINS.addPlugin(plugin);
     return global.LOCAL_PLUGINS.PLUGINS;

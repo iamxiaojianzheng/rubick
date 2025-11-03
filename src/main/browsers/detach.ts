@@ -2,8 +2,10 @@ import { BrowserWindow, ipcMain, nativeTheme, screen } from 'electron';
 import localConfig from '../common/initLocalConfig';
 import commonConst from '@/common/utils/commonConst';
 import path from 'path';
+import fs from 'fs';
 import { WINDOW_MIN_HEIGHT } from '@/common/constans/common';
-import mainInstance from '@/main';
+import { PLUGIN_INSTALL_ROOT_DIR } from '@/common/constans/main';
+
 export default () => {
   let win: any;
 
@@ -13,6 +15,16 @@ export default () => {
       event.returnValue = data;
     });
     const createWin = await createWindow(pluginInfo, viewInfo, view);
+    // console.log(pluginInfo);
+    const logoPath =
+      pluginInfo.logoPath ||
+      path.join(PLUGIN_INSTALL_ROOT_DIR, pluginInfo.originName, 'logo' + path.extname(pluginInfo.logo));
+    // console.log('detach logo', logoPath);
+    if (fs.existsSync(logoPath)) {
+      createWin.setIcon(logoPath);
+    } else {
+      createWin.setIcon(path.join(__static, 'logo.png'));
+    }
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     require('@electron/remote/main').enable(createWin.webContents);
   };
@@ -44,6 +56,7 @@ export default () => {
         spellcheck: false,
       },
     });
+
     if (process.env.WEBPACK_DEV_SERVER_URL) {
       // Load the url of the dev server if in development mode
       createWin.loadURL('http://localhost:8082');
