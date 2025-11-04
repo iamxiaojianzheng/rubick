@@ -38,7 +38,7 @@ export default {
         title: '账户和设置',
         account: {
           accountInfo: '账户信息',
-          tips1: 'rubick 用户',
+          tips1: 'ruck 用户',
           tips2: '软件偏好设置完成后需重启软件，头像和昵称请前往小程序设置',
           themeColor: '主题设置',
           spring: '立春',
@@ -94,7 +94,7 @@ export default {
         },
         intranet: {
           title: '内网部署配置',
-          tips: '把插件发布到公网 npm 如果不符合您的公司安全要求，rubick 支持内网私有源和私有插件库，如果您需要内网部署使用，可以自行配置以下规则。',
+          tips: '把插件发布到公网 npm 如果不符合您的公司安全要求，ruck 支持内网私有源和私有插件库，如果您需要内网部署使用，可以自行配置以下规则。',
           npmMirror: 'npm 源',
           dbUrl: 'database url',
           accessToken: 'access token',
@@ -109,7 +109,7 @@ export default {
       },
       dev: {
         title: '开发者',
-        tips: 'rubick 插件系统依托于 npm 管理，本地调试需要先在本地插件当前目录执行 npm link',
+        tips: 'ruck 插件系统依托于 npm 管理，本地调试需要先在本地插件当前目录执行 npm link',
         pluginName: '插件名称',
         install: '安装',
         refreshPlugins: '刷新插件',

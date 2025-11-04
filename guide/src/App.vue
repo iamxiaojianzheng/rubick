@@ -1,7 +1,7 @@
 <template>
   <div class="guide-container">
     <div v-show="step === 0" class="step0">
-      <div class="title">您好，我叫 Rubick</div>
+      <div class="title">您好，我叫 Ruck</div>
       <div class="desc">
         快捷键
         <span class="down-line">Alt + R</span>

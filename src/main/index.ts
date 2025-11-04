@@ -33,6 +33,7 @@ class App {
       this.onQuit();
     }
   }
+
   beforeReady() {
     // 系统托盘
     if (commonConst.macOS()) {
@@ -50,6 +51,7 @@ class App {
   createWindow() {
     this.windowCreator.init();
   }
+
   onReady() {
     const readyFunction = async () => {
       checkVersion();

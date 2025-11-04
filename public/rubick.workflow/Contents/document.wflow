@@ -59,7 +59,7 @@
 				<key>ActionParameters</key>
 				<dict>
 					<key>COMMAND_STRING</key>
-					<string>/Applications/rubick.app/Contents/MacOS/rubick search "$@" &gt; /dev/null 2&gt;&amp;1 &amp;</string>
+					<string>/Applications/ruck.app/Contents/MacOS/rubick search "$@" &gt; /dev/null 2&gt;&amp;1 &amp;</string>
 					<key>CheckedForUserDefaultShell</key>
 					<true/>
 					<key>inputMethod</key>

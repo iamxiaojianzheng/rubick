@@ -14,7 +14,7 @@
     <!--    </a-result>-->
     <Index />
     <a-modal v-model:visible="visible" :footer="null">
-      <a-result title="请使用微信扫码登录!" sub-title="使用微信扫描上面的 rubick 小程序二维码进行授权登录">
+      <a-result title="请使用微信扫码登录!" sub-title="使用微信扫描上面的 ruck 小程序二维码进行授权登录">
         <template #icon>
           <img width="200" :src="imgCode" />
         </template>

@@ -12,7 +12,7 @@
 			<key>NSMenuItem</key>
 			<dict>
 				<key>default</key>
-				<string>rubick 打开</string>
+				<string>ruck 打开</string>
 			</dict>
 			<key>NSMessage</key>
 			<string>runWorkflowAsService</string>
