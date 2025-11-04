@@ -1,15 +1,18 @@
-import { reactive, toRefs, ref } from 'vue';
-import { nativeImage, ipcRenderer } from 'electron';
-import { getGlobal } from '@electron/remote';
-import appSearch from '@/core/app-search';
-import { PluginHandler } from '@/core';
 import path from 'path';
+import cloneDeep from 'lodash.clonedeep';
+import { message } from 'ant-design-vue';
+import { reactive, toRefs, ref } from 'vue';
+import { getGlobal } from '@electron/remote';
+import { nativeImage, ipcRenderer } from 'electron';
+
+import appSearch from '@/core/app-search';
 import commonConst from '@/common/utils/commonConst';
-import { exec } from 'child_process';
 import searchManager from './search';
 import optionsManager from './options';
+
+import { exec } from 'child_process';
+import { PluginHandler } from '@/core';
 import { PLUGIN_INSTALL_DIR as baseDir, PLUGIN_HISTORY } from '@/renderer/constants/renderer';
-import { message } from 'ant-design-vue';
 
 const createPluginManager = (): any => {
   const pluginInstance = new PluginHandler({
@@ -77,7 +80,9 @@ const createPluginManager = (): any => {
     ipcRenderer.send('msg-trigger', {
       type: 'removePlugin',
     });
+
     window.initRubick();
+
     if (plugin.pluginType === 'ui' || plugin.pluginType === 'system') {
       if (state?.currentPlugin?.name === plugin.name) {
         window.rubick.showMainWindow();
@@ -97,6 +102,7 @@ const createPluginManager = (): any => {
         )
       );
     }
+
     if (plugin.pluginType === 'app') {
       try {
         exec(plugin.action);
@@ -104,6 +110,7 @@ const createPluginManager = (): any => {
         message.error('启动应用出错，请确保启动应用存在！');
       }
     }
+
     changePluginHistory({
       ...plugin,
       ...option,
@@ -115,6 +122,7 @@ const createPluginManager = (): any => {
     const unpin = state.pluginHistory.filter((plugin) => !plugin.pin);
     const pin = state.pluginHistory.filter((plugin) => plugin.pin);
     const isPin = state.pluginHistory.find((p) => p.name === plugin.name)?.pin;
+
     if (isPin) {
       pin.forEach((p, index) => {
         if (p.name === plugin.name) {
@@ -130,15 +138,17 @@ const createPluginManager = (): any => {
       });
       unpin.unshift(plugin);
     }
+
     if (state.pluginHistory.length > 8) {
       unpin.pop();
     }
+
     state.pluginHistory = [...pin, ...unpin];
     const result = window.rubick.db.get(PLUGIN_HISTORY) || {};
     window.rubick.db.put({
       _id: PLUGIN_HISTORY,
       _rev: result._rev,
-      data: JSON.parse(JSON.stringify(state.pluginHistory)),
+      data: cloneDeep(state.pluginHistory),
     });
   };
 
@@ -151,7 +161,7 @@ const createPluginManager = (): any => {
     window.rubick.db.put({
       _id: PLUGIN_HISTORY,
       _rev: result._rev,
-      data: JSON.parse(JSON.stringify(state.pluginHistory)),
+      data: cloneDeep(state.pluginHistory),
     });
   };
 
