@@ -1,4 +1,3 @@
-import clone from 'lodash.clone';
 import request from '@/assets/request';
 import { createStore } from 'vuex';
 
@@ -53,7 +52,7 @@ export default createStore({
       });
     },
     startDownload({ commit, state }, name) {
-      const totalPlugins = clone(state.totalPlugins);
+      const totalPlugins = JSON.parse(JSON.stringify(state.totalPlugins));
       totalPlugins.forEach((origin: Market.Plugin) => {
         if (origin.name === name) {
           origin.isloading = true;
@@ -91,7 +90,7 @@ export default createStore({
     },
 
     successDownload({ commit, state }, name) {
-      const totalPlugins = clone(state.totalPlugins);
+      const totalPlugins = JSON.parse(JSON.stringify(state.totalPlugins));
       totalPlugins.forEach((origin: Market.Plugin) => {
         if (origin.name === name) {
           origin.isloading = false;

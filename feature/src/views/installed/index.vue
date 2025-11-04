@@ -96,7 +96,6 @@
 </template>
 
 <script setup>
-import cloneDeep from 'lodash.clonedeep';
 import { useStore } from 'vuex';
 import { message } from 'ant-design-vue';
 import { useRoute, useRouter } from 'vue-router';
@@ -157,7 +156,7 @@ const addCmdToSuperPanel = ({ cmd, code }) => {
     },
   };
   superPanelPlugins.value.data.push(plugin);
-  const { rev } = window.rubick.db.put(cloneDeep(superPanelPlugins.value));
+  const { rev } = window.rubick.db.put(JSON.parse(JSON.stringify(superPanelPlugins.value)));
   superPanelPlugins.value._rev = rev;
 };
 

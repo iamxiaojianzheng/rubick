@@ -104,7 +104,7 @@ const changeTheme = () => {
 //     content: '回复后之前的设置将会被清空',
 //     onOk() {
 //       const defaultcustom = remote.getGlobal('OP_CONFIG').getDefaultConfig().perf.custom;
-//       state.custom = cloneDeep(defaultcustom);
+//       state.custom = JSON.parse(JSON.stringify(defaultcustom));
 //     },
 //   });
 // };

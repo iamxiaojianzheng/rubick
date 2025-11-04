@@ -40,7 +40,6 @@
 </template>
 
 <script setup lang="ts">
-import clone from 'lodash.clone';
 import { defineProps, defineEmits, ref } from 'vue';
 import { ipcRenderer } from 'electron';
 import { MoreOutlined } from '@ant-design/icons-vue';
@@ -207,14 +206,14 @@ const showSeparate = () => {
 const changeLang = (lang) => {
   let cfg = { ...config.value };
   cfg.perf.common.lang = lang;
-  localConfig.setConfig(clone(cfg));
+  localConfig.setConfig(JSON.parse(JSON.stringify(cfg)));
   config.value = cfg;
 };
 
 const changeHideOnBlur = () => {
   let cfg = { ...config.value };
   cfg.perf.common.hideOnBlur = !cfg.perf.common.hideOnBlur;
-  localConfig.setConfig(clone(cfg));
+  localConfig.setConfig(JSON.parse(JSON.stringify(cfg)));
   config.value = cfg;
 };
 
