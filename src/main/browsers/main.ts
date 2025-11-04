@@ -1,4 +1,4 @@
-import { app, BrowserWindow, protocol, nativeTheme } from 'electron';
+import { app, net, BrowserWindow, protocol, nativeTheme } from 'electron';
 import path from 'path';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 // import versonHandler from '../common/versionHandler';
@@ -47,9 +47,15 @@ export default () => {
       // Load the index.html when not in development
       win.loadURL('app://./index.html');
     }
-    protocol.interceptFileProtocol('image', (req, callback) => {
-      const url = req.url.substr(8);
-      callback(decodeURI(url));
+    // protocol.interceptFileProtocol('image', (req, callback) => {
+    //   const url = req.url.substr(8);
+    //   callback(decodeURI(url));
+    // });
+    protocol.handle('image', (req) => {
+      // const url = req.url.substr(8);
+      // return decodeURI(url);
+      // console.log(req.url);
+      return net.fetch(req);
     });
     win.on('closed', () => {
       win = undefined;
