@@ -1,13 +1,31 @@
-import getCopyFiles from '@/common/utils/getCopyFiles';
-import { clipboard, nativeImage, ipcRenderer } from 'electron';
-import { getGlobal } from '@electron/remote';
 import path from 'path';
-import pluginClickEvent from './pluginClickEvent';
-import localConfig from '../confOp';
 import { ref } from 'vue';
+import { getGlobal } from '@electron/remote';
+import { clipboard, nativeImage, ipcRenderer } from 'electron';
+
+import localConfig from '../confOp';
+import pluginClickEvent from './pluginClickEvent';
+import getCopyFiles from '@/common/utils/getCopyFiles';
 
 export default ({ currentPlugin, optionsRef, openPlugin, setOptionsRef }) => {
   const clipboardFile: any = ref([]);
+
+  /**
+   * 构建复制路径的选项
+   */
+  const buildCopyPathOption = (fileList) => {
+    return {
+      name: '复制路径',
+      value: 'plugin',
+      icon: require('../assets/link.png'),
+      desc: '复制路径到剪切板',
+      click: () => {
+        clipboard.writeText(fileList.map((file) => file.path).join(','));
+        ipcRenderer.send('msg-trigger', { type: 'hideMainWindow' });
+      },
+    };
+  };
+
   const searchFocus = (files, strict = true) => {
     const config: any = localConfig.getConfig();
     // 未开启自动粘贴
@@ -15,23 +33,13 @@ export default ({ currentPlugin, optionsRef, openPlugin, setOptionsRef }) => {
 
     if (currentPlugin.value.name) return;
     const fileList = files || getCopyFiles();
+
     // 拷贝的是文件
     if (fileList) {
       window.setSubInputValue({ value: '' });
       clipboardFile.value = fileList;
       const localPlugins = getGlobal('LOCAL_PLUGINS').getLocalPlugins();
-      const options: any = [
-        {
-          name: '复制路径',
-          value: 'plugin',
-          icon: require('../assets/link.png'),
-          desc: '复制路径到剪切板',
-          click: () => {
-            clipboard.writeText(fileList.map((file) => file.path).join(','));
-            ipcRenderer.send('msg-trigger', { type: 'hideMainWindow' });
-          },
-        },
-      ];
+      const options: any = [buildCopyPathOption(fileList)];
       // 判断复制的文件类型是否一直
       const commonLen = fileList.filter((file) => path.extname(fileList[0].path) === path.extname(file.path)).length;
       // 复制路径
@@ -109,8 +117,10 @@ export default ({ currentPlugin, optionsRef, openPlugin, setOptionsRef }) => {
       clipboard.clear();
       return;
     }
+
     const clipboardType = clipboard.availableFormats();
     if (!clipboardType.length) return;
+
     if ('text/plain' === clipboardType[0]) {
       const contentText = clipboard.readText();
       if (contentText.trim()) {
@@ -132,6 +142,7 @@ export default ({ currentPlugin, optionsRef, openPlugin, setOptionsRef }) => {
     const img = clipboard.readImage();
     const dataUrl = img.toDataURL();
     if (!dataUrl.replace('data:image/png;base64,', '')) return;
+
     clipboardFile.value = [
       {
         isFile: true,
@@ -140,6 +151,7 @@ export default ({ currentPlugin, optionsRef, openPlugin, setOptionsRef }) => {
         dataUrl,
       },
     ];
+
     const localPlugins = getGlobal('LOCAL_PLUGINS').getLocalPlugins();
     const options: any = [];
     // 再正则插件

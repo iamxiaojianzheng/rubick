@@ -8,7 +8,7 @@ import commonConst from '@/common/utils/commonConst';
 import { exec } from 'child_process';
 import searchManager from './search';
 import optionsManager from './options';
-import { PLUGIN_INSTALL_DIR as baseDir, PLUGIN_HISTORY } from '@/common/constans/renderer';
+import { PLUGIN_INSTALL_DIR as baseDir, PLUGIN_HISTORY } from '@/renderer/constants/renderer';
 import { message } from 'ant-design-vue';
 
 const createPluginManager = (): any => {

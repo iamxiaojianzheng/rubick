@@ -6,14 +6,20 @@ import PinyinMatch from 'pinyin-match';
 import pluginClickEvent from './pluginClickEvent';
 import useFocus from './clipboardWatch';
 
-function formatReg(regStr) {
+/**
+ * 字符串格式化为正则表达式
+ */
+function formatReg(regStr: string) {
   const flags = regStr.replace(/.*\/([gimy]*)$/, '$1');
   const pattern = regStr.replace(new RegExp('^/(.*?)/' + flags + '$'), '$1');
   return new RegExp(pattern, flags);
 }
 
-function searchKeyValues(lists, value, strict = false) {
-  return lists.filter((item) => {
+/**
+ * 根据搜索值匹配符合规则的CMD
+ */
+function searchKeyValues(featureCmds, value: string, strict = false) {
+  return featureCmds.filter((item) => {
     if (typeof item === 'string') {
       return !!PinyinMatch.match(item, value);
     }
@@ -47,7 +53,10 @@ const optionsManager = ({ searchValue, appList, openPlugin, currentPlugin }) => 
     return index;
   };
 
-  const getOptionsFromSearchValue = (value, strict = false) => {
+  /**
+   * 从搜索值中获取插件选项
+   */
+  const getOptionsFromSearchValue = (value: string, strict = false) => {
     const localPlugins = getGlobal('LOCAL_PLUGINS').getLocalPlugins();
     let options: any = [];
     // todo 先搜索 plugin
