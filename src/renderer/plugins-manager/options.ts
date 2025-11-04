@@ -4,7 +4,7 @@ import { ipcRenderer } from 'electron';
 import { getGlobal } from '@electron/remote';
 import PinyinMatch from 'pinyin-match';
 import pluginClickEvent from './pluginClickEvent';
-import useFocus from './clipboardWatch';
+import clipboardWatch from './clipboardWatch';
 
 /**
  * 字符串格式化为正则表达式
@@ -18,15 +18,16 @@ function formatReg(regStr: string) {
 /**
  * 根据搜索值匹配符合规则的CMD
  */
-function searchKeyValues(featureCmds, value: string, strict = false) {
-  return featureCmds.filter((item) => {
-    if (typeof item === 'string') {
-      return !!PinyinMatch.match(item, value);
+function matchCmds(cmds: Cmd[], value: string, strict = false) {
+  return cmds.filter((cmd) => {
+    if (typeof cmd === 'string') {
+      return !!PinyinMatch.match(cmd, value);
     }
-    if (item.type === 'regex' && !strict) {
-      return formatReg(item.match).test(value);
+    if (cmd.type === 'regex' && typeof cmd.match === 'string' && !strict) {
+      const match: string = cmd.match;
+      return formatReg(match).test(value);
     }
-    if (item.type === 'over' && !strict) {
+    if (cmd.type === 'over' && !strict) {
       return true;
     }
     return false;
@@ -37,12 +38,12 @@ const optionsManager = ({ searchValue, appList, openPlugin, currentPlugin }) => 
   const optionsRef = ref([]);
 
   // 全局快捷键
-  ipcRenderer.on('global-short-key', (e, msg) => {
+  ipcRenderer.on('global-short-key', (_, msg) => {
     const options = getOptionsFromSearchValue(msg, true);
     options[0].click();
   });
 
-  const getIndex = (cmd, value) => {
+  const getIndex = (cmd, value: string) => {
     let index = 0;
     if (PinyinMatch.match(cmd.label || cmd, value)) {
       index += 1;
@@ -54,52 +55,64 @@ const optionsManager = ({ searchValue, appList, openPlugin, currentPlugin }) => 
   };
 
   /**
+   * 构建插件操作选项
+   */
+  const buildPluginOption = (plugin, feature: Feature, cmd: Cmd | string, payload: string, openPlugin): Option => {
+    const { logo: pluginLogo, pluginType } = plugin;
+    const { code: featureCode, explain: featureExplain } = feature;
+    let cmdLabel: string, cmdType: string;
+    if (typeof cmd === 'string') {
+      cmdLabel = cmd;
+    } else {
+      cmdLabel = cmd.label;
+      cmdType = cmd.type;
+    }
+
+    const option: Option = {
+      name: cmdLabel,
+      value: 'plugin',
+      icon: pluginLogo,
+      desc: featureExplain,
+      type: pluginType,
+      match: PinyinMatch.match(cmdLabel, payload),
+      zIndex: getIndex(cmd, payload), // 排序权重
+      click: () => {
+        let ext = null;
+        if (cmdType) {
+          ext = {
+            code: featureCode,
+            type: cmdType || 'text',
+            payload: searchValue.value,
+          };
+        }
+        pluginClickEvent({ plugin, fe: feature, cmd, ext, openPlugin, option });
+      },
+    };
+    return option;
+  };
+
+  /**
    * 从搜索值中获取插件选项
    */
   const getOptionsFromSearchValue = (value: string, strict = false) => {
     const localPlugins = getGlobal('LOCAL_PLUGINS').getLocalPlugins();
-    let options: any = [];
-    // todo 先搜索 plugin
+    let options: Option[] = [];
+
+    // 先搜索 plugin
     localPlugins.forEach((plugin) => {
-      const feature = plugin.features;
-      // 系统插件无 features 的情况，不需要再搜索
-      if (!feature) return;
-      feature.forEach((fe) => {
-        const cmds = searchKeyValues(fe.cmds, value, strict);
-        options = [
-          ...options,
-          ...cmds.map((cmd) => {
-            const option = {
-              name: cmd.label || cmd,
-              value: 'plugin',
-              icon: plugin.logo,
-              desc: fe.explain,
-              type: plugin.pluginType,
-              match: PinyinMatch.match(cmd.label || cmd, value),
-              zIndex: getIndex(cmd, value), // 排序权重
-              click: () => {
-                pluginClickEvent({
-                  plugin,
-                  fe,
-                  cmd,
-                  ext: cmd.type
-                    ? {
-                        code: fe.code,
-                        type: cmd.type || 'text',
-                        payload: searchValue.value,
-                      }
-                    : null,
-                  openPlugin,
-                  option,
-                });
-              },
-            };
-            return option;
-          }),
-        ];
-      });
+      const features = plugin.features;
+      if (!features) return;
+
+      for (const feature of features) {
+        const cmds = matchCmds(feature.cmds, value, strict);
+        for (const cmd of cmds) {
+          const option = buildPluginOption(plugin, feature, cmd, value, openPlugin);
+          options.push(option);
+        }
+      }
     });
-    // todo 再搜索 app
+
+    // 再搜索 app
     const appPlugins = appList.value || [];
     const descMap = new Map();
     options = [
@@ -109,16 +122,11 @@ const optionsManager = ({ searchValue, appList, openPlugin, currentPlugin }) => 
           if (!descMap.get(plugin)) {
             descMap.set(plugin, true);
             let has = false;
-            plugin.keyWords.some((keyWord) => {
-              const match = PinyinMatch.match(keyWord, value);
-              if (
-                // keyWord
-                //   .toLocaleUpperCase()
-                //   .indexOf(value.toLocaleUpperCase()) >= 0 ||
-                match
-              ) {
-                has = keyWord;
-                plugin.name = keyWord;
+            plugin.keyWords.some((keyword) => {
+              const match = PinyinMatch.match(keyword, value);
+              if (match) {
+                has = keyword;
+                plugin.name = keyword;
                 plugin.match = match;
                 return true;
               }
@@ -144,6 +152,7 @@ const optionsManager = ({ searchValue, appList, openPlugin, currentPlugin }) => 
   };
 
   watch(searchValue, () => search(searchValue.value));
+
   // search Input operation
   const search = debounce((value) => {
     if (currentPlugin.value.name) return;
@@ -153,13 +162,13 @@ const optionsManager = ({ searchValue, appList, openPlugin, currentPlugin }) => 
       return;
     }
     optionsRef.value = getOptionsFromSearchValue(value);
-  }, 100);
+  }, 500);
 
   const setOptionsRef = (options) => {
     optionsRef.value = options;
   };
 
-  const { searchFocus, clipboardFile, clearClipboardFile, readClipboardContent } = useFocus({
+  const { searchFocus, clipboardFile, clearClipboardFile, readClipboardContent } = clipboardWatch({
     currentPlugin,
     optionsRef,
     openPlugin,

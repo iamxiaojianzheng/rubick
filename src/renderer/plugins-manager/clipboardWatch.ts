@@ -26,93 +26,105 @@ export default ({ currentPlugin, optionsRef, openPlugin, setOptionsRef }) => {
     };
   };
 
-  const searchFocus = (files, strict = true) => {
+  /**
+   * 构建插件操作选项
+   */
+  const buildPluginOption = (plugin, feature, cmd, payload, openPlugin) => {
+    const { logo: pluginLogo, pluginType } = plugin;
+    const { code: featureCode, explain: featureExplain } = feature;
+    const { label: cmdLabel, type: cmdType } = cmd;
+    const option = {
+      name: cmdLabel,
+      value: 'plugin',
+      icon: pluginLogo,
+      desc: featureExplain,
+      type: pluginType,
+      click: () => {
+        const ext = {
+          code: featureCode,
+          type: cmdType || 'text',
+          payload,
+        };
+        pluginClickEvent({ plugin, fe: feature, cmd, ext, openPlugin, option });
+        clearClipboardFile();
+      },
+    };
+    return option;
+  };
+
+  const matchFiles = (fileList: Array<FileInfo>, regMatch: string): boolean => {
+    const reg = new RegExp(regMatch);
+    return fileList.every((file) => reg.test(path.extname(file.path)));
+  };
+
+  /**
+   * 根据粘贴板中的文件或文本内容生成插件操作选项。
+   * files - 文件列表，如果没有提供，将通过 `getCopyFiles()` 获取文件。
+   * strict - 是否开启严格模式，如果开启且未开启自动粘贴，则直接返回。
+   */
+  const handleInputOrCopyFile = (files: Array<FileInfo>, strict = true) => {
+    console.log('begin handleInputOrCopyFile');
     const config: any = localConfig.getConfig();
-    // 未开启自动粘贴
+
+    // 如果未开启自动粘贴且严格模式为 true，则直接返回
     if (!config.perf.common.autoPast && strict) return;
 
+    // 如果当前插件名称已存在，则不执行任何操作
     if (currentPlugin.value.name) return;
-    const fileList = files || getCopyFiles();
 
-    // 拷贝的是文件
+    const fileList: Array<FileInfo> = files || getCopyFiles();
+    console.log(fileList);
+
     if (fileList) {
       window.setSubInputValue({ value: '' });
       clipboardFile.value = fileList;
+
+      const options: any = [];
+
       const localPlugins = getGlobal('LOCAL_PLUGINS').getLocalPlugins();
-      const options: any = [buildCopyPathOption(fileList)];
-      // 判断复制的文件类型是否一直
-      const commonLen = fileList.filter((file) => path.extname(fileList[0].path) === path.extname(file.path)).length;
-      // 复制路径
-      if (commonLen !== fileList.length) {
-        setOptionsRef(options);
-        return;
+      for (const plugin of localPlugins) {
+        const { features } = plugin;
+        if (!features) continue;
+
+        for (const feature of features) {
+          console.log(feature);
+          for (const cmd of feature.cmds) {
+            console.log(cmd);
+            if (!Object.keys(cmd).includes('type')) continue;
+
+            const { type: cmdType, match: cmdMatch } = cmd;
+
+            // 图片处理
+            if (cmdType === 'img' && fileList.length === 1) {
+              const fileExt = path.extname(fileList[0].path);
+              if (/\.(png|jpg|gif|jpeg|webp)$/.test(fileExt)) {
+                const payload = nativeImage.createFromPath(fileList[0].path).toDataURL();
+                const option = buildPluginOption(plugin, feature, cmd, payload, openPlugin);
+                options.push(option);
+              }
+            }
+
+            // 如果是文件，且符合文件正则类型
+            if (['file', 'files'].includes(cmdType) && matchFiles(fileList, cmdMatch)) {
+              const payload = fileList;
+              const option = buildPluginOption(plugin, feature, cmd, payload, openPlugin);
+              console.log(option);
+              options.push(option);
+            }
+
+            // TODO: handle type is window
+            if (cmdType === 'window') {
+              // pass
+            }
+          }
+        }
       }
 
-      // 再正则插件
-      if (fileList.length === 1) {
-        localPlugins.forEach((plugin) => {
-          const feature = plugin.features;
-          // 系统插件无 features 的情况，不需要再搜索
-          if (!feature) return;
-          feature.forEach((fe) => {
-            const ext = path.extname(fileList[0].path);
-            fe.cmds.forEach((cmd) => {
-              const regImg = /\.(png|jpg|gif|jpeg|webp)$/;
-              if (cmd.type === 'img' && regImg.test(ext) && fileList.length === 1) {
-                const option = {
-                  name: cmd.label,
-                  value: 'plugin',
-                  icon: plugin.logo,
-                  desc: fe.explain,
-                  type: plugin.pluginType,
-                  click: () => {
-                    pluginClickEvent({
-                      plugin,
-                      fe,
-                      cmd,
-                      ext: {
-                        code: fe.code,
-                        type: cmd.type || 'text',
-                        payload: nativeImage.createFromPath(fileList[0].path).toDataURL(),
-                      },
-                      openPlugin,
-                      option,
-                    });
-                    clearClipboardFile();
-                  },
-                };
-                options.push(option);
-              }
-              // 如果是文件，且符合文件正则类型
-              if (fileList.length > 1 || (cmd.type === 'file' && new RegExp(cmd.match).test(ext))) {
-                const option = {
-                  name: cmd,
-                  value: 'plugin',
-                  icon: plugin.logo,
-                  desc: fe.explain,
-                  type: plugin.pluginType,
-                  click: () => {
-                    pluginClickEvent({
-                      plugin,
-                      fe,
-                      cmd,
-                      option,
-                      ext: {
-                        code: fe.code,
-                        type: cmd.type || 'text',
-                        payload: fileList,
-                      },
-                      openPlugin,
-                    });
-                    clearClipboardFile();
-                  },
-                };
-                options.push(option);
-              }
-            });
-          });
-        });
+      if (options.length === 0) {
+        options.push(buildCopyPathOption(fileList));
       }
+      console.log(options);
+
       setOptionsRef(options);
       clipboard.clear();
       return;
@@ -194,7 +206,7 @@ export default ({ currentPlugin, optionsRef, openPlugin, setOptionsRef }) => {
   };
 
   return {
-    searchFocus,
+    searchFocus: handleInputOrCopyFile,
     clipboardFile,
     clearClipboardFile,
     readClipboardContent,
