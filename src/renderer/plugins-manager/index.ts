@@ -1,5 +1,4 @@
 import path from 'path';
-import cloneDeep from 'lodash.clonedeep';
 import { message } from 'ant-design-vue';
 import { reactive, toRefs, ref } from 'vue';
 import { getGlobal } from '@electron/remote';
@@ -89,18 +88,18 @@ const createPluginManager = (): any => {
         return;
       }
       await loadPlugin(plugin);
-      window.rubick.openPlugin(
-        JSON.parse(
-          JSON.stringify({
-            ...plugin,
-            ext: plugin.ext || {
-              code: plugin.feature.code,
-              type: plugin.cmd.type || 'text',
-              payload: null,
-            },
-          })
-        )
+
+      const newPluginInfo = JSON.parse(
+        JSON.stringify({
+          ...plugin,
+          ext: plugin.ext || {
+            code: plugin.feature.code,
+            type: plugin.cmd.type || 'text',
+            payload: null,
+          },
+        })
       );
+      window.rubick.openPlugin(newPluginInfo);
     }
 
     if (plugin.pluginType === 'app') {
@@ -145,10 +144,11 @@ const createPluginManager = (): any => {
 
     state.pluginHistory = [...pin, ...unpin];
     const result = window.rubick.db.get(PLUGIN_HISTORY) || {};
+    const newPluginHistory = JSON.parse(JSON.stringify(state.pluginHistory));
     window.rubick.db.put({
       _id: PLUGIN_HISTORY,
       _rev: result._rev,
-      data: cloneDeep(state.pluginHistory),
+      data: newPluginHistory,
     });
   };
 
@@ -158,10 +158,11 @@ const createPluginManager = (): any => {
     const pin = state.pluginHistory.filter((plugin) => plugin.pin);
     state.pluginHistory = [...pin, ...unpin];
     const result = window.rubick.db.get(PLUGIN_HISTORY) || {};
+    const newPluginHistory = JSON.parse(JSON.stringify(state.pluginHistory));
     window.rubick.db.put({
       _id: PLUGIN_HISTORY,
       _rev: result._rev,
-      data: cloneDeep(state.pluginHistory),
+      data: newPluginHistory,
     });
   };
 
