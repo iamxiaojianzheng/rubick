@@ -19,6 +19,8 @@
   </div>
 </template>
 <script lang="ts" setup>
+import cloneDeep from 'lodash.clonedeep';
+
 import { ref, toRaw } from 'vue';
 import { message } from 'ant-design-vue';
 
@@ -38,7 +40,7 @@ try {
   // ignore
 }
 
-const formState = ref(JSON.parse(JSON.stringify(defaultConfig)));
+const formState = ref(cloneDeep(defaultConfig));
 
 const rules = {
   register: [{ required: true, trigger: 'change' }],

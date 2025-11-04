@@ -128,6 +128,7 @@
   </div>
 </template>
 <script setup>
+import cloneDeep from 'lodash.clonedeep';
 import { useStore } from 'vuex';
 import { computed, ref, reactive } from 'vue';
 import {
@@ -167,7 +168,7 @@ const showKeys = (item) => {
 };
 
 const handleOk = () => {
-  window.rubick.dbStorage.setItem('rubick-db-jg-webdav', JSON.parse(JSON.stringify(formState)));
+  window.rubick.dbStorage.setItem('rubick-db-jg-webdav', cloneDeep(formState));
   message.success('保存成功');
   showSetting.value = false;
 };
@@ -181,7 +182,7 @@ const exportData = () => {
   if (!formState.password || !formState.username) {
     return (showSetting.value = true);
   }
-  window.market.dbDump(JSON.parse(JSON.stringify(formState)));
+  window.market.dbDump(cloneDeep(formState));
 };
 
 const importData = () => {
@@ -192,7 +193,7 @@ const importData = () => {
     title: '导入确认',
     content: '导入坚果云数据将会覆盖本地数据，是否确认导入？',
     onOk() {
-      window.market.dbImport(JSON.parse(JSON.stringify(formState)));
+      window.market.dbImport(cloneDeep(formState));
     },
   });
 };

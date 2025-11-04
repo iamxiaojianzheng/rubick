@@ -103,9 +103,8 @@ const changeTheme = () => {
 //     title: '确定恢复默认设置吗？',
 //     content: '回复后之前的设置将会被清空',
 //     onOk() {
-//       const defaultcustom = remote.getGlobal('OP_CONFIG').getDefaultConfig()
-//         .perf.custom;
-//       state.custom = JSON.parse(JSON.stringify(defaultcustom));
+//       const defaultcustom = remote.getGlobal('OP_CONFIG').getDefaultConfig().perf.custom;
+//       state.custom = cloneDeep(defaultcustom);
 //     },
 //   });
 // };

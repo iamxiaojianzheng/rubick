@@ -26,6 +26,8 @@
 
 <script setup>
 import { ref } from 'vue';
+import cloneDeep from 'lodash.clonedeep';
+
 const fs = window.require('fs');
 const process = window.require('process');
 
@@ -65,13 +67,13 @@ const dropFile = (e) => {
     return plugin;
   });
   localStartList.value = [...localStartList.value, ...files];
-  window.rubick.dbStorage.setItem(dbId, JSON.parse(JSON.stringify(localStartList.value)));
+  window.rubick.dbStorage.setItem(dbId, cloneDeep(localStartList.value));
 };
 
 const remove = (item) => {
   localStartList.value = localStartList.value.filter((app) => app.desc !== item.desc);
-  window.rubick.dbStorage.setItem(dbId, JSON.parse(JSON.stringify(localStartList.value)));
-  window.market.removeLocalStartPlugin(JSON.parse(JSON.stringify(item)));
+  window.rubick.dbStorage.setItem(dbId, cloneDeep(localStartList.value));
+  window.market.removeLocalStartPlugin(cloneDeep(item));
 };
 
 const checkDrop = (e) => {
