@@ -10,10 +10,10 @@
     <a href="https://github.com/iamxiaojianzheng/ruck/blob/master/LICENSE"><img alt="许可证" src="https://img.shields.io/github/license/iamxiaojianzheng/ruck" /></a>
     <a href="https://github.com/iamxiaojianzheng/ruck/stargazers"><img alt="github 收藏数" src="https://img.shields.io/github/stars/iamxiaojianzheng/ruck?style=social" /></a>
 </div>
-
 <div align= "center">
-<img align="center" src="https://pica.zhimg.com/v2-2645e0d7aed4221af38a3aa8d0525713.png" />
+<img align="center" src="https://picx.zhimg.com/v2-6d618ffa999b1270d9b223704b9d0cc5.png" />
 </div>
+
 
 开源的插件化桌面端效率工具箱。插件是基于 npm 进行安装和卸载，非常轻便。插件数据支持 webdav 多端同步，非常安全。支持内网部署，可二次定制化开发，非常灵活。
 
@@ -44,14 +44,10 @@
 
 支持拼音和缩写来搜索系统安装应用：
 
-![](https://pic1.zhimg.com/80/v2-70c105ff7fb1e955fc67ffa5a5564092_720w.gif)
-
 ### 2. UI 类插件安装
 
 点击搜索框右侧 `ruck` 图标，进入插件市场，选择所需插件，点击下载按钮即可下载，下载完成后在已安装 tab 下可以找到安装插件。
 安装完成后，输入插件呼起命令即可使用对应插件：
-
-![](https://pic1.zhimg.com/80/v2-5906bba20fe0a67f9e7a5a8c11341305_720w.gif)
 
 ### 3. 系统类插件安装
 
@@ -64,8 +60,6 @@
 ### 4. 基于 webdav 的多端数据同步
 
 在 `ruck` 内搜索`偏好设置` 进入 `账户和设置` -> `多端数据同步`；即可对 `ruck` 插件使用数据进行 `导出` 和 `导入`。
-
-![](https://pic1.zhimg.com/80/v2-ff85793741e4dff82a729d3eb3d41551_720w.png)
 
 ## 关联仓库
 
