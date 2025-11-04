@@ -1,4 +1,4 @@
-import { globalShortcut, nativeTheme, BrowserWindow, BrowserView, ipcMain, app, Notification } from 'electron';
+import { globalShortcut, nativeTheme, BrowserWindow, WebContentsView, ipcMain, app, Notification } from 'electron';
 import screenCapture from '@/core/screen-capture';
 import localConfig from '@/main/common/initLocalConfig';
 import winPosition from './getWinPosition';
@@ -18,7 +18,7 @@ const registerHotKey = (mainWindow: BrowserWindow): void => {
 
   const setTheme = async () => {
     mainWindow.webContents.executeJavaScript(`window.rubick.changeTheme()`);
-    mainWindow.getBrowserViews().forEach((view: BrowserView) => {
+    mainWindow.contentView.children.forEach((view: WebContentsView) => {
       view.webContents.executeJavaScript(`window.rubick.changeTheme()`);
     });
   };
@@ -30,13 +30,13 @@ const registerHotKey = (mainWindow: BrowserWindow): void => {
     if (isDark) {
       nativeTheme.themeSource = 'dark';
       mainWindow.webContents.executeJavaScript(`document.body.classList.add("dark");window.rubick.theme="dark"`);
-      mainWindow.getBrowserViews().forEach((view: BrowserView) => {
+      mainWindow.contentView.children.forEach((view: WebContentsView) => {
         view.webContents.executeJavaScript(`document.body.classList.add("dark");window.rubick.theme="dark"`);
       });
     } else {
       nativeTheme.themeSource = 'light';
       mainWindow.webContents.executeJavaScript(`document.body.classList.remove("dark");window.rubick.theme="light"`);
-      mainWindow.getBrowserViews().forEach((view: BrowserView) => {
+      mainWindow.contentView.children.forEach((view: WebContentsView) => {
         view.webContents.executeJavaScript(`document.body.classList.remove("dark");window.rubick.theme="light"`);
       });
     }
