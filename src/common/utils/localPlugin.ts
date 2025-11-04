@@ -1,6 +1,5 @@
 import path from 'path';
 import fs from 'fs';
-import https from 'https';
 import request from 'request';
 import { PluginHandler } from '@/core';
 import { PLUGIN_INSTALL_DIR as baseDir, PLUGIN_INSTALL_ROOT_DIR } from '@/common/constans/main';
@@ -60,7 +59,7 @@ let pluginInstance;
 global.LOCAL_PLUGINS = {
   PLUGINS: [],
   async downloadPlugin(plugin) {
-    const { name: pluginName, isDev, logo } = plugin;
+    const { name: pluginName, isDev } = plugin;
 
     await pluginInstance.install([pluginName], { isDev });
     const pluginPath = path.resolve(PLUGIN_INSTALL_ROOT_DIR, pluginName);
@@ -71,17 +70,18 @@ global.LOCAL_PLUGINS = {
       const pluginInfo = JSON.parse(fs.readFileSync(path.join(pluginPath, './package.json'), 'utf8'));
       plugin = { ...plugin, ...pluginInfo };
     }
+
+    const logo = plugin.logo;
+    const logoPath = path.join(pluginPath, 'logo' + path.extname(logo));
     if (/^(http|https):\/\//.test(logo)) {
-      const logoPath = path.join(pluginPath, 'logo' + path.extname(logo));
-      console.log(logo);
-      console.log(logoPath);
       await downloadImage(logo, logoPath);
       if (fs.existsSync(logoPath)) {
         plugin.logoPath = logoPath;
       }
-    } else if (fs.existsSync(path.join(pluginPath, logo))) {
-      plugin.logoPath = path.join(pluginPath, logo);
+    } else if (fs.existsSync(logoPath)) {
+      plugin.logoPath = logoPath;
     }
+
     global.LOCAL_PLUGINS.addPlugin(plugin);
     return global.LOCAL_PLUGINS.PLUGINS;
   },
