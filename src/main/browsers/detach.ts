@@ -63,13 +63,16 @@ export default () => {
     } else {
       createWin.loadURL(`file://${path.join(__static, './detach/index.html')}`);
     }
+
     createWin.on('close', () => {
       executeHooks('PluginOut', null);
     });
+
     createWin.on('closed', () => {
       view.webContents?.destroy();
       win = undefined;
     });
+
     createWin.on('focus', () => {
       win = createWin;
       view && win.webContents?.focus();
@@ -78,11 +81,16 @@ export default () => {
     createWin.once('ready-to-show', async () => {
       const config = await localConfig.getConfig();
       const darkMode = config.perf.common.darkMode;
-      darkMode &&
+      if (darkMode) {
         createWin.webContents.executeJavaScript(`document.body.classList.add("dark");window.rubick.theme="dark"`);
-      view.setAutoResize({ width: true, height: true });
-      createWin.setBrowserView(view);
+      }
+
+      view.on('resize', () => {
+        return view.setBounds({ x: 0, y: 0, width: true, height: true });
+      });
+      createWin.contentView.addChildView(view);
       view.inDetach = true;
+
       createWin.webContents.executeJavaScript(`window.initDetach(${JSON.stringify(pluginInfo)})`);
       createWin.show();
     });
@@ -103,7 +111,7 @@ export default () => {
     // 最小化
     createWin.on('unmaximize', () => {
       createWin.webContents.executeJavaScript('window.unmaximizeTrigger()');
-      const view = createWin.getBrowserView();
+      const view = createWin.contentView?.children[0];
       if (!view) return;
       const bounds = createWin.getBounds();
       const display = screen.getDisplayMatching(bounds);

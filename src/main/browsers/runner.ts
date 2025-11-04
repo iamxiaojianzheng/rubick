@@ -1,4 +1,4 @@
-import { BrowserView, BrowserWindow, session } from 'electron';
+import { WebContentsView, BrowserWindow, session } from 'electron';
 import path from 'path';
 import commonConst from '../../common/utils/commonConst';
 import { PLUGIN_INSTALL_DIR as baseDir } from '@/common/constans/main';
@@ -57,13 +57,18 @@ export default () => {
     if (!view) return;
     const height = pluginSetting && pluginSetting.height;
     window.setSize(WINDOW_WIDTH, height || WINDOW_PLUGIN_HEIGHT);
+
     view.setBounds({
       x: 0,
       y: WINDOW_HEIGHT,
       width: WINDOW_WIDTH,
       height: height || WINDOW_PLUGIN_HEIGHT - WINDOW_HEIGHT,
     });
-    view.setAutoResize({ width: true, height: true });
+
+    view.on('resize', () => {
+      view.setBounds({ x: 0, y: 0, width: true, height: true });
+    });
+
     executeHooks('PluginEnter', ext);
     executeHooks('PluginReady', ext);
     const config = await localConfig.getConfig();
@@ -113,7 +118,7 @@ export default () => {
     const ses = session.fromPartition('<' + name + '>');
     ses.setPreloads([`${__static}/preload.js`]);
 
-    view = new BrowserView({
+    view = new WebContentsView({
       webPreferences: {
         webSecurity: false,
         nodeIntegration: true,
@@ -130,7 +135,7 @@ export default () => {
         spellcheck: false,
       },
     });
-    window.setBrowserView(view);
+    window.contentView.addChildView(view);
     view.webContents.loadURL(pluginIndexPath);
     view.webContents.once('dom-ready', () => viewReadyFn(window, plugin));
     // 修复请求跨域问题
@@ -154,9 +159,9 @@ export default () => {
     if (!view) return;
     executeHooks('PluginOut', null);
     setTimeout(() => {
-      window.removeBrowserView(view);
-      if (!view.inDetach) {
-        window.setBrowserView(null);
+      window.contentView.removeChildView(view);
+      if (!view?.inDetach) {
+        // window.setBrowserView(null);
         view.webContents?.destroy();
       }
       window.webContents?.executeJavaScript(`window.initRubick()`);

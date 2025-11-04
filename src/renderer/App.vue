@@ -91,9 +91,7 @@ watch(
     window.rubick.setExpendHeight(
       getWindowHeight(
         options.value,
-        pluginLoading.value || !config.value.perf.common.history
-          ? []
-          : pluginHistory.value
+        pluginLoading.value || !config.value.perf.common.history ? [] : pluginHistory.value
       )
     );
   },
@@ -130,45 +128,46 @@ const choosePlugin = (plugin) => {
   if (options.value.length) {
     const currentChoose = options.value[currentSelect.value];
     currentChoose.click();
-  } else {
-    const localPlugins = getGlobal('LOCAL_PLUGINS').getLocalPlugins();
-    const currentChoose = plugin || pluginHistory.value[currentSelect.value];
-    let hasRemove = true;
-    if (currentChoose.pluginType === 'app') {
-      hasRemove = false;
-      changePluginHistory(currentChoose);
-      exec(currentChoose.action);
-      return;
-    }
-    localPlugins.find((plugin) => {
-      if (plugin.name === currentChoose.originName) {
-        hasRemove = false;
-        return true;
-      }
-      return false;
-    });
-    if (hasRemove) {
-      const result = window.rubick.db.get(PLUGIN_HISTORY) || {};
-      const history = result.data.filter(
-        (item) => item.originName !== currentChoose.originName
-      );
-      setPluginHistory(history);
-      return message.warning('插件已被卸载！');
-    }
-    changePluginHistory(currentChoose);
-    window.rubick.openPlugin(
-      JSON.parse(
-        JSON.stringify({
-          ...currentChoose,
-          ext: {
-            code: currentChoose.feature.code,
-            type: currentChoose.cmd.type || 'text',
-            payload: null,
-          },
-        })
-      )
-    );
+    return;
   }
+
+  const localPlugins = getGlobal('LOCAL_PLUGINS').getLocalPlugins();
+  const currentChoose = plugin || pluginHistory.value[currentSelect.value];
+  let hasRemove = true;
+
+  if (currentChoose.pluginType === 'app') {
+    hasRemove = false;
+    changePluginHistory(currentChoose);
+    exec(currentChoose.action);
+    return;
+  }
+
+  localPlugins.find((plugin) => {
+    if (plugin.name === currentChoose.originName) {
+      hasRemove = false;
+      return true;
+    }
+    return false;
+  });
+
+  if (hasRemove) {
+    const result = window.rubick.db.get(PLUGIN_HISTORY) || {};
+    const history = result.data.filter((item) => item.originName !== currentChoose.originName);
+    setPluginHistory(history);
+    return message.warning('插件已被卸载！');
+  }
+
+  const newPluginInfo = {
+    ...currentChoose,
+    ext: {
+      code: currentChoose.feature.code,
+      type: currentChoose.cmd.type || 'text',
+      payload: null,
+    },
+  };
+  window.rubick.openPlugin(JSON.parse(JSON.stringify(newPluginInfo)));
+
+  changePluginHistory(currentChoose);
 };
 
 const clearSearchValue = () => {

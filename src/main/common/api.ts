@@ -1,11 +1,9 @@
 import { BrowserWindow, ipcMain, dialog, app, Notification, nativeImage, clipboard, screen, shell } from 'electron';
 import fs from 'fs';
-import path from 'path';
 import ks from 'node-key-sender';
 import clipboardFiles from 'clipboard-files';
 
 import { screenCapture } from '@/core';
-import commonConst from '@/common/utils/commonConst';
 import commonUtil from '@/common/utils/commonUtil';
 import getCopyFiles from '@/common/utils/getCopyFiles';
 import { DECODE_KEY, PLUGIN_INSTALL_DIR as baseDir } from '@/common/constans/main';
@@ -29,6 +27,15 @@ class API extends DBInstance {
     });
     // 按 ESC 退出插件
     mainWindow.webContents.on('before-input-event', (event, input) => this.__EscapeKeyDown(event, input, mainWindow));
+
+    mainWindow.webContents.on('before-input-event', (event, input) => {
+      if (input.key.toLowerCase() === 'd' && (input.control || input.meta) && !input.alt && !input.shift) {
+        event.preventDefault();
+        if (mainWindow && !mainWindow.isDestroyed()) {
+          this.detachPlugin(null, mainWindow);
+        }
+      }
+    });
   }
 
   public getCurrentWindow = (window, e) => {
@@ -101,15 +108,6 @@ class API extends DBInstance {
     if (!view.inited) {
       view?.webContents?.on('before-input-event', (event, input) => this.__EscapeKeyDown(event, input, window));
     }
-
-    window.webContents.on('before-input-event', (event, input) => {
-      if (input.key.toLowerCase() === 'd' && (input.control || input.meta) && !input.alt && !input.shift) {
-        event.preventDefault();
-        if (window && !window.isDestroyed()) {
-          this.detachPlugin(null, window);
-        }
-      }
-    });
   }
 
   public removePlugin(e, window) {
@@ -286,25 +284,26 @@ class API extends DBInstance {
 
   public sendPluginSomeKeyDownEvent({ data: { modifiers, keyCode } }) {
     const code = DECODE_KEY[keyCode];
-    if (!code || !runnerInstance.getView()) return;
+    const view = runnerInstance.getView();
+    if (!code || !view) return;
     if (modifiers.length > 0) {
-      runnerInstance.getView().webContents.sendInputEvent({
+      view?.webContents?.sendInputEvent({
         type: 'keyDown',
         modifiers,
         keyCode: code,
       });
     } else {
-      runnerInstance.getView().webContents.sendInputEvent({
+      view?.webContents?.sendInputEvent({
         type: 'keyDown',
         keyCode: code,
       });
     }
   }
 
-  public detachPlugin(e, window) {
+  public detachPlugin(e, window: BrowserWindow) {
     if (!this.currentPlugin) return;
-    const view = window.getBrowserView();
-    window.setBrowserView(null);
+    const view = window.contentView.children[0];
+    window.contentView.removeChildView(view);
     window.webContents.executeJavaScript(`window.getMainInputInfo()`).then((res) => {
       detachInstance.init(
         {
