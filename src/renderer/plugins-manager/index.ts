@@ -166,7 +166,7 @@ const createPluginManager = (): any => {
     });
   };
 
-  const { searchValue, onSearch, setSearchValue, placeholder } = searchManager();
+  const { searchValue, onSearch, setSearchValue, subInputReadonly, placeholder, readonly } = searchManager();
   const { options, searchFocus, setOptionsRef, clipboardFile, clearClipboardFile, readClipboardContent } =
     optionsManager({
       searchValue,
@@ -213,6 +213,7 @@ const createPluginManager = (): any => {
 
   window.initRubick = () => {
     state.currentPlugin = {};
+    subInputReadonly(false);
     setSearchValue('');
     setOptionsRef([]);
     window.setSubInput({ placeholder: '' });
@@ -242,6 +243,7 @@ const createPluginManager = (): any => {
     options,
     searchValue,
     placeholder,
+    readonly,
     searchFocus,
     setSearchValue,
     clipboardFile,

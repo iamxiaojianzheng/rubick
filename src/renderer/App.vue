@@ -2,15 +2,16 @@
   <div id="components-layout" @mousedown="onMouseDown">
     <Search
       :currentPlugin="currentPlugin"
+      :searchValue="searchValue"
+      :placeholder="placeholder"
+      :readonly="readonly"
+      :pluginLoading="pluginLoading"
+      :pluginHistory="pluginHistory"
+      :clipboardFile="clipboardFile || []"
       @changeCurrent="changeIndex"
       @onSearch="onSearch"
       @openMenu="openMenu"
       @changeSelect="changeSelect"
-      :searchValue="searchValue"
-      :placeholder="placeholder"
-      :pluginLoading="pluginLoading"
-      :pluginHistory="pluginHistory"
-      :clipboardFile="clipboardFile || []"
       @choosePlugin="choosePlugin"
       @focus="searchFocus"
       @clear-search-value="clearSearchValue"
@@ -56,6 +57,7 @@ const {
   openPlugin,
   currentPlugin,
   placeholder,
+  readonly,
   pluginLoading,
   searchFocus,
   clipboardFile,

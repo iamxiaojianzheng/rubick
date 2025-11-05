@@ -172,6 +172,12 @@ class API extends DBInstance {
     originWindow.webContents.executeJavaScript(`window.removeSubInput()`);
   }
 
+  public subInputReadonly({ data }, window, e) {
+    const originWindow = this.getCurrentWindow(window, e);
+    if (!originWindow) return;
+    originWindow.webContents.executeJavaScript(`window.subInputReadonly(${data})`);
+  }
+
   public setSubInputValue({ data }, window, e) {
     const originWindow = this.getCurrentWindow(window, e);
     if (!originWindow) return;

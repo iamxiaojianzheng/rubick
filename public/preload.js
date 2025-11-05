@@ -61,6 +61,9 @@ window.rubick = {
     delete window.rubick.hooks.onSubInputChange;
     ipcSendSync('removeSubInput');
   },
+  subInputReadonly(data) {
+    ipcSendSync('subInputReadonly', data);
+  },
   setSubInputValue(text) {
     ipcSendSync('setSubInputValue', { text });
   },

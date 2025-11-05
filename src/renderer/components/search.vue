@@ -8,7 +8,7 @@
       </a-tag>
     </div>
     <div v-else :class="currentPlugin.cmd ? 'rubick-tag' : ''">
-      <img @click="() => emit('openMenu')" class="rubick-logo" :src="currentPlugin.logo || config.perf.custom.logo" />
+      <img @click="clickLogo" class="rubick-logo" :src="currentPlugin.logo || config.perf.custom.logo" />
       <div class="select-tag" v-show="currentPlugin.cmd">
         {{ currentPlugin.cmd }}
       </div>
@@ -17,6 +17,9 @@
       id="search"
       ref="mainInput"
       class="main-input"
+      :value="searchValue"
+      :readOnly="readonly"
+      :placeholder="pluginLoading ? '更新检测中...' : placeholder || config.perf.custom.placeholder"
       @input="(e) => changeValue(e)"
       @keydown.left="(e) => keydownEvent(e, 'left')"
       @keydown.right="(e) => keydownEvent(e, 'right')"
@@ -24,8 +27,6 @@
       @keydown.tab="(e) => keydownEvent(e, 'down')"
       @keydown.up="(e) => keydownEvent(e, 'up')"
       @keydown="(e) => checkNeedInit(e)"
-      :value="searchValue"
-      :placeholder="pluginLoading ? '更新检测中...' : placeholder || config.perf.custom.placeholder"
       @keypress.enter="(e) => keydownEvent(e, 'enter')"
       @keypress.space="(e) => keydownEvent(e, 'space')"
       @focus="emit('focus')"
@@ -59,11 +60,21 @@ const props: any = defineProps({
     type: String,
     default: '',
   },
+  readonly: {
+    type: Boolean,
+    default: false,
+  },
   pluginHistory: (() => [])(),
   currentPlugin: {},
   pluginLoading: Boolean,
   clipboardFile: (() => [])(),
 });
+
+const clickLogo = () => {
+  if (props.currentPlugin.name === 'rubick-system-feature') {
+    emit('openMenu');
+  }
+};
 
 const changeValue = (e) => {
   // if (props.currentPlugin.name === 'rubick-system-feature') return;
@@ -238,6 +249,7 @@ const newWindow = () => {
 
 const mainInput = ref(null);
 window.rubick.hooks.onShow = () => {
+  console.log('onShow');
   (mainInput.value as unknown as HTMLDivElement).focus();
 };
 

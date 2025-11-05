@@ -18,6 +18,7 @@ interface Window {
   setSubInput: ({ placeholder }: { placeholder: string }) => void;
   setSubInputValue: ({ value }: { value: string }) => void;
   removeSubInput: () => void;
+  subInputReadonly: (value: boolean) => void;
   loadPlugin: (plugin: any) => void;
   updatePlugin: (plugin: any) => void;
   initRubick: () => void;
