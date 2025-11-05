@@ -11,6 +11,15 @@ export default ({ currentPlugin, optionsRef, openPlugin, setOptionsRef }) => {
   const clipboardFile: any = ref([]);
 
   /**
+   * 字符串格式化为正则表达式
+   */
+  const formatReg = (regStr: string) => {
+    const flags = regStr.replace(/.*\/([gimy]*)$/, '$1');
+    const pattern = regStr.replace(new RegExp('^/(.*?)/' + flags + '$'), '$1');
+    return new RegExp(pattern, flags);
+  };
+
+  /**
    * 构建复制路径的选项
    */
   const buildCopyPathOption = (fileList) => {
@@ -52,9 +61,17 @@ export default ({ currentPlugin, optionsRef, openPlugin, setOptionsRef }) => {
     return option;
   };
 
-  const matchFiles = (fileList: Array<FileInfo>, regMatch: string): boolean => {
-    const reg = new RegExp(regMatch);
-    return fileList.every((file) => reg.test(path.extname(file.path)));
+  const matchFiles = (fileList: Array<FileInfo>, cmd: Cmd): boolean => {
+    const { match, fileType } = cmd;
+    return fileList.every((file) => {
+      if (file.isDirectory && fileType === 'directory') return true;
+      else if (file.isFile && fileType === 'file') {
+        if (typeof match === 'string' && formatReg(match as string).test(path.extname(file.name))) {
+          return true;
+        }
+      }
+      return false;
+    });
   };
 
   /**
@@ -105,7 +122,8 @@ export default ({ currentPlugin, optionsRef, openPlugin, setOptionsRef }) => {
             }
 
             // 如果是文件，且符合文件正则类型
-            if (['file', 'files'].includes(cmdType) && matchFiles(fileList, cmdMatch)) {
+            if (['file', 'files'].includes(cmdType) && matchFiles(fileList, cmd)) {
+              console.log(cmd);
               const payload = fileList;
               const option = buildPluginOption(plugin, feature, cmd, payload, openPlugin);
               console.log(option);
