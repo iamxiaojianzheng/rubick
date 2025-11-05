@@ -84,6 +84,7 @@ class App {
         })
       );
     };
+
     if (!app.isReady()) {
       app.on('ready', readyFunction);
     } else {

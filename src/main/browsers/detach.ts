@@ -85,9 +85,18 @@ export default () => {
         createWin.webContents.executeJavaScript(`document.body.classList.add("dark");window.rubick.theme="dark"`);
       }
 
-      view.on('resize', () => {
-        return view.setBounds({ x: 0, y: 0, width: true, height: true });
+      createWin.on('resize', () => {
+        if (!createWin || !view) return;
+        const { width, height } = createWin.getBounds();
+        // const display = screen.getDisplayMatching(createWin.getBounds());
+        view.setBounds({
+          x: 0,
+          y: WINDOW_MIN_HEIGHT,
+          width,
+          height: height - WINDOW_MIN_HEIGHT,
+        });
       });
+
       createWin.contentView.addChildView(view);
       view.inDetach = true;
 
@@ -100,29 +109,26 @@ export default () => {
       createWin.webContents.executeJavaScript('window.maximizeTrigger()');
       const view = createWin.getBrowserView();
       if (!view) return;
-      const display = screen.getDisplayMatching(createWin.getBounds());
-      view.setBounds({
-        x: 0,
-        y: WINDOW_MIN_HEIGHT,
-        width: display.workArea.width,
-        height: display.workArea.height - WINDOW_MIN_HEIGHT,
-      });
+
+      // console.log(view, display);
+      createWin.webContents.executeJavaScript('window.maximizeTrigger()');
     });
-    // 最小化
+
+    // 解除最大化，返回之前的状态
     createWin.on('unmaximize', () => {
-      createWin.webContents.executeJavaScript('window.unmaximizeTrigger()');
-      const view = createWin.contentView?.children[0];
+      const view = createWin.contentView.children[0];
       if (!view) return;
-      const bounds = createWin.getBounds();
-      const display = screen.getDisplayMatching(bounds);
-      const width = (display.scaleFactor * bounds.width) % 1 == 0 ? bounds.width : bounds.width - 2;
-      const height = (display.scaleFactor * bounds.height) % 1 == 0 ? bounds.height : bounds.height - 2;
-      view.setBounds({
-        x: 0,
-        y: WINDOW_MIN_HEIGHT,
-        width,
-        height: height - WINDOW_MIN_HEIGHT,
-      });
+      createWin.webContents.executeJavaScript('window.unmaximizeTrigger()');
+      // const bounds = createWin.getBounds();
+      // const display = screen.getDisplayMatching(bounds);
+      // const width = (display.scaleFactor * bounds.width) % 1 == 0 ? bounds.width : bounds.width - 2;
+      // const height = (display.scaleFactor * bounds.height) % 1 == 0 ? bounds.height : bounds.height - 2;
+      // view.setBounds({
+      //   x: 0,
+      //   y: WINDOW_MIN_HEIGHT,
+      //   width,
+      //   height: height - WINDOW_MIN_HEIGHT,
+      // });
     });
 
     createWin.on('page-title-updated', (e) => {

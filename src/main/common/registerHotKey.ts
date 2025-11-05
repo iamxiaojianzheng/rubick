@@ -1,7 +1,7 @@
 import { globalShortcut, nativeTheme, BrowserWindow, WebContentsView, ipcMain, app, Notification } from 'electron';
 import screenCapture from '@/core/screen-capture';
 import localConfig from '@/main/common/initLocalConfig';
-import winPosition from './getWinPosition';
+import { mainWindowShowAndHide } from './mainWindow';
 import { uIOhook, UiohookKey } from 'uiohook-napi';
 
 const registerHotKey = (mainWindow: BrowserWindow): void => {
@@ -44,17 +44,7 @@ const registerHotKey = (mainWindow: BrowserWindow): void => {
 
   // 显示主窗口
   function mainWindowPopUp() {
-    const currentShow = mainWindow.isVisible() && mainWindow.isFocused();
-    if (currentShow) return mainWindow.hide();
-    const { x: wx, y: wy } = winPosition.getPosition();
-    mainWindow.setAlwaysOnTop(false);
-    mainWindow.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true });
-    mainWindow.focus();
-    mainWindow.setVisibleOnAllWorkspaces(false, {
-      visibleOnFullScreen: true,
-    });
-    mainWindow.setPosition(wx, wy);
-    mainWindow.show();
+    mainWindowShowAndHide(mainWindow);
   }
 
   const init = async () => {

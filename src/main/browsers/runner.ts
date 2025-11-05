@@ -75,6 +75,11 @@ export default () => {
     const darkMode = config.perf.common.darkMode;
     darkMode && view.webContents.executeJavaScript(`document.body.classList.add("dark");window.rubick.theme="dark"`);
     window.webContents.executeJavaScript(`window.pluginLoaded()`);
+    // executeHooks('Show', null);
+    window.focus();
+    window.webContents.executeJavaScript(
+      `window.rubick && window.rubick.hooks && typeof window.rubick.hooks.onShow === "function" && window.rubick.hooks.onShow()`
+    );
   };
 
   const init = (plugin, window: BrowserWindow) => {

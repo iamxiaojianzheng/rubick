@@ -1,9 +1,57 @@
-import { dialog, Menu, Tray, app, shell, BrowserWindow } from 'electron';
-import path from 'path';
-import pkg from '../../../package.json';
 import os from 'os';
+import path from 'path';
+import { uIOhook } from 'uiohook-napi';
+import { dialog, Menu, Tray, app, shell, BrowserWindow } from 'electron';
+
+import pkg from '../../../package.json';
 import commonConst from '@/common/utils/commonConst';
+import localConfig from '@/main/common/initLocalConfig';
+import { mainWindowShowAndHide } from './mainWindow';
 import { guide } from '../browsers';
+
+let mousedown = false;
+let mousedownPoint = { x: 0, y: 0 };
+let mouseup = false;
+let mouseupPoint = { x: 0, y: 0 };
+
+/**
+ * 单击托盘显示或隐藏主窗口
+ */
+function handleClickTray(window: BrowserWindow, appTray: Tray) {
+  appTray.on('click', (e, b, p) => {
+    // console.log('tray click', e, b, p);
+    if (mousedown && mouseup) {
+      if (mouseupPoint.x === mousedownPoint.x && mouseupPoint.y === mousedownPoint.y) {
+        const { x: mx, y: my } = mousedownPoint;
+        const { width, height, x, y } = b;
+        if (x <= mx && mx <= x + width && y <= my && my <= y + height) {
+          mainWindowShowAndHide(window);
+        }
+      }
+      mousedown = false;
+      mouseup = false;
+    }
+  });
+
+  uIOhook.on('mouseup', (event) => {
+    // console.log('tray hook mouseup');
+    const { width, height, x: wx, y: wy } = window.getBounds();
+    const { x, y } = event;
+    if ((x < wx || x > wx + width) && (y < wy || y > wy + height)) {
+      // console.log('subInputBlur');
+      // window.blur();
+      // window.webContents.executeJavaScript(`window.rubick.subInputBlur()`);
+    }
+    mouseupPoint = { x, y };
+    mouseup = true;
+  });
+
+  uIOhook.on('mousedown', (event) => {
+    // console.log('tray hook mousedown');
+    mousedownPoint = { x: event.x, y: event.y };
+    mousedown = true;
+  });
+}
 
 function createTray(window: BrowserWindow): Promise<Tray> {
   return new Promise((resolve) => {
@@ -87,10 +135,7 @@ function createTray(window: BrowserWindow): Promise<Tray> {
         },
       ]);
 
-    appTray.on('click', () => {
-      window.show();
-    });
-
+    handleClickTray(window, appTray);
     appTray.on('right-click', () => {
       appTray.setContextMenu(createContextMenu());
       appTray.popUpContextMenu();

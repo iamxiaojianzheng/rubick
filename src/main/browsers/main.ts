@@ -2,6 +2,8 @@ import { app, net, BrowserWindow, protocol, nativeTheme } from 'electron';
 import path from 'path';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 // import versonHandler from '../common/versionHandler';
+import { uIOhook } from 'uiohook-napi';
+
 import localConfig from '@/main/common/initLocalConfig';
 import { APP_NAME, WINDOW_HEIGHT, WINDOW_MIN_HEIGHT, WINDOW_WIDTH } from '@/common/constans/common';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -9,6 +11,9 @@ require('@electron/remote/main').initialize();
 
 export default () => {
   let win: any;
+  let isBlur = false;
+  let isMouseDown = false;
+  let isMouseUp = false;
 
   const init = () => {
     createWindow();
@@ -39,6 +44,7 @@ export default () => {
         sandbox: false,
       },
     });
+
     if (process.env.WEBPACK_DEV_SERVER_URL) {
       // Load the url of the dev server if in development mode
       win.loadURL(process.env.WEBPACK_DEV_SERVER_URL as string);
@@ -47,21 +53,17 @@ export default () => {
       // Load the index.html when not in development
       win.loadURL('app://./index.html');
     }
-    // protocol.interceptFileProtocol('image', (req, callback) => {
-    //   const url = req.url.substr(8);
-    //   callback(decodeURI(url));
-    // });
+
     protocol.handle('image', (req) => {
-      // const url = req.url.substr(8);
-      // return decodeURI(url);
-      // console.log(req.url);
       return net.fetch(req);
     });
+
     win.on('closed', () => {
       win = undefined;
     });
 
     win.on('show', () => {
+      isBlur = false;
       win.webContents.executeJavaScript(
         `window.rubick && window.rubick.hooks && typeof window.rubick.hooks.onShow === "function" && window.rubick.hooks.onShow()`
       );
@@ -73,12 +75,24 @@ export default () => {
       win.webContents.executeJavaScript(
         `window.rubick && window.rubick.hooks && typeof window.rubick.hooks.onHide === "function" && window.rubick.hooks.onHide()`
       );
+      win.webContents.executeJavaScript(`window.rubick.subInputReadonly(true)`);
     });
 
     // 判断失焦是否隐藏
     win.on('blur', async () => {
+      // console.log('blur');
+      isBlur = true;
+    });
+
+    uIOhook.on('mousedown', (event) => {
+      // console.log('main hook mousedown');
+    });
+
+    // 监听鼠标抬起事件
+    uIOhook.on('mouseup', async (event) => {
+      // console.log('main hook mouseup');
       const config = await localConfig.getConfig();
-      if (config.perf.common.hideOnBlur) {
+      if (isBlur && config.perf.common.hideOnBlur && win.isVisible()) {
         win.hide();
       }
     });
