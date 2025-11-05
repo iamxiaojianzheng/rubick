@@ -75,7 +75,6 @@ export default () => {
       win.webContents.executeJavaScript(
         `window.rubick && window.rubick.hooks && typeof window.rubick.hooks.onHide === "function" && window.rubick.hooks.onHide()`
       );
-      win.webContents.executeJavaScript(`window.rubick.subInputReadonly(true)`);
     });
 
     // 判断失焦是否隐藏

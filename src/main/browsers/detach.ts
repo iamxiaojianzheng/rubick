@@ -9,12 +9,12 @@ import { PLUGIN_INSTALL_ROOT_DIR } from '@/common/constans/main';
 export default () => {
   let win: any;
 
-  const init = async (pluginInfo, viewInfo, view) => {
+  const init = async (pluginInfo, bounds, view) => {
     ipcMain.on('detach:service', async (event, arg: { type: string }) => {
       const data = await operation[arg.type]();
       event.returnValue = data;
     });
-    const createWin = await createWindow(pluginInfo, viewInfo, view);
+    const createWin = await createWindow(pluginInfo, bounds, view);
     // console.log(pluginInfo);
     const logoPath =
       pluginInfo.logoPath ||
@@ -29,11 +29,10 @@ export default () => {
     require('@electron/remote/main').enable(createWin.webContents);
   };
 
-  const createWindow = async (pluginInfo, viewInfo, view) => {
+  const createWindow = async (pluginInfo, bounds, view) => {
     const createWin = new BrowserWindow({
-      height: viewInfo.height,
+      ...bounds,
       minHeight: WINDOW_MIN_HEIGHT,
-      width: viewInfo.width,
       autoHideMenuBar: true,
       titleBarStyle: 'hidden',
       trafficLightPosition: { x: 12, y: 21 },
@@ -43,8 +42,6 @@ export default () => {
       show: false,
       enableLargerThanScreen: true,
       backgroundColor: nativeTheme.shouldUseDarkColors ? '#1c1c28' : '#fff',
-      x: viewInfo.x,
-      y: viewInfo.y,
       webPreferences: {
         webSecurity: false,
         backgroundThrottling: false,
@@ -85,21 +82,9 @@ export default () => {
         createWin.webContents.executeJavaScript(`document.body.classList.add("dark");window.rubick.theme="dark"`);
       }
 
-      createWin.on('resize', () => {
-        if (!createWin || !view) return;
-        const { width, height } = createWin.getBounds();
-        // const display = screen.getDisplayMatching(createWin.getBounds());
-        view.setBounds({
-          x: 0,
-          y: WINDOW_MIN_HEIGHT,
-          width,
-          height: height - WINDOW_MIN_HEIGHT,
-        });
-      });
-
-      createWin.contentView.addChildView(view);
+      view.setAutoResize({ width: true, height: true });
+      createWin.setBrowserView(view);
       view.inDetach = true;
-
       createWin.webContents.executeJavaScript(`window.initDetach(${JSON.stringify(pluginInfo)})`);
       createWin.show();
     });
@@ -109,31 +94,36 @@ export default () => {
       createWin.webContents.executeJavaScript('window.maximizeTrigger()');
       const view = createWin.getBrowserView();
       if (!view) return;
-
-      // console.log(view, display);
-      createWin.webContents.executeJavaScript('window.maximizeTrigger()');
+      const display = screen.getDisplayMatching(createWin.getBounds());
+      view.setBounds({
+        x: 0,
+        y: WINDOW_MIN_HEIGHT,
+        width: display.workArea.width,
+        height: display.workArea.height - WINDOW_MIN_HEIGHT,
+      });
     });
 
     // 解除最大化，返回之前的状态
     createWin.on('unmaximize', () => {
-      const view = createWin.contentView.children[0];
-      if (!view) return;
       createWin.webContents.executeJavaScript('window.unmaximizeTrigger()');
-      // const bounds = createWin.getBounds();
-      // const display = screen.getDisplayMatching(bounds);
-      // const width = (display.scaleFactor * bounds.width) % 1 == 0 ? bounds.width : bounds.width - 2;
-      // const height = (display.scaleFactor * bounds.height) % 1 == 0 ? bounds.height : bounds.height - 2;
-      // view.setBounds({
-      //   x: 0,
-      //   y: WINDOW_MIN_HEIGHT,
-      //   width,
-      //   height: height - WINDOW_MIN_HEIGHT,
-      // });
+      const view = createWin.getBrowserView();
+      if (!view) return;
+      const bounds = createWin.getBounds();
+      const display = screen.getDisplayMatching(bounds);
+      const width = (display.scaleFactor * bounds.width) % 1 == 0 ? bounds.width : bounds.width - 2;
+      const height = (display.scaleFactor * bounds.height) % 1 == 0 ? bounds.height : bounds.height - 2;
+      view.setBounds({
+        x: 0,
+        y: WINDOW_MIN_HEIGHT,
+        width,
+        height: height - WINDOW_MIN_HEIGHT,
+      });
     });
 
     createWin.on('page-title-updated', (e) => {
       e.preventDefault();
     });
+
     createWin.webContents.once('render-process-gone', () => {
       createWin.close();
     });

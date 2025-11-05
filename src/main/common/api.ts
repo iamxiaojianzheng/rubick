@@ -308,8 +308,11 @@ class API extends DBInstance {
 
   public detachPlugin(e, window: BrowserWindow) {
     if (!this.currentPlugin) return;
-    const view = window.contentView.children[0];
-    window.contentView.removeChildView(view);
+    const view = window.getBrowserView();
+    window.setBrowserView(null);
+    // console.log(window.contentView.children);
+    // const view = window.contentView.children[0];
+    // window.contentView.removeChildView(view);
     window.webContents.executeJavaScript(`window.getMainInputInfo()`).then((res) => {
       detachInstance.init(
         {

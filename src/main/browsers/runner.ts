@@ -1,4 +1,4 @@
-import { WebContentsView, BrowserWindow, session } from 'electron';
+import { BrowserView, BrowserWindow, session } from 'electron';
 import path from 'path';
 import commonConst from '../../common/utils/commonConst';
 import { PLUGIN_INSTALL_DIR as baseDir } from '@/common/constans/main';
@@ -27,31 +27,8 @@ const getPreloadPath = (plugin, pluginIndexPath) => {
   return path.resolve(getRelativePath(pluginIndexPath), `../`, preload);
 };
 
-const viewPoolManager = () => {
-  const viewPool: any = {
-    views: [],
-  };
-  const maxLen = 4;
-  return {
-    getView(pluginName) {
-      return viewPool.views.find((view) => view.pluginName === pluginName);
-    },
-    addView(pluginName, view) {
-      if (this.getView(pluginName)) return;
-      if (viewPool.views.length > maxLen) {
-        viewPool.views.shift();
-      }
-      viewPool.views.push({
-        pluginName,
-        view,
-      });
-    },
-  };
-};
-
 export default () => {
   let view;
-  const viewInstance = viewPoolManager();
 
   const viewReadyFn = async (window, { pluginSetting, ext }) => {
     if (!view) return;
@@ -65,9 +42,12 @@ export default () => {
       height: height || WINDOW_PLUGIN_HEIGHT - WINDOW_HEIGHT,
     });
 
-    view.on('resize', () => {
-      view.setBounds({ x: 0, y: 0, width: true, height: true });
-    });
+    // window.on('resize', () => {
+    //   if (!window || !view) return;
+    //   const { width, height } = window.getBounds();
+    //   view.setBounds({ x: 0, y: 0, width, height: height || WINDOW_PLUGIN_HEIGHT - WINDOW_HEIGHT });
+    // });
+    view.setAutoResize({ width: true, height: true });
 
     executeHooks('PluginEnter', ext);
     executeHooks('PluginReady', ext);
@@ -75,26 +55,11 @@ export default () => {
     const darkMode = config.perf.common.darkMode;
     darkMode && view.webContents.executeJavaScript(`document.body.classList.add("dark");window.rubick.theme="dark"`);
     window.webContents.executeJavaScript(`window.pluginLoaded()`);
-    // executeHooks('Show', null);
-    window.focus();
-    window.webContents.executeJavaScript(
-      `window.rubick && window.rubick.hooks && typeof window.rubick.hooks.onShow === "function" && window.rubick.hooks.onShow()`
-    );
   };
 
   const init = (plugin, window: BrowserWindow) => {
     if (view === null || view === undefined) {
       createView(plugin, window);
-      // if (viewInstance.getView(plugin.name) && !commonConst.dev()) {
-      //   view = viewInstance.getView(plugin.name).view;
-      //   window.setBrowserView(view);
-      //   view.inited = true;
-      //   viewReadyFn(window, plugin);
-      // } else {
-      //   createView(plugin, window);
-      //   viewInstance.addView(plugin.name, view);
-      // }
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
       require('@electron/remote/main').enable(view.webContents);
     }
   };
@@ -103,27 +68,30 @@ export default () => {
     const { tplPath, indexPath, development, name, main = 'index.html', pluginSetting, ext } = plugin;
     let pluginIndexPath = tplPath || indexPath;
     let preloadPath;
-    let darkMode;
+
     // 开发环境
     if (commonConst.dev() && development) {
       pluginIndexPath = development;
       const pluginPath = path.resolve(baseDir, 'node_modules', name);
       preloadPath = `file://${path.join(pluginPath, './', main)}`;
     }
+
     // 再尝试去找
     if (plugin.name === 'rubick-system-feature' && !pluginIndexPath) {
       pluginIndexPath = commonConst.dev() ? 'http://localhost:8081/#/' : `file://${__static}/feature/index.html`;
     }
+
     if (!pluginIndexPath) {
       const pluginPath = path.resolve(baseDir, 'node_modules', name);
       pluginIndexPath = `file://${path.join(pluginPath, './', main)}`;
     }
+
     const preload = getPreloadPath(plugin, preloadPath || pluginIndexPath);
 
     const ses = session.fromPartition('<' + name + '>');
     ses.setPreloads([`${__static}/preload.js`]);
 
-    view = new WebContentsView({
+    view = new BrowserView({
       webPreferences: {
         webSecurity: false,
         nodeIntegration: true,
@@ -140,7 +108,7 @@ export default () => {
         spellcheck: false,
       },
     });
-    window.contentView.addChildView(view);
+    window.setBrowserView(view);
     view.webContents.loadURL(pluginIndexPath);
     view.webContents.once('dom-ready', () => viewReadyFn(window, plugin));
     // 修复请求跨域问题
@@ -164,9 +132,9 @@ export default () => {
     if (!view) return;
     executeHooks('PluginOut', null);
     setTimeout(() => {
-      window.contentView.removeChildView(view);
+      window.removeBrowserView(view);
       if (!view?.inDetach) {
-        // window.setBrowserView(null);
+        window.setBrowserView(null);
         view.webContents?.destroy();
       }
       window.webContents?.executeJavaScript(`window.initRubick()`);
