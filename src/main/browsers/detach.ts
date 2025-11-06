@@ -7,29 +7,40 @@ import { WINDOW_MIN_HEIGHT } from '@/common/constans/common';
 import { PLUGIN_INSTALL_ROOT_DIR } from '@/common/constans/main';
 
 export default () => {
-  let win: any;
+  let win: Electron.BrowserWindow;
+  let view: any;
 
-  const init = async (pluginInfo, bounds, view) => {
+  let rb: RunnerBrowser;
+  let appWindow: BrowserWindow;
+
+  const init = async (pluginInfo, appWindowRef: BrowserWindow, runnerBrowserRef: RunnerBrowser) => {
     ipcMain.on('detach:service', async (event, arg: { type: string }) => {
       const data = await operation[arg.type]();
       event.returnValue = data;
     });
-    const createWin = await createWindow(pluginInfo, bounds, view);
-    // console.log(pluginInfo);
+
+    rb = runnerBrowserRef;
+    appWindow = appWindowRef;
+
+    view = rb.getView();
+    const bounds = appWindow.getBounds();
+    const createWin = await createWindow(pluginInfo, bounds);
+
     const logoPath =
       pluginInfo.logoPath ||
       path.join(PLUGIN_INSTALL_ROOT_DIR, pluginInfo.originName, 'logo' + path.extname(pluginInfo.logo));
-    // console.log('detach logo', logoPath);
+
     if (fs.existsSync(logoPath)) {
       createWin.setIcon(logoPath);
     } else {
       createWin.setIcon(path.join(__static, 'logo.png'));
     }
+
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     require('@electron/remote/main').enable(createWin.webContents);
   };
 
-  const createWindow = async (pluginInfo, bounds, view) => {
+  const createWindow = async (pluginInfo, bounds) => {
     const createWin = new BrowserWindow({
       ...bounds,
       minHeight: WINDOW_MIN_HEIGHT,
@@ -62,11 +73,13 @@ export default () => {
     }
 
     createWin.on('close', () => {
+      console.log('detach window close');
       executeHooks('PluginOut', null);
     });
 
     createWin.on('closed', () => {
-      view.webContents?.destroy();
+      console.log('detach window closed');
+      rb.removeView(appWindow);
       win = undefined;
     });
 

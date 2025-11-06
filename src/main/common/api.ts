@@ -308,20 +308,13 @@ class API extends DBInstance {
 
   public detachPlugin(e, window: BrowserWindow) {
     if (!this.currentPlugin) return;
-    const view = window.getBrowserView();
     window.setBrowserView(null);
     // console.log(window.contentView.children);
     // const view = window.contentView.children[0];
     // window.contentView.removeChildView(view);
     window.webContents.executeJavaScript(`window.getMainInputInfo()`).then((res) => {
-      detachInstance.init(
-        {
-          ...this.currentPlugin,
-          subInput: res,
-        },
-        window.getBounds(),
-        view
-      );
+      const pluginInfo = { ...this.currentPlugin, subInput: res };
+      detachInstance.init(pluginInfo, window, runnerInstance);
       window.webContents.executeJavaScript(`window.initRubick()`);
       window.setSize(window.getSize()[0], 60);
       this.currentPlugin = null;

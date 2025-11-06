@@ -13,6 +13,14 @@ declare const __static: string;
 
 declare module 'lodash.throttle';
 
+interface RunnerBrowser {
+  init: (plugin: any, window: BrowserWindow) => void;
+  getView: () => BrowserView;
+  closeView: () => void;
+  removeView: (window: BrowserWindow) => void;
+  executeHooks: (hook: string, data: any) => void;
+}
+
 interface Window {
   rubick: any;
   setSubInput: ({ placeholder }: { placeholder: string }) => void;

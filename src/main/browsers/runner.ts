@@ -27,8 +27,8 @@ const getPreloadPath = (plugin, pluginIndexPath) => {
   return path.resolve(getRelativePath(pluginIndexPath), `../`, preload);
 };
 
-export default () => {
-  let view;
+export default (): RunnerBrowser => {
+  let view: any;
 
   const viewReadyFn = async (window, { pluginSetting, ext }) => {
     if (!view) return;
@@ -58,6 +58,7 @@ export default () => {
   };
 
   const init = (plugin, window: BrowserWindow) => {
+    console.log('runner init', view, view?.webContents?.id);
     if (view === null || view === undefined) {
       createView(plugin, window);
       require('@electron/remote/main').enable(view.webContents);
@@ -65,6 +66,7 @@ export default () => {
   };
 
   const createView = (plugin, window: BrowserWindow) => {
+    console.log('runner createView');
     const { tplPath, indexPath, development, name, main = 'index.html', pluginSetting, ext } = plugin;
     let pluginIndexPath = tplPath || indexPath;
     let preloadPath;
@@ -144,6 +146,11 @@ export default () => {
 
   const getView = () => view;
 
+  const closeView = () => {
+    view?.webContents?.close();
+    view = undefined;
+  };
+
   const executeHooks = (hook, data) => {
     if (!view) return;
     const evalJs = `if(window.rubick && window.rubick.hooks && typeof window.rubick.hooks.on${hook} === 'function' ) {
@@ -158,6 +165,7 @@ export default () => {
   return {
     init,
     getView,
+    closeView,
     removeView,
     executeHooks,
   };
