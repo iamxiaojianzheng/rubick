@@ -24,7 +24,7 @@ module.exports = {
       externals: ['pouchdb', 'extract-file-icon', 'npm', 'electron-screenshots', '@electron/remote'],
       // Use this to change the entry point of your app's render process. default src/[main|index].[js|ts]
       builderOptions: {
-        productName: 'ruck',
+        productName: 'Ruck',
         appId: 'com.xiaojianzheng.ruck',
         compression: 'maximum',
         // afterPack: './release.js',
@@ -45,7 +45,7 @@ module.exports = {
             repo: 'ruck',
           },
         ],
-        files: ['dist_electron/**/*'],
+        // files: ['dist_electron/**/*'],
         dmg: {
           contents: [
             {
@@ -81,7 +81,7 @@ module.exports = {
         // },
         win: {
           icon: 'public/icons/icon.ico',
-          artifactName: 'ruck-Setup-${version}-${arch}.exe',
+          artifactName: 'Ruck-Setup-${version}-${arch}.exe',
           target: [
             {
               target: 'nsis',
@@ -90,7 +90,7 @@ module.exports = {
           ],
         },
         nsis: {
-          shortcutName: 'ruck',
+          shortcutName: 'Ruck',
           oneClick: false,
           allowToChangeInstallationDirectory: true,
           include: 'public/installer.nsh',
