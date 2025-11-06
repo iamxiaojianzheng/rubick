@@ -45,22 +45,22 @@ module.exports = {
             repo: 'ruck',
           },
         ],
-        // files: ["dist_electron/**/*"],
-        // dmg: {
-        //   contents: [
-        //     {
-        //       x: 410,
-        //       y: 150,
-        //       type: 'link',
-        //       path: '/Applications',
-        //     },
-        //     {
-        //       x: 130,
-        //       y: 150,
-        //       type: 'file',
-        //     },
-        //   ],
-        // },
+        files: ['dist_electron/**/*'],
+        dmg: {
+          contents: [
+            {
+              x: 410,
+              y: 150,
+              type: 'link',
+              path: '/Applications',
+            },
+            {
+              x: 130,
+              y: 150,
+              type: 'file',
+            },
+          ],
+        },
         // mac: {
         //   icon: 'public/icons/icon.icns',
         //   target: [
@@ -95,11 +95,11 @@ module.exports = {
           allowToChangeInstallationDirectory: true,
           include: 'public/installer.nsh',
         },
-        // linux: {
-        //   icon: 'public/icons/',
-        //   publish: ['github'],
-        //   target: 'deb',
-        // },
+        linux: {
+          icon: 'public/icons/',
+          publish: ['github'],
+          target: 'deb',
+        },
       },
     },
   },
