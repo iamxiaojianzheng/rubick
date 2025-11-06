@@ -7,6 +7,7 @@ import { WINDOW_MIN_HEIGHT } from '@/common/constans/common';
 import { PLUGIN_INSTALL_ROOT_DIR } from '@/common/constans/main';
 
 export default () => {
+  const DETACH_CHANNEL = 'detach:service';
   let win: Electron.BrowserWindow;
   let view: any;
 
@@ -14,34 +15,29 @@ export default () => {
   let appWindow: BrowserWindow;
 
   const init = async (pluginInfo, appWindowRef: BrowserWindow, runnerBrowserRef: RunnerBrowser) => {
-    ipcMain.on('detach:service', async (event, arg: { type: string }) => {
-      const data = await operation[arg.type]();
-      event.returnValue = data;
-    });
-
     rb = runnerBrowserRef;
     appWindow = appWindowRef;
 
     view = rb.getView();
     const bounds = appWindow.getBounds();
-    const createWin = await createWindow(pluginInfo, bounds);
+    const win = await createWindow(pluginInfo, bounds);
 
     const logoPath =
       pluginInfo.logoPath ||
       path.join(PLUGIN_INSTALL_ROOT_DIR, pluginInfo.originName, 'logo' + path.extname(pluginInfo.logo));
 
     if (fs.existsSync(logoPath)) {
-      createWin.setIcon(logoPath);
+      win.setIcon(logoPath);
     } else {
-      createWin.setIcon(path.join(__static, 'logo.png'));
+      win.setIcon(path.join(__static, 'logo.png'));
     }
 
     // eslint-disable-next-line @typescript-eslint/no-var-requires
-    require('@electron/remote/main').enable(createWin.webContents);
+    require('@electron/remote/main').enable(win.webContents);
   };
 
-  const createWindow = async (pluginInfo, bounds) => {
-    const createWin = new BrowserWindow({
+  const createWindow = async (pluginInfo, bounds: Electron.Rectangle) => {
+    win = new BrowserWindow({
       ...bounds,
       minHeight: WINDOW_MIN_HEIGHT,
       autoHideMenuBar: true,
@@ -67,86 +63,97 @@ export default () => {
 
     if (process.env.WEBPACK_DEV_SERVER_URL) {
       // Load the url of the dev server if in development mode
-      createWin.loadURL('http://localhost:8082');
+      win.loadURL('http://localhost:8082');
     } else {
-      createWin.loadURL(`file://${path.join(__static, './detach/index.html')}`);
+      win.loadURL(`file://${path.join(__static, './detach/index.html')}`);
     }
 
-    createWin.on('close', () => {
+    win.on('close', () => {
       console.log('detach window close');
       executeHooks('PluginOut', null);
     });
 
-    createWin.on('closed', () => {
+    win.on('closed', () => {
       console.log('detach window closed');
       rb.removeView(appWindow);
-      win = undefined;
+      ipcMain.removeAllListeners(DETACH_CHANNEL);
+      win = null;
     });
 
-    createWin.on('focus', () => {
-      win = createWin;
+    win.on('focus', () => {
       view && win.webContents?.focus();
     });
 
-    createWin.once('ready-to-show', async () => {
+    win.once('ready-to-show', async () => {
       const config = await localConfig.getConfig();
       const darkMode = config.perf.common.darkMode;
       if (darkMode) {
-        createWin.webContents.executeJavaScript(`document.body.classList.add("dark");window.rubick.theme="dark"`);
+        win.webContents.executeJavaScript(`document.body.classList.add("dark");window.rubick.theme="dark"`);
       }
 
       view.setAutoResize({ width: true, height: true });
-      createWin.setBrowserView(view);
+      win.setBrowserView(view);
       view.inDetach = true;
-      createWin.webContents.executeJavaScript(`window.initDetach(${JSON.stringify(pluginInfo)})`);
-      createWin.show();
+      win.webContents.executeJavaScript(`window.initDetach(${JSON.stringify(pluginInfo)})`);
+
+      // const id = win.webContents.id;
+      ipcMain.on(DETACH_CHANNEL, async (event, arg: { type: string }) => {
+        console.log('detach channel', win.webContents.id, arg);
+        const data = await operation[arg.type]();
+        event.returnValue = data;
+      });
+
+      win.show();
     });
 
     // 最大化设置
-    createWin.on('maximize', () => {
-      createWin.webContents.executeJavaScript('window.maximizeTrigger()');
-      const view = createWin.getBrowserView();
+    win.on('maximize', () => {
+      win.webContents.executeJavaScript('window.maximizeTrigger()');
+      const view = win.getBrowserView();
       if (!view) return;
-      const display = screen.getDisplayMatching(createWin.getBounds());
-      view.setBounds({
-        x: 0,
-        y: WINDOW_MIN_HEIGHT,
-        width: display.workArea.width,
-        height: display.workArea.height - WINDOW_MIN_HEIGHT,
-      });
+      // const display = screen.getDisplayMatching(win.getBounds());
+      const bounds = win.getBounds();
+      console.log('detach window maximize', bounds);
+      // view.setBounds({
+      //   x: 0,
+      //   y: WINDOW_MIN_HEIGHT,
+      //   width: display.workArea.width,
+      //   height: display.workArea.height - WINDOW_MIN_HEIGHT,
+      // });
     });
 
     // 解除最大化，返回之前的状态
-    createWin.on('unmaximize', () => {
-      createWin.webContents.executeJavaScript('window.unmaximizeTrigger()');
-      const view = createWin.getBrowserView();
+    win.on('unmaximize', () => {
+      win.webContents.executeJavaScript('window.unmaximizeTrigger()');
+      const view = win.getBrowserView();
       if (!view) return;
-      const bounds = createWin.getBounds();
-      const display = screen.getDisplayMatching(bounds);
-      const width = (display.scaleFactor * bounds.width) % 1 == 0 ? bounds.width : bounds.width - 2;
-      const height = (display.scaleFactor * bounds.height) % 1 == 0 ? bounds.height : bounds.height - 2;
-      view.setBounds({
-        x: 0,
-        y: WINDOW_MIN_HEIGHT,
-        width,
-        height: height - WINDOW_MIN_HEIGHT,
-      });
+      const bounds = win.getBounds();
+      console.log('detach window unmaximize', bounds);
+      // const display = screen.getDisplayMatching(bounds);
+      // const width = (display.scaleFactor * bounds.width) % 1 == 0 ? bounds.width : bounds.width - 2;
+      // const height = (display.scaleFactor * bounds.height) % 1 == 0 ? bounds.height : bounds.height - 2;
+      // view.setBounds({
+      //   x: 0,
+      //   y: WINDOW_MIN_HEIGHT,
+      //   width,
+      //   height: height - WINDOW_MIN_HEIGHT,
+      // });
     });
 
-    createWin.on('page-title-updated', (e) => {
+    win.on('page-title-updated', (e) => {
       e.preventDefault();
     });
 
-    createWin.webContents.once('render-process-gone', () => {
-      createWin.close();
+    win.webContents.once('render-process-gone', () => {
+      win.close();
     });
 
     if (commonConst.macOS()) {
-      createWin.on('enter-full-screen', () => {
-        createWin.webContents.executeJavaScript('window.enterFullScreenTrigger()');
+      win.on('enter-full-screen', () => {
+        win.webContents.executeJavaScript('window.enterFullScreenTrigger()');
       });
-      createWin.on('leave-full-screen', () => {
-        createWin.webContents.executeJavaScript('window.leaveFullScreenTrigger()');
+      win.on('leave-full-screen', () => {
+        win.webContents.executeJavaScript('window.leaveFullScreenTrigger()');
       });
     }
 
@@ -170,7 +177,7 @@ export default () => {
       `;
       view.webContents.executeJavaScript(evalJs);
     };
-    return createWin;
+    return win;
   };
 
   const getWindow = () => win;
