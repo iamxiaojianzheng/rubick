@@ -28,7 +28,6 @@
       @keydown.up="(e) => keydownEvent(e, 'up')"
       @keydown="(e) => checkNeedInit(e)"
       @keypress.enter="(e) => keydownEvent(e, 'enter')"
-      @keypress.space="(e) => keydownEvent(e, 'space')"
       @focus="emit('focus')"
     >
       <template #suffix>
@@ -71,7 +70,8 @@ const props: any = defineProps({
 });
 
 const clickLogo = () => {
-  if (props.currentPlugin.name === 'rubick-system-feature') {
+  const { name } = props.currentPlugin
+  if (!name || name === 'rubick-system-feature') {
     emit('openMenu');
   }
 };
@@ -95,7 +95,7 @@ const emit = defineEmits([
 ]);
 
 const keydownEvent = (e, key: string) => {
-  key !== 'space' && e.preventDefault();
+  // key !== 'space' && e.preventDefault();
   const { ctrlKey, shiftKey, altKey, metaKey } = e;
   const modifiers: Array<string> = [];
   ctrlKey && modifiers.push('control');
