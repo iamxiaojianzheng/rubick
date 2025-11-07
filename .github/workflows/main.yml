@@ -43,6 +43,10 @@ jobs:
         with:
           node-version: 18.x
 
+      - name: Setup Install Source
+        run: |
+          yarn config set registry https://registry.npmmirror.com
+
       - name: Install system deps
         if: matrix.os == 'ubuntu-latest'
         run: |
