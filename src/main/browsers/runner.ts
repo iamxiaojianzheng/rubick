@@ -98,7 +98,7 @@ export default (): RunnerBrowser => {
         webSecurity: false,
         nodeIntegration: true,
         contextIsolation: false,
-        devTools: true,
+        devTools: commonConst.dev(),
         webviewTag: true,
         preload,
         session: ses,

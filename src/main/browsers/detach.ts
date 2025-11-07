@@ -54,7 +54,7 @@ export default () => {
         backgroundThrottling: false,
         contextIsolation: false,
         webviewTag: true,
-        devTools: true,
+        devTools: commonConst.dev(),
         nodeIntegration: true,
         navigateOnDragDrop: true,
         spellcheck: false,

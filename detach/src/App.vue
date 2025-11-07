@@ -13,7 +13,7 @@
     </div>
     <div class="handle-container">
       <div class="handle">
-        <div class="devtool" @click="openDevTool" title="开发者工具"></div>
+        <div class="devtool" v-if="isDev" @click="openDevTool" title="开发者工具"></div>
         <div :class="pinStatus ? 'pin' : 'unpin'" @click="pinWindow" :title="pinStatus ? '取消置顶' : '置顶'"></div>
       </div>
       <div class="window-handle" v-if="process.platform !== 'darwin'">
@@ -33,6 +33,7 @@ const { ipcRenderer } = window.require('electron');
 
 const process = window.require('process');
 const showInput = ref(false);
+const isDev = ref(false);
 
 const storeInfo = localStorage.getItem('rubick-system-detach') || '{}';
 const pluginInfo = ref({});
@@ -43,6 +44,7 @@ window.initDetach = (info) => {
   pluginInfo.value.pin = false;
   showInput.value = subInput && (!!subInput.value || !!subInput.placeholder);
   localStorage.setItem('rubick-system-detach', JSON.stringify(info));
+  isDev.value = ipcRenderer.sendSync('msg-trigger', { type: 'isDev' });
 };
 
 const pinStatus = computed(() => {

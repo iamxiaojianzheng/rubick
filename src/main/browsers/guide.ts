@@ -1,5 +1,6 @@
 import { BrowserWindow, ipcMain, nativeTheme, screen } from 'electron';
 import path from 'path';
+import commonConst from '../../common/utils/commonConst';
 import { GUIDE_WIDTH, WINDOW_MIN_HEIGHT, GUIDE_HEIGHT } from '@/common/constans/common';
 
 const getWindowPos = (width, height) => {
@@ -47,7 +48,7 @@ export default () => {
         backgroundThrottling: false,
         contextIsolation: false,
         webviewTag: true,
-        devTools: true,
+        devTools: commonConst.dev(),
         nodeIntegration: true,
         spellcheck: false,
       },

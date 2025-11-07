@@ -4,6 +4,7 @@ import ks from 'node-key-sender';
 import clipboardFiles from 'clipboard-files';
 
 import { screenCapture } from '@/core';
+import commonConst from '@/common/utils/commonConst';
 import commonUtil from '@/common/utils/commonUtil';
 import getCopyFiles from '@/common/utils/getCopyFiles';
 import { DECODE_KEY, PLUGIN_INSTALL_DIR as baseDir } from '@/common/constans/main';
@@ -20,7 +21,8 @@ class API extends DBInstance {
   init(mainWindow: BrowserWindow) {
     // 响应 preload.js 事件
     ipcMain.on('msg-trigger', async (event, arg) => {
-      const window = arg.winId ? BrowserWindow.fromId(arg.winId) : mainWindow;
+      // const window = arg.winId ? BrowserWindow.fromId(arg.winId) : mainWindow;
+      const window = event.sender ? BrowserWindow.fromWebContents(event.sender) : mainWindow;
       const data = await this[arg.type](arg, window, event);
       event.returnValue = data;
       // event.sender.send(`msg-back-${arg.type}`, data);
@@ -37,6 +39,10 @@ class API extends DBInstance {
       }
     });
   }
+
+  public isDev = (): boolean => {
+    return commonConst.dev();
+  };
 
   public getCurrentWindow = (window, e) => {
     let originWindow = BrowserWindow.fromWebContents(e.sender);
