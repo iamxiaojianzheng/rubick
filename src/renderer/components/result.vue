@@ -29,7 +29,7 @@
               <span v-html="renderTitle(item.name, item.match)"></span>
             </template>
             <template #avatar>
-              <a-avatar style="border-radius: 0" :src="item.icon" />
+              <a-avatar style="border-radius: 0" :src="item.logoPath || item.icon" />
             </template>
           </a-list-item-meta>
         </a-list-item>

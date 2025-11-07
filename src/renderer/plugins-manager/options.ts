@@ -58,7 +58,7 @@ const optionsManager = ({ searchValue, appList, openPlugin, currentPlugin }) => 
    * 构建插件操作选项
    */
   const buildPluginOption = (plugin, feature: Feature, cmd: Cmd | string, payload: string, openPlugin): Option => {
-    const { logo: pluginLogo, pluginType } = plugin;
+    const { logo: pluginLogo, logoPath, pluginType } = plugin;
     const { code: featureCode, explain: featureExplain } = feature;
     let cmdLabel: string, cmdType: string;
     if (typeof cmd === 'string') {
@@ -71,7 +71,7 @@ const optionsManager = ({ searchValue, appList, openPlugin, currentPlugin }) => 
     const option: Option = {
       name: cmdLabel,
       value: 'plugin',
-      icon: pluginLogo,
+      icon: logoPath || pluginLogo,
       desc: featureExplain,
       type: pluginType,
       match: PinyinMatch.match(cmdLabel, payload),
