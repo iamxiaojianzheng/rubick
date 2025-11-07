@@ -34,7 +34,7 @@
             <div class="left">
               <div class="title">
                 {{ pluginDetail.pluginName }}
-                <a-tag>{{ pluginDetail.version }}</a-tag>
+                <!-- <a-tag>{{ pluginDetail.version }}</a-tag> -->
               </div>
               <div class="meta">
                 <span v-for="item in ['author', 'version']" :key="item" :class="item">
