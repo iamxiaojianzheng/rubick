@@ -91,7 +91,8 @@ export default () => {
     uIOhook.on('mouseup', async (event) => {
       // console.log('main hook mouseup');
       const config = await localConfig.getConfig();
-      if (isBlur && config.perf.common.hideOnBlur && win.isVisible()) {
+      if (isBlur && config.perf.common.hideOnBlur && win.isVisible() && !BrowserWindow.getFocusedWindow()) {
+        console.log('main mouseup hide');
         win.hide();
       }
     });
