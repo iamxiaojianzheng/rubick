@@ -75,13 +75,14 @@ function fileDisplay(filePath: string) {
               // const icon = path.join(iconDir, `${encodeURIComponent(appName)}.png`);
               const icon = path.join(iconDir, `${appName}.png`);
 
+              const { target, args } = appDetail;
               const appInfo = {
                 value: 'plugin',
                 desc: appDetail.target,
                 type: 'app',
                 icon,
                 pluginType: 'app',
-                action: `${appDetail.target} ${appDetail.args}`,
+                action: `start "dummyclient" "${target}" ${args}`,
                 keyWords: keyWords,
                 name: appName,
                 names: JSON.parse(JSON.stringify(keyWords)),
