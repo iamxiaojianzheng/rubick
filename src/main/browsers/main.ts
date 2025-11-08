@@ -5,6 +5,7 @@ import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 import { uIOhook } from 'uiohook-napi';
 
 import localConfig from '@/main/common/initLocalConfig';
+import commonConst from '../../common/utils/commonConst';
 import { APP_NAME, WINDOW_HEIGHT, WINDOW_MIN_HEIGHT, WINDOW_WIDTH } from '@/common/constans/common';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 require('@electron/remote/main').initialize();
@@ -12,8 +13,6 @@ require('@electron/remote/main').initialize();
 export default () => {
   let win: any;
   let isBlur = false;
-  let isMouseDown = false;
-  let isMouseUp = false;
 
   const init = () => {
     createWindow();
@@ -37,6 +36,7 @@ export default () => {
         webSecurity: false,
         backgroundThrottling: false,
         contextIsolation: false,
+        devTools: commonConst.dev(),
         webviewTag: true,
         nodeIntegration: true,
         preload: path.join(__static, 'preload.js'),

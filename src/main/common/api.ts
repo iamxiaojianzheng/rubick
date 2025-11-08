@@ -21,8 +21,7 @@ class API extends DBInstance {
   init(mainWindow: BrowserWindow) {
     // 响应 preload.js 事件
     ipcMain.on('msg-trigger', async (event, arg) => {
-      // const window = arg.winId ? BrowserWindow.fromId(arg.winId) : mainWindow;
-      const window = event.sender ? BrowserWindow.fromWebContents(event.sender) : mainWindow;
+      const window = arg.winId ? BrowserWindow.fromId(arg.winId) : mainWindow;
       const data = await this[arg.type](arg, window, event);
       event.returnValue = data;
       // event.sender.send(`msg-back-${arg.type}`, data);
@@ -44,7 +43,7 @@ class API extends DBInstance {
     return commonConst.dev();
   };
 
-  public getCurrentWindow = (window, e) => {
+  public getCurrentWindow = (window: BrowserWindow, e: Electron.IpcMainEvent) => {
     let originWindow = BrowserWindow.fromWebContents(e.sender);
     if (originWindow !== window) originWindow = detachInstance.getWindow();
     return originWindow;
@@ -141,7 +140,7 @@ class API extends DBInstance {
     return dialog.showSaveDialogSync(window, data);
   }
 
-  public setExpendHeight({ data: height }, window: BrowserWindow, e) {
+  public setExpendHeight({ data: height }, window: BrowserWindow, e: Electron.IpcMainEvent) {
     const originWindow = this.getCurrentWindow(window, e);
     if (!originWindow) return;
     const targetHeight = height;

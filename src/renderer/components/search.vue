@@ -70,7 +70,7 @@ const props: any = defineProps({
 });
 
 const clickLogo = () => {
-  const { name } = props.currentPlugin
+  const { name } = props.currentPlugin;
   if (!name || name === 'rubick-system-feature') {
     emit('openMenu');
   }
@@ -192,23 +192,29 @@ const showSeparate = () => {
   ];
 
   if (props.currentPlugin && props.currentPlugin.logo) {
-    pluginMenu = pluginMenu.concat([
+    const otherMenu = [
+      // TODO
+      // {
+      //   label: '当前插件信息',
+      //   submenu: [{ label: '简介' }, { label: '功能' }],
+      // },
       {
+        label: '分离窗口',
+        click: newWindow,
+      },
+    ];
+
+    if (ipcRenderer.sendSync('msg-trigger', { type: 'isDev' })) {
+      otherMenu.unshift({
         label: '开发者工具',
         click: () => {
           ipcRenderer.send('msg-trigger', { type: 'openPluginDevTools' });
           // todo
         },
-      },
-      {
-        label: '当前插件信息',
-        submenu: [{ label: '简介' }, { label: '功能' }],
-      },
-      {
-        label: '分离窗口',
-        click: newWindow,
-      },
-    ]);
+      });
+    }
+
+    pluginMenu = pluginMenu.concat(otherMenu);
   }
   let menu = Menu.buildFromTemplate(pluginMenu);
   menu.popup();
