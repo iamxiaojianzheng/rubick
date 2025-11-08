@@ -44,7 +44,7 @@ window.initDetach = (info) => {
   pluginInfo.value.pin = false;
   showInput.value = subInput && (!!subInput.value || !!subInput.placeholder);
   localStorage.setItem('rubick-system-detach', JSON.stringify(info));
-  isDev.value = ipcRenderer.sendSync('msg-trigger', { type: 'isDev' });
+  isDev.value = ipcRenderer.sendSync('msg-trigger', { type: 'isDev' }) === true;
 };
 
 const pinStatus = computed(() => {
