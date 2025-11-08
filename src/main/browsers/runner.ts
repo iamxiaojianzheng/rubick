@@ -1,5 +1,6 @@
 import { BrowserView, BrowserWindow, session } from 'electron';
 import path from 'path';
+import fs from 'fs';
 import commonConst from '../../common/utils/commonConst';
 import { PLUGIN_INSTALL_DIR as baseDir } from '@/common/constans/main';
 import localConfig from '@/main/common/initLocalConfig';
@@ -12,6 +13,7 @@ const getRelativePath = (indexPath) => {
 const getPreloadPath = (plugin, pluginIndexPath) => {
   const { name, preload, tplPath, indexPath } = plugin;
   if (!preload) return;
+
   if (commonConst.dev()) {
     if (name === 'rubick-system-feature') {
       return path.resolve(__static, `../feature/public/preload.js`);
@@ -21,6 +23,7 @@ const getPreloadPath = (plugin, pluginIndexPath) => {
     }
     return path.resolve(getRelativePath(pluginIndexPath), `../`, preload);
   }
+
   if (tplPath) {
     return path.resolve(getRelativePath(indexPath), `./`, preload);
   }
@@ -67,15 +70,28 @@ export default (): RunnerBrowser => {
 
   const createView = (plugin, window: BrowserWindow) => {
     console.log('runner createView');
-    const { tplPath, indexPath, development, name, main = 'index.html', pluginSetting, ext } = plugin;
+    const {
+      tplPath,
+      indexPath,
+      development,
+      name,
+      originName,
+      preload,
+      main = 'index.html',
+      pluginSetting,
+      ext,
+    } = plugin;
+    const pluginPath = path.resolve(baseDir, 'node_modules', originName || name);
     let pluginIndexPath = tplPath || indexPath;
     let preloadPath;
+
+    if (preload) {
+      preloadPath = `${path.join(pluginPath, './', preload)}`;
+    }
 
     // 开发环境
     if (commonConst.dev() && development) {
       pluginIndexPath = development;
-      const pluginPath = path.resolve(baseDir, 'node_modules', name);
-      preloadPath = `file://${path.join(pluginPath, './', main)}`;
     }
 
     // 再尝试去找
@@ -84,11 +100,12 @@ export default (): RunnerBrowser => {
     }
 
     if (!pluginIndexPath) {
-      const pluginPath = path.resolve(baseDir, 'node_modules', name);
       pluginIndexPath = `file://${path.join(pluginPath, './', main)}`;
     }
 
-    const preload = getPreloadPath(plugin, preloadPath || pluginIndexPath);
+    if (!fs.existsSync(preloadPath)) {
+      preloadPath = getPreloadPath(plugin, preloadPath || pluginIndexPath);
+    }
 
     const ses = session.fromPartition('<' + name + '>');
     ses.setPreloads([`${__static}/preload.js`]);
@@ -100,7 +117,7 @@ export default (): RunnerBrowser => {
         contextIsolation: false,
         devTools: commonConst.dev(),
         webviewTag: true,
-        preload,
+        preload: preloadPath,
         session: ses,
         defaultFontSize: 14,
         defaultFontFamily: {
