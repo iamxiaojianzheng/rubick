@@ -81,7 +81,7 @@ export default () => {
     });
 
     win.on('focus', () => {
-      view && win.webContents?.focus();
+      view && win?.webContents?.focus();
     });
 
     win.once('ready-to-show', async () => {
