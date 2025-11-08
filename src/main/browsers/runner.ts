@@ -14,14 +14,11 @@ const getPreloadPath = (plugin, pluginIndexPath) => {
   const { name, preload, tplPath, indexPath } = plugin;
   if (!preload) return;
 
+  console.log(path.resolve(getRelativePath(pluginIndexPath), `../`, preload));
   if (commonConst.dev()) {
     if (name === 'rubick-system-feature') {
       return path.resolve(__static, `../feature/public/preload.js`);
     }
-    if (tplPath) {
-      return path.resolve(getRelativePath(indexPath), `./`, preload);
-    }
-    return path.resolve(getRelativePath(pluginIndexPath), `../`, preload);
   }
 
   if (tplPath) {
@@ -81,13 +78,9 @@ export default (): RunnerBrowser => {
       pluginSetting,
       ext,
     } = plugin;
+    // console.log(plugin);
     const pluginPath = path.resolve(baseDir, 'node_modules', originName || name);
     let pluginIndexPath = tplPath || indexPath;
-    let preloadPath;
-
-    if (preload) {
-      preloadPath = `${path.join(pluginPath, './', preload)}`;
-    }
 
     // 开发环境
     if (commonConst.dev() && development) {
@@ -97,15 +90,20 @@ export default (): RunnerBrowser => {
     // 再尝试去找
     if (plugin.name === 'rubick-system-feature' && !pluginIndexPath) {
       pluginIndexPath = commonConst.dev() ? 'http://localhost:8081/#/' : `file://${__static}/feature/index.html`;
-    }
-
-    if (!pluginIndexPath) {
+    } else if (!pluginIndexPath) {
       pluginIndexPath = `file://${path.join(pluginPath, './', main)}`;
     }
 
-    if (!fs.existsSync(preloadPath)) {
-      preloadPath = getPreloadPath(plugin, preloadPath || pluginIndexPath);
+    let preloadPath;
+    if (preload) {
+      preloadPath = `${path.join(pluginPath, './', preload)}`;
     }
+
+    // console.log(preloadPath, pluginIndexPath);
+    if (!fs.existsSync(preloadPath)) {
+      preloadPath = getPreloadPath(plugin, pluginIndexPath);
+    }
+    // console.log(preloadPath);
 
     const ses = session.fromPartition('<' + name + '>');
     ses.setPreloads([`${__static}/preload.js`]);
